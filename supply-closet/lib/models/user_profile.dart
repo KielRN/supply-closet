@@ -16,6 +16,7 @@ class UserProfile {
   final int tagsThisMonth;
   final int streakDays;
   final List<String> badges;
+  final List<DateTime> xpAwardTimestamps; // sliding window for rate limiting
   final DateTime createdAt;
   final DateTime lastActive;
 
@@ -34,6 +35,7 @@ class UserProfile {
     this.tagsThisMonth = 0,
     this.streakDays = 0,
     this.badges = const [],
+    this.xpAwardTimestamps = const [],
     DateTime? createdAt,
     DateTime? lastActive,
   })  : createdAt = createdAt ?? DateTime.now(),
@@ -56,6 +58,10 @@ class UserProfile {
       tagsThisMonth: data['tagsThisMonth'] ?? 0,
       streakDays: data['streakDays'] ?? 0,
       badges: List<String>.from(data['badges'] ?? []),
+      xpAwardTimestamps: (data['xpAwardTimestamps'] as List<dynamic>?)
+              ?.map((ts) => (ts as Timestamp).toDate())
+              .toList() ??
+          [],
       createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
       lastActive: (data['lastActive'] as Timestamp?)?.toDate(),
     );

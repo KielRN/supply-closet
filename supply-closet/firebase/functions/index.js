@@ -143,17 +143,23 @@ exports.awardXp = onCall({region: "us-central1"}, async (request) => {
     if (!snap.exists) throw new HttpsError("not-found", "User missing");
     const profile = snap.data();
 
-    // ── Rate limit: 5-second cooldown between awards ──────────────
-    const lastActive = profile.lastActive ? profile.lastActive.toDate() : null;
-    if (lastActive) {
-      const elapsedMs = Date.now() - lastActive.getTime();
-      if (elapsedMs < 5000) {
-        throw new HttpsError(
-            "resource-exhausted",
-            "Please wait a few seconds between actions.",
-        );
-      }
+    // ── Rate limit: sliding window — max 10 awards per 60 seconds ──
+    const now = Date.now();
+    const windowMs = 60000; // 1 minute
+    const maxAwards = 10;
+    const recentTimestamps = (profile.xpAwardTimestamps || [])
+        .map((ts) => (typeof ts === "number" ? ts : ts.toMillis()))
+        .filter((ts) => now - ts < windowMs);
+
+    if (recentTimestamps.length >= maxAwards) {
+      throw new HttpsError(
+          "resource-exhausted",
+          "Too many actions. Please slow down.",
+      );
     }
+
+    // Keep only timestamps within the window + the new one
+    recentTimestamps.push(now);
 
     // ── Verify tag actions actually occurred ───────────────────────
     if (action === "tagNew" || action === "confirmExisting") {
@@ -192,6 +198,7 @@ exports.awardXp = onCall({region: "us-central1"}, async (request) => {
       streakDays,
       badges: Array.from(new Set([...(profile.badges || []), ...newBadges])),
       lastActive: admin.firestore.FieldValue.serverTimestamp(),
+      xpAwardTimestamps: recentTimestamps,
     });
 
     return {xpAwarded: xp, newPoints, newBadges};
