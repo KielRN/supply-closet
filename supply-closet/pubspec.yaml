@@ -1,0 +1,66 @@
+name: supply_closet
+description: AR-powered supply finder for nurses. Never hunt for supplies again.
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Firebase
+  firebase_core: ^3.8.1
+  firebase_auth: ^5.4.1
+  cloud_firestore: ^5.6.0
+  firebase_messaging: ^15.2.1
+  firebase_remote_config: ^5.3.1
+  firebase_analytics: ^11.4.1
+
+  # Google Sign-In
+  google_sign_in: ^6.2.2
+
+  # State Management
+  provider: ^6.1.2
+
+  # AR
+  ar_flutter_plugin: ^0.7.3
+
+  # Barcode Scanning
+  google_mlkit_barcode_scanning: ^0.13.0
+
+  # Camera
+  camera: ^0.11.0+2
+
+  # UI
+  flutter_svg: ^2.0.10+1
+  cached_network_image: ^3.4.1
+  shimmer: ^3.0.0
+  lottie: ^3.1.3
+  fl_chart: ^0.70.2
+
+  # Navigation
+  go_router: ^14.8.1
+
+  # Storage
+  shared_preferences: ^2.3.4
+
+  # Utilities
+  intl: ^0.19.0
+  uuid: ^4.5.1
+  collection: ^1.19.0
+  json_annotation: ^4.9.0
+  equatable: ^2.0.7
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.13
+  json_serializable: ^6.9.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/data/

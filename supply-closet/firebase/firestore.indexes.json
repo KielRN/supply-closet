@@ -1,0 +1,30 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "facilityId", "order": "ASCENDING"},
+        {"fieldPath": "unitId", "order": "ASCENDING"},
+        {"fieldPath": "points", "order": "DESCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "facilityId", "order": "ASCENDING"},
+        {"fieldPath": "points", "order": "DESCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "supplies",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "confidence", "order": "DESCENDING"},
+        {"fieldPath": "lastConfirmed", "order": "DESCENDING"}
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

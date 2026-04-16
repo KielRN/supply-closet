@@ -1,0 +1,149 @@
+rules_version = '2';
+
+// SupplyCloset Firestore security rules
+//
+// Design principles:
+//  - Authenticated nurses can read/write supply data within their facility
+//  - Users can only modify their own profile (XP/badges are server-only)
+//  - Procedures are read-only for users; admins can write
+//  - No PHI is stored in Firestore
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Helpers ─────────────────────────────────────────────────
+    function isAuthed() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthed() && request.auth.uid == userId;
+    }
+
+    function userFacility() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.facilityId;
+    }
+
+    function userUnit() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.unitId;
+    }
+
+    function userRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function isAdmin() {
+      return isAuthed() && userRole() == 'admin';
+    }
+
+    function isCharge() {
+      return isAuthed() && (userRole() == 'charge' || userRole() == 'admin');
+    }
+
+    // Restrict writes to a known shape; reject anything else
+    function tagFieldsOnly() {
+      return request.resource.data.keys().hasOnly([
+        'name', 'barcode', 'category', 'location',
+        'confidence', 'lastConfirmed', 'tagCount', 'taggedByUserIds',
+        'notFoundReports'
+      ]);
+    }
+
+    // ─── Users ──────────────────────────────────────────────────
+    match /users/{userId} {
+      // Anyone authed can read profiles (for leaderboards)
+      allow read: if isAuthed();
+
+      // User can create their own profile on first sign-in
+      allow create: if isOwner(userId)
+        && request.resource.data.uid == userId
+        && request.resource.data.points == 0
+        && request.resource.data.badges.size() == 0;
+
+      // User can update only safe profile fields. XP/badges/streak come
+      // from Cloud Functions (server-side) only.
+      allow update: if isOwner(userId)
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly([
+            'displayName', 'photoUrl', 'facilityId', 'facilityName',
+            'unitId', 'unitName', 'lastActive', 'email'
+          ]);
+
+      // No client-side deletes
+      allow delete: if false;
+    }
+
+    // ─── Procedures (global catalog) ─────────────────────────────
+    match /procedures/{procId} {
+      allow read: if isAuthed();
+      allow write: if isAdmin();
+    }
+
+    // ─── Supplies (per facility/unit/room) ───────────────────────
+    match /facilities/{facilityId}/units/{unitId}/supplyRooms/{roomId}/supplies/{supplyId} {
+      // Read: must be authed and belong to the same facility
+      allow read: if isAuthed() && userFacility() == facilityId;
+
+      // Create: authed user from the same facility, valid shape
+      allow create: if isAuthed()
+        && userFacility() == facilityId
+        && tagFieldsOnly()
+        && request.resource.data.tagCount == 1
+        && request.auth.uid in request.resource.data.taggedByUserIds;
+
+      // Update: authed user from the same facility, only allowed
+      // confidence shifts and metadata changes
+      allow update: if isAuthed()
+        && userFacility() == facilityId
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly([
+            'location', 'confidence', 'lastConfirmed',
+            'tagCount', 'taggedByUserIds', 'notFoundReports'
+          ]);
+
+      // Charge nurse + admin can delete bad data
+      allow delete: if isCharge() && userFacility() == facilityId;
+    }
+
+    // ─── Facility metadata ───────────────────────────────────────
+    match /facilities/{facilityId} {
+      allow read: if isAuthed();
+      allow write: if isAdmin();
+
+      match /units/{unitId} {
+        allow read: if isAuthed();
+        allow write: if isAdmin();
+      }
+    }
+
+    // ─── Tag history (audit log, server-managed) ─────────────────
+    match /tags/{tagId} {
+      // Users see only their own tag history
+      allow read: if isAuthed() && resource.data.userId == request.auth.uid;
+      // Writes happen via Cloud Functions only
+      allow write: if false;
+    }
+
+    // ─── Leaderboard cache (server-computed) ─────────────────────
+    match /leaderboard/{docId} {
+      allow read: if isAuthed();
+      allow write: if false;
+    }
+
+    // ─── UDI lookup cache (server-managed) ───────────────────────
+    match /udi_cache/{di} {
+      allow read: if isAuthed();
+      allow write: if false;
+    }
+
+    // ─── Recall data (server-synced from openFDA) ────────────────
+    match /recalls/{udi} {
+      allow read: if isAuthed();
+      allow write: if false;
+    }
+
+    // ─── Default deny ─────────────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

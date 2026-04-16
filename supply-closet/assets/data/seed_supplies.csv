@@ -1,0 +1,235 @@
+id,canonicalName,category,commonSizes,gmdnTerm,searchKeywords,unitOfIssue,isSterile
+foley-catheter-silicone,Foley Catheter (Silicone),Genitourinary,"14 Fr;16 Fr;18 Fr;20 Fr",Indwelling-urinary-catheter,"foley;catheter;urinary;silicone",each,true
+foley-catheter-latex,Foley Catheter (Latex),Genitourinary,"14 Fr;16 Fr;18 Fr",Indwelling-urinary-catheter,"foley;catheter;urinary;latex",each,true
+foley-insertion-kit,Foley Catheter Insertion Kit,Genitourinary,"14 Fr;16 Fr;18 Fr",Urinary-catheterization-kit,"foley;kit;catheter;insertion",kit,true
+straight-cath,Straight Catheter,Genitourinary,"12 Fr;14 Fr;16 Fr",Urethral-catheter,"straight;cath;intermittent",each,true
+urinary-drainage-bag,Urinary Drainage Bag,Genitourinary,2000 mL,Urinary-drainage-bag,"drainage;bag;urinary",each,true
+leg-bag,Urinary Leg Bag,Genitourinary,500 mL;1000 mL,Urinary-leg-bag,"leg;bag;urinary;ambulatory",each,false
+statlock-foley,Foley Securement Device (StatLock),Genitourinary,Universal,Catheter-stabilization-device,"statlock;securement;foley",each,true
+iv-start-kit,IV Start Kit,Vascular Access,Universal,IV-start-kit,"iv;start;kit;peripheral",kit,true
+iv-catheter-14ga,IV Catheter 14 ga,Vascular Access,1.25 in,Peripheral-IV-catheter,"iv;cath;angio;14",each,true
+iv-catheter-16ga,IV Catheter 16 ga,Vascular Access,1.25 in,Peripheral-IV-catheter,"iv;cath;angio;16",each,true
+iv-catheter-18ga,IV Catheter 18 ga,Vascular Access,1.25 in,Peripheral-IV-catheter,"iv;cath;angio;18",each,true
+iv-catheter-20ga,IV Catheter 20 ga,Vascular Access,1 in;1.25 in,Peripheral-IV-catheter,"iv;cath;angio;20",each,true
+iv-catheter-22ga,IV Catheter 22 ga,Vascular Access,1 in,Peripheral-IV-catheter,"iv;cath;angio;22",each,true
+iv-catheter-24ga,IV Catheter 24 ga,Vascular Access,0.75 in,Peripheral-IV-catheter,"iv;cath;angio;24",each,true
+saline-flush-3ml,Saline Flush 3 mL,Vascular Access,3 mL,Pre-filled-saline-syringe,"flush;saline;ns",each,true
+saline-flush-10ml,Saline Flush 10 mL,Vascular Access,10 mL,Pre-filled-saline-syringe,"flush;saline;ns",each,true
+heparin-flush,Heparin Lock Flush,Vascular Access,5 mL,Heparin-lock-flush,"heparin;lock;flush",each,true
+iv-tubing-primary,IV Tubing Primary,Vascular Access,Universal,IV-administration-set,"iv;tubing;primary;set",each,true
+iv-tubing-secondary,IV Tubing Secondary,Vascular Access,Universal,IV-administration-set,"iv;tubing;secondary;set",each,true
+iv-tubing-filter,IV Tubing with Filter,Vascular Access,0.22 micron,IV-administration-set-with-filter,"iv;tubing;filter",each,true
+extension-set,IV Extension Set,Vascular Access,7 in;36 in,IV-extension-set,"extension;loop;tubing",each,true
+clave-connector,Needleless Connector (Clave/MicroClave),Vascular Access,Universal,Needleless-connector,"clave;needleless;connector",each,true
+ns-1000ml,Normal Saline 1000 mL Bag,Vascular Access,1000 mL,IV-fluid-NS,"ns;saline;bag",each,true
+ns-500ml,Normal Saline 500 mL Bag,Vascular Access,500 mL,IV-fluid-NS,"ns;saline;bag",each,true
+ns-250ml,Normal Saline 250 mL Bag,Vascular Access,250 mL,IV-fluid-NS,"ns;saline;bag",each,true
+lr-1000ml,Lactated Ringers 1000 mL,Vascular Access,1000 mL,IV-fluid-LR,"lr;ringers;lactated",each,true
+d5w-1000ml,D5W 1000 mL,Vascular Access,1000 mL,IV-fluid-D5W,"d5w;dextrose",each,true
+d5ns-1000ml,D5NS 1000 mL,Vascular Access,1000 mL,IV-fluid-D5NS,"d5ns;dextrose;saline",each,true
+central-line-kit,Central Line Dressing Change Kit,Vascular Access,Universal,Central-line-dressing-kit,"central;line;cvc;dressing;kit",kit,true
+biopatch,Biopatch (Chlorhexidine Disc),Vascular Access,Universal,Antimicrobial-disc,"biopatch;chg;disc",each,true
+chg-applicator-3ml,Chlorhexidine Applicator 3 mL,Vascular Access,3 mL,CHG-applicator,"chg;chloraprep;hibiclens",each,true
+chg-applicator-26ml,Chlorhexidine Applicator 26 mL,Vascular Access,26 mL,CHG-applicator,"chg;chloraprep;hibiclens;large",each,true
+sterile-gloves-6,Sterile Gloves Size 6.0,PPE,6.0,Surgical-glove,"sterile;gloves;surgical",pair,true
+sterile-gloves-65,Sterile Gloves Size 6.5,PPE,6.5,Surgical-glove,"sterile;gloves;surgical",pair,true
+sterile-gloves-7,Sterile Gloves Size 7.0,PPE,7.0,Surgical-glove,"sterile;gloves;surgical",pair,true
+sterile-gloves-75,Sterile Gloves Size 7.5,PPE,7.5,Surgical-glove,"sterile;gloves;surgical",pair,true
+sterile-gloves-8,Sterile Gloves Size 8.0,PPE,8.0,Surgical-glove,"sterile;gloves;surgical",pair,true
+sterile-gloves-85,Sterile Gloves Size 8.5,PPE,8.5,Surgical-glove,"sterile;gloves;surgical",pair,true
+exam-gloves-nitrile-s,Nitrile Exam Gloves Small,PPE,S,Examination-glove-nitrile,"nitrile;exam;gloves;small",box,false
+exam-gloves-nitrile-m,Nitrile Exam Gloves Medium,PPE,M,Examination-glove-nitrile,"nitrile;exam;gloves;medium",box,false
+exam-gloves-nitrile-l,Nitrile Exam Gloves Large,PPE,L,Examination-glove-nitrile,"nitrile;exam;gloves;large",box,false
+exam-gloves-nitrile-xl,Nitrile Exam Gloves XL,PPE,XL,Examination-glove-nitrile,"nitrile;exam;gloves;xl",box,false
+exam-gloves-latex-m,Latex Exam Gloves Medium,PPE,M,Examination-glove-latex,"latex;exam;gloves",box,false
+isolation-gown,Isolation Gown,PPE,Universal;XL,Isolation-gown,"gown;isolation;contact",each,false
+sterile-gown,Sterile Surgical Gown,PPE,Universal;Large,Surgical-gown,"sterile;gown;surgical",each,true
+n95-respirator,N95 Respirator,PPE,Small;Regular;Large,N95-respirator,"n95;respirator;mask",each,false
+surgical-mask,Surgical Mask,PPE,Universal,Surgical-mask,"mask;surgical;procedure",each,false
+mask-shield,Mask with Face Shield,PPE,Universal,Mask-with-shield,"mask;shield;face",each,false
+face-shield,Face Shield,PPE,Universal,Face-shield,"shield;face",each,false
+shoe-covers,Shoe Covers,PPE,Universal,Shoe-cover,"shoe;cover;bootie",pair,false
+hair-cover,Bouffant Hair Cover,PPE,Universal,Hair-cover,"hair;bouffant;cap",each,false
+gauze-2x2-sterile,Sterile Gauze 2x2,Wound Care,2x2 in,Sterile-gauze-pad,"gauze;2x2;sterile",pack,true
+gauze-4x4-sterile,Sterile Gauze 4x4,Wound Care,4x4 in,Sterile-gauze-pad,"gauze;4x4;sterile",pack,true
+gauze-4x4-nonsterile,Non-Sterile Gauze 4x4,Wound Care,4x4 in,Non-sterile-gauze-pad,"gauze;4x4;nonsterile",pack,false
+abd-pad,ABD Pad,Wound Care,5x9 in;8x10 in,Abdominal-pad,"abd;pad;combine",each,true
+kerlix,Kerlix Roll,Wound Care,4.5 in,Gauze-bandage-roll,"kerlix;roll;gauze",each,true
+ace-wrap,Ace Wrap,Wound Care,2 in;3 in;4 in;6 in,Elastic-bandage,"ace;elastic;wrap",each,false
+coban,Coban Wrap,Wound Care,2 in;3 in;4 in,Self-adhering-wrap,"coban;cohesive;wrap",each,false
+tegaderm-small,Transparent Dressing (Tegaderm) Small,Wound Care,2.4x2.75 in,Transparent-film-dressing,"tegaderm;film;clear",each,true
+tegaderm-medium,Transparent Dressing (Tegaderm) Medium,Wound Care,4x4.75 in,Transparent-film-dressing,"tegaderm;film;clear",each,true
+tegaderm-large,Transparent Dressing (Tegaderm) Large,Wound Care,6x8 in,Transparent-film-dressing,"tegaderm;film;clear;large",each,true
+duoderm,Hydrocolloid Dressing (Duoderm),Wound Care,4x4 in;6x6 in,Hydrocolloid-dressing,"duoderm;hydrocolloid",each,true
+mepilex,Foam Dressing (Mepilex),Wound Care,4x4 in;6x6 in,Foam-dressing,"mepilex;foam",each,true
+xeroform,Xeroform Petrolatum Dressing,Wound Care,1x8 in;5x9 in,Petrolatum-gauze-dressing,"xeroform;petrolatum;nonadherent",each,true
+adaptic,Adaptic Non-Adherent Dressing,Wound Care,3x3 in,Non-adherent-dressing,"adaptic;nonadherent",each,true
+saline-wound-wash,Saline Wound Wash,Wound Care,3 oz;7.1 oz,Wound-irrigation-saline,"saline;wash;irrigation",each,true
+sterile-saline-bottle,Sterile Saline 250 mL,Wound Care,250 mL,Sterile-saline-irrigation,"saline;sterile;irrigation",each,true
+hydrogen-peroxide,Hydrogen Peroxide,Wound Care,4 oz,Hydrogen-peroxide-solution,"peroxide;h2o2",each,false
+sterile-dressing-kit,Sterile Dressing Change Kit,Wound Care,Universal,Dressing-change-kit,"sterile;dressing;kit",kit,true
+suture-removal-kit,Suture Removal Kit,Wound Care,Universal,Suture-removal-kit,"suture;removal;kit",kit,true
+staple-removal-kit,Staple Removal Kit,Wound Care,Universal,Staple-removal-kit,"staple;removal;kit",kit,true
+steristrips,Steri-Strips,Wound Care,1/4 in;1/2 in,Wound-closure-strips,"steristrip;closure",pack,true
+tape-paper,Paper Tape,Wound Care,1 in;2 in,Paper-tape,"tape;paper;micropore",roll,false
+tape-silk,Silk Tape,Wound Care,1 in;2 in,Silk-tape,"tape;silk",roll,false
+tape-cloth,Cloth Tape,Wound Care,1 in;2 in,Cloth-tape,"tape;cloth;durapore",roll,false
+tape-transpore,Transpore Tape,Wound Care,1 in,Plastic-tape,"tape;transpore;plastic",roll,false
+syringe-1ml,Syringe 1 mL (Tuberculin),Medication,1 mL,Tuberculin-syringe,"syringe;1ml;tb",each,true
+syringe-3ml,Syringe 3 mL,Medication,3 mL,Hypodermic-syringe,"syringe;3ml",each,true
+syringe-5ml,Syringe 5 mL,Medication,5 mL,Hypodermic-syringe,"syringe;5ml",each,true
+syringe-10ml,Syringe 10 mL,Medication,10 mL,Hypodermic-syringe,"syringe;10ml",each,true
+syringe-20ml,Syringe 20 mL,Medication,20 mL,Hypodermic-syringe,"syringe;20ml",each,true
+syringe-60ml-luer,Syringe 60 mL (Luer Lock),Medication,60 mL,Hypodermic-syringe,"syringe;60ml;luer",each,true
+syringe-60ml-cathtip,Syringe 60 mL (Catheter Tip),Medication,60 mL,Catheter-tip-syringe,"syringe;60ml;cathtip;feeding",each,true
+insulin-syringe,Insulin Syringe,Medication,0.3 mL;0.5 mL;1 mL,Insulin-syringe,"insulin;syringe",each,true
+needle-18ga,Needle 18 ga,Medication,1 in;1.5 in,Hypodermic-needle,"needle;18ga;drawing",each,true
+needle-21ga,Needle 21 ga,Medication,1 in;1.5 in,Hypodermic-needle,"needle;21ga",each,true
+needle-22ga,Needle 22 ga,Medication,1 in;1.5 in,Hypodermic-needle,"needle;22ga;im",each,true
+needle-23ga,Needle 23 ga,Medication,1 in,Hypodermic-needle,"needle;23ga",each,true
+needle-25ga,Needle 25 ga,Medication,5/8 in;1 in,Hypodermic-needle,"needle;25ga;subq",each,true
+needle-27ga,Needle 27 ga,Medication,1/2 in;1.25 in,Hypodermic-needle,"needle;27ga",each,true
+filter-needle,Filter Needle,Medication,18 ga,Filter-needle,"filter;needle;ampule",each,true
+blunt-needle,Blunt Fill Needle,Medication,18 ga,Blunt-needle,"blunt;fill;needle",each,true
+alcohol-prep-pad,Alcohol Prep Pad (Small),Medication,Small,Alcohol-prep-pad,"alcohol;prep;swab",each,true
+alcohol-prep-large,Alcohol Prep Pad (Large),Medication,Large,Alcohol-prep-pad,"alcohol;prep;large",each,true
+povidone-swab,Povidone-Iodine Swab,Wound Care,Universal,Povidone-iodine-swab,"povidone;iodine;betadine",each,true
+specimen-cup-sterile,Sterile Specimen Cup,Lab,4 oz;120 mL,Specimen-container,"specimen;cup;urine",each,true
+specimen-cup-stool,Stool Specimen Container,Lab,Universal,Stool-collection-container,"stool;specimen",each,false
+sputum-cup,Sputum Specimen Cup,Lab,Universal,Sputum-collection-container,"sputum;specimen",each,true
+blood-tube-purple,Blood Tube (EDTA - Purple),Lab,3 mL;6 mL,Blood-collection-tube,"blood;tube;purple;edta;cbc",each,true
+blood-tube-red,Blood Tube (Plain - Red),Lab,5 mL;10 mL,Blood-collection-tube,"blood;tube;red;serum",each,true
+blood-tube-gold,Blood Tube (SST - Gold),Lab,3.5 mL;5 mL,Blood-collection-tube,"blood;tube;gold;sst;chemistry",each,true
+blood-tube-blue,Blood Tube (Citrate - Blue),Lab,2.7 mL;4.5 mL,Blood-collection-tube,"blood;tube;blue;ptt;coag",each,true
+blood-tube-green,Blood Tube (Heparin - Green),Lab,4 mL;6 mL,Blood-collection-tube,"blood;tube;green;heparin",each,true
+blood-tube-gray,Blood Tube (Fluoride - Gray),Lab,3 mL,Blood-collection-tube,"blood;tube;gray;glucose",each,true
+vacutainer-holder,Vacutainer Holder,Lab,Universal,Vacutainer-holder,"vacutainer;holder",each,false
+butterfly-needle,Butterfly Needle (Winged Set),Lab,21 ga;23 ga;25 ga,Winged-blood-collection-set,"butterfly;winged;phlebotomy",each,true
+tourniquet,Tourniquet (Latex-Free),Lab,Universal,Tourniquet,"tourniquet;phlebotomy",each,false
+lancet,Lancet,Lab,Safety,Skin-puncture-device,"lancet;fingerstick",each,true
+glucometer-strips,Glucometer Test Strips,Lab,per brand,Glucose-test-strip,"glucometer;strip;glucose",box,true
+ng-tube-12fr,NG Tube 12 Fr,Gastrointestinal,12 Fr,Nasogastric-tube,"ng;tube;feeding",each,true
+ng-tube-14fr,NG Tube 14 Fr,Gastrointestinal,14 Fr,Nasogastric-tube,"ng;tube;feeding",each,true
+ng-tube-16fr,NG Tube 16 Fr,Gastrointestinal,16 Fr,Nasogastric-tube,"ng;tube;feeding;salem",each,true
+ng-tube-18fr,NG Tube 18 Fr,Gastrointestinal,18 Fr,Nasogastric-tube,"ng;tube;feeding;salem",each,true
+dobhoff-tube,Dobhoff Feeding Tube,Gastrointestinal,8 Fr;10 Fr,Small-bore-feeding-tube,"dobhoff;feeding;small bore",each,true
+ph-strips,pH Indicator Strips,Gastrointestinal,Universal,pH-test-strips,"ph;strip;tube placement",pack,false
+lubricant-watersoluble,Water-Soluble Lubricant (KY),Gastrointestinal,3 g;5 oz,Lubricating-jelly,"ky;lubricant;water-soluble",each,true
+lubricant-lidocaine,Lidocaine Lubricant 2%,Genitourinary,5 mL;10 mL,Lidocaine-lubricant,"lidocaine;urojet;jelly",each,true
+ostomy-pouch-1piece,Ostomy Pouch (1-piece),Gastrointestinal,Cut-to-fit,One-piece-ostomy-pouch,"ostomy;pouch;1-piece",each,true
+ostomy-pouch-2piece,Ostomy Pouch (2-piece),Gastrointestinal,Cut-to-fit,Two-piece-ostomy-pouch,"ostomy;pouch;2-piece",each,true
+ostomy-wafer,Ostomy Skin Barrier Wafer,Gastrointestinal,Cut-to-fit,Ostomy-skin-barrier,"ostomy;wafer;barrier",each,true
+ostomy-paste,Ostomy Paste,Gastrointestinal,Universal,Ostomy-paste,"ostomy;paste;stomahesive",each,false
+stoma-powder,Stoma Powder,Gastrointestinal,Universal,Stoma-powder,"stoma;powder",each,false
+skin-prep-wipes,Skin Prep Wipes (No-Sting Barrier Film),Gastrointestinal,Universal,Skin-prep-barrier,"skin;prep;cavilon;3m",each,true
+suction-yankauer,Yankauer Suction Catheter,Respiratory,Universal,Yankauer-suction,"yankauer;suction;oral",each,true
+suction-cath-10fr,Suction Catheter 10 Fr,Respiratory,10 Fr,Tracheal-suction-catheter,"suction;cath;trach",each,true
+suction-cath-12fr,Suction Catheter 12 Fr,Respiratory,12 Fr,Tracheal-suction-catheter,"suction;cath;trach",each,true
+suction-cath-14fr,Suction Catheter 14 Fr,Respiratory,14 Fr,Tracheal-suction-catheter,"suction;cath;trach",each,true
+suction-tubing,Suction Tubing,Respiratory,Universal,Suction-tubing,"suction;tubing",each,false
+suction-canister,Suction Canister,Respiratory,1500 mL,Suction-canister,"suction;canister",each,false
+trach-care-kit,Trach Care Kit,Respiratory,Universal,Tracheostomy-care-kit,"trach;care;kit",kit,true
+trach-dressing,Trach Dressing (Split Gauze),Respiratory,Universal,Tracheostomy-dressing,"trach;dressing;split",each,true
+trach-ties,Trach Ties,Respiratory,Universal,Tracheostomy-ties,"trach;ties;collar",each,false
+nasal-cannula-adult,Nasal Cannula (Adult),Respiratory,Standard,Nasal-cannula,"cannula;nasal;o2",each,false
+nasal-cannula-pediatric,Nasal Cannula (Pediatric),Respiratory,Pediatric,Nasal-cannula,"cannula;nasal;ped",each,false
+nasal-cannula-hf,High-Flow Nasal Cannula,Respiratory,Adult,High-flow-cannula,"cannula;hi-flow;optiflow",each,false
+simple-mask,Simple Oxygen Mask,Respiratory,Adult,Simple-oxygen-mask,"o2;mask;simple",each,false
+nrb-mask,Non-Rebreather Mask,Respiratory,Adult,Non-rebreather-mask,"nrb;mask;non-rebreather",each,false
+venturi-mask,Venturi Mask,Respiratory,Adult,Venturi-mask,"venturi;mask;air-entrainment",each,false
+nebulizer,Nebulizer (with mouthpiece),Respiratory,Adult,Nebulizer-set,"nebulizer;neb",each,false
+nebulizer-mask,Nebulizer Mask,Respiratory,Adult;Pediatric,Nebulizer-mask,"nebulizer;mask",each,false
+incentive-spirometer,Incentive Spirometer,Respiratory,Universal,Incentive-spirometer,"is;spirometer",each,false
+ambu-bag,Bag-Valve-Mask (Ambu),Respiratory,Adult;Pediatric;Infant,Bag-valve-mask,"bvm;ambu;bag",each,true
+ecg-electrodes,ECG Electrodes,Cardiac,Adult,ECG-electrode,"ekg;ecg;electrodes;leads",pack,false
+defib-pads-adult,Defibrillator Pads (Adult),Cardiac,Adult,Defibrillator-electrode,"defib;pads;adult",each,true
+defib-pads-peds,Defibrillator Pads (Pediatric),Cardiac,Pediatric,Defibrillator-electrode,"defib;pads;ped",each,true
+pulse-ox-disposable,Disposable Pulse Ox Sensor,Cardiac,Adult;Ped;Neonatal,SpO2-sensor,"pulse;ox;spo2;sensor",each,false
+bp-cuff-disposable,Disposable BP Cuff,Cardiac,Adult;Large Adult;Thigh,Blood-pressure-cuff,"bp;cuff;disposable",each,false
+chux-underpad,Underpad (Chux),General,Standard;Large,Underpad,"chux;underpad;blue pad",each,false
+washcloth-disposable,Disposable Washcloth,General,Universal,Washcloth-disposable,"washcloth;bath wipe",pack,false
+basin-emesis,Emesis Basin,General,Universal,Emesis-basin,"emesis;basin;kidney",each,false
+basin-wash,Wash Basin,General,Universal,Wash-basin,"basin;wash",each,false
+bedpan,Bedpan,General,Standard;Fracture,Bedpan,"bedpan",each,false
+urinal-male,Urinal (Male),Genitourinary,Universal,Urinal,"urinal;male",each,false
+urine-hat,Urine Hat (Specimen Collector),Genitourinary,Universal,Urine-collection-hat,"urine;hat;graduate",each,false
+patient-gown,Patient Gown,General,Universal;Bariatric,Patient-gown,"gown;hospital",each,false
+slippers-disposable,Disposable Slippers,General,Universal,Patient-slippers,"slippers;non-skid",pair,false
+linens-set,Bed Linens (sheet/blanket/pillowcase),General,Standard,Bed-linens,"sheet;linen;blanket",set,false
+admission-kit,Patient Admission Kit,General,Universal,Patient-admission-kit,"admission;kit;hygiene",kit,false
+toothbrush,Toothbrush,General,Universal,Toothbrush,"toothbrush;oral care",each,false
+mouth-swabs,Oral Swabs (Toothette),General,Universal,Oral-swab,"toothette;swab;mouth",pack,false
+chg-bath-wipes,CHG Bath Wipes,General,Universal,CHG-bath-wipe,"chg;bath;wipe;sage",pack,false
+gait-belt,Gait Belt,General,Standard;Bariatric,Transfer-belt,"gait;belt;transfer",each,false
+restraints-soft,Soft Wrist Restraints,General,Universal,Limb-restraint,"restraint;soft;wrist",pair,false
+fall-bracelet,Fall Risk Bracelet (Yellow),General,Adult,Patient-ID-bracelet,"fall;yellow;bracelet",each,false
+allergy-bracelet,Allergy Bracelet (Red),General,Adult,Patient-ID-bracelet,"allergy;red;bracelet",each,false
+id-bracelet,ID Bracelet,General,Adult;Pediatric,Patient-ID-bracelet,"id;bracelet;wristband",each,false
+sharps-container-1qt,Sharps Container 1 Quart,General,1 qt,Sharps-container,"sharps;container",each,false
+sharps-container-wall,Sharps Container (Wall),General,8 qt,Sharps-container,"sharps;wall;container",each,false
+biohazard-bag,Red Biohazard Bag,General,Standard,Biohazard-bag,"biohazard;red bag",each,false
+linen-bag,Linen Bag,General,Standard,Soiled-linen-bag,"linen;bag;laundry",each,false
+specimen-bag,Specimen Transport Bag,Lab,Universal,Specimen-transport-bag,"specimen;bag;biohazard",each,false
+ct-bag,Vomit/Sputum Disposal Bag,General,Universal,Disposal-bag,"vomit;disposal",each,false
+glucometer,Glucometer,Lab,per facility,Blood-glucose-meter,"glucometer;meter",each,false
+thermometer-probe-covers,Thermometer Probe Covers,General,Universal,Thermometer-probe-cover,"thermometer;probe;cover",pack,false
+ear-probe-covers,Tympanic Thermometer Covers,General,Universal,Tympanic-probe-cover,"ear;tympanic;cover",pack,false
+sequential-compression-device,SCD Sleeves,Cardiac,Knee;Thigh,SCD-sleeve,"scd;ted;compression",pair,false
+ted-hose,TED Hose (Anti-Embolism Stockings),Cardiac,S;M;L;XL,Anti-embolism-stocking,"ted;hose;stockings",pair,false
+io-needle,Intraosseous Needle (EZ-IO),Vascular Access,15mm;25mm;45mm,Intraosseous-needle,"io;ez-io;intraosseous",each,true
+foley-irrigation-tray,Foley Irrigation Tray,Genitourinary,Universal,Bladder-irrigation-tray,"irrigation;bladder;tray",kit,true
+nasal-spray-bottle,Saline Nasal Spray,Respiratory,Universal,Saline-nasal-spray,"saline;spray;nasal",each,false
+hand-sanitizer,Hand Sanitizer (Pump),General,Universal,Alcohol-hand-rub,"sanitizer;purell;abhr",each,false
+disinfectant-wipes,Disinfectant Wipes (Sani-Cloth),General,Universal,Disinfectant-wipe,"sanicloth;disinfectant;wipe",tub,false
+bedside-commode,Bedside Commode,General,Standard;Bariatric,Bedside-commode,"commode;bsc",each,false
+walker-standard,Standard Walker,General,Adult,Walker,"walker",each,false
+crutches,Crutches,General,Adult;Pediatric,Crutches,"crutches",pair,false
+cane-quad,Quad Cane,General,Adult,Cane,"cane;quad",each,false
+restraint-mitts,Restraint Mitts,General,Universal,Hand-mitt,"mitt;restraint",pair,false
+posey-vest,Posey Vest,General,S;M;L;XL,Posey-vest,"posey;vest",each,false
+abduction-pillow,Abduction Pillow,General,Universal,Abduction-pillow,"abduction;pillow;hip",each,false
+heel-protector,Heel Protector Boot,General,Universal,Heel-protector,"heel;protector;prevalon",each,false
+egg-crate,Egg Crate Mattress Pad,General,Standard,Mattress-pad,"egg crate;pad",each,false
+condom-cath,Condom Catheter,Genitourinary,S;M;L,External-male-catheter,"condom;cath;male",each,true
+purewick,PureWick External Female Catheter,Genitourinary,Universal,External-female-catheter,"purewick;female;external",each,true
+ostomy-belt,Ostomy Belt,Gastrointestinal,Universal,Ostomy-belt,"ostomy;belt",each,false
+gastrostomy-tube,Gastrostomy Tube (G-tube),Gastrointestinal,14 Fr;16 Fr;18 Fr;20 Fr,Gastrostomy-tube,"g-tube;peg;mic-key",each,true
+gj-tube,Gastrojejunostomy Tube (G-J),Gastrointestinal,16 Fr;18 Fr,GJ-tube,"gj;tube;jejunal",each,true
+enteral-feeding-bag,Enteral Feeding Bag (1L),Gastrointestinal,1 L,Enteral-feeding-bag,"enteral;feeding;bag;tube feed",each,true
+enteral-pump-tubing,Enteral Pump Tubing,Gastrointestinal,per pump,Enteral-pump-set,"enteral;pump;tubing;kangaroo",each,true
+peg-bumper,PEG Tube Bumper,Gastrointestinal,Universal,PEG-bumper,"peg;bumper",each,false
+splint-finger,Finger Splint,General,Universal,Finger-splint,"splint;finger",each,false
+splint-wrist,Wrist Splint,General,S;M;L,Wrist-splint,"splint;wrist;cock-up",each,false
+sling-arm,Arm Sling,General,Universal,Arm-sling,"sling;arm",each,false
+ice-pack-instant,Instant Ice Pack,General,Standard,Cold-pack,"ice;pack;instant",each,false
+heat-pack,Hot Pack,General,Standard,Hot-pack,"heat;hot;pack",each,false
+warm-blanket,Warming Blanket (Bair Hugger),General,Universal,Warming-blanket,"bair hugger;warming",each,false
+finger-cot,Finger Cot,General,Universal,Finger-cot,"finger;cot",pack,false
+goggles,Safety Goggles,PPE,Universal,Safety-goggles,"goggles;eye",each,false
+shoe-covers-fluid,Fluid-Resistant Shoe Covers,PPE,Universal,Fluid-resistant-shoe-cover,"shoe;cover;fluid",pair,false
+sterile-drape-fenestrated,Sterile Fenestrated Drape,Genitourinary,Universal,Sterile-fenestrated-drape,"drape;fenestrated;sterile",each,true
+sterile-drape-large,Sterile Drape (Large),Vascular Access,Universal,Sterile-drape,"drape;sterile;large",each,true
+mole-skin,Moleskin,Wound Care,Standard,Moleskin,"moleskin;padding",each,false
+bandage-roll,Gauze Bandage Roll,Wound Care,2 in;3 in;4 in,Gauze-bandage-roll,"bandage;roll;gauze",each,false
+mesh-panties,Mesh Panties,Genitourinary,S;M;L;XL,Mesh-undergarment,"mesh;panties;peri",pack,false
+peri-bottle,Peri Bottle,Genitourinary,Universal,Peri-bottle,"peri;bottle;postpartum",each,false
+adult-brief,Adult Brief (Diaper),General,M;L;XL;XXL,Adult-incontinence-brief,"brief;diaper;depend;attends",each,false
+sterile-water-bottle,Sterile Water 250 mL,General,250 mL,Sterile-water,"sterile;water;irrigation",each,true
+sterile-water-1l,Sterile Water 1000 mL,General,1000 mL,Sterile-water,"sterile;water;irrigation",each,true
+saline-bullets,Saline Bullets (3 mL Vials),Respiratory,3 mL,Saline-vial,"saline;bullet;3ml",pack,true
+glycerin-suppository,Glycerin Suppository,Gastrointestinal,Adult,Glycerin-suppository,"glycerin;suppository",each,false
+fleet-enema,Fleet Enema,Gastrointestinal,Adult,Saline-enema,"fleet;enema",each,false
+soapsuds-enema-bag,Soap Suds Enema Bag,Gastrointestinal,1500 mL,Enema-bag,"enema;bag;soap suds",each,false
+mucous-trap,Mucous Trap (Lukens),Lab,Standard,Mucous-collection-trap,"mucous;trap;lukens",each,true
+nail-clippers,Nail Clippers,General,Standard,Nail-clipper,"nail;clipper",each,false
+razor-disposable,Disposable Razor,General,Standard,Disposable-razor,"razor",each,false
+deodorant-personal-pack,Hospital Deodorant,General,Personal,Personal-deodorant,"deodorant",each,false
+shampoo-cap,Shampoo Cap (No-Rinse),General,Standard,Shampoo-cap,"shampoo;cap;no-rinse",each,false
+fluid-warmer-tubing,Fluid Warmer Tubing (Hotline),Vascular Access,Universal,Fluid-warmer-set,"fluid;warmer;hotline",each,true
+chest-tube-drainage,Chest Tube Drainage System (Pleur-evac),Respiratory,Universal,Chest-drainage-system,"pleur-evac;chest tube;drainage",each,true
+abg-kit,ABG Collection Kit,Lab,Universal,Arterial-blood-gas-kit,"abg;arterial;blood gas",kit,true
+spinal-tray,Lumbar Puncture Tray,Lab,Universal,Lumbar-puncture-tray,"lp;spinal;tap;tray",kit,true
+foam-tape,Foam Tape (Hypoallergenic),Wound Care,1 in;2 in,Foam-tape,"foam;tape",roll,false
+montgomery-straps,Montgomery Straps,Wound Care,Universal,Montgomery-straps,"montgomery;straps",pair,false
+wound-vac-canister,Wound VAC Canister,Wound Care,300 mL;500 mL,NPWT-canister,"vac;canister;wound;npwt",each,true
+wound-vac-dressing,Wound VAC Dressing,Wound Care,S;M;L,NPWT-dressing,"vac;dressing;wound;granufoam",each,true

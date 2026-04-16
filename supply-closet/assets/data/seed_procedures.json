@@ -1,0 +1,338 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2026-04-13",
+  "source": "Curated from Lippincott Nursing Procedures, Potter & Perry Fundamentals of Nursing, AORN, ANA standards",
+  "procedures": [
+    {
+      "id": "foley-insertion-female",
+      "name": "Foley Catheter Insertion (Female)",
+      "category": "Genitourinary",
+      "description": "Indwelling urinary catheter insertion for female patients using sterile technique.",
+      "iconName": "water_drop",
+      "supplies": [
+        {"name": "Foley Catheter Kit", "size": "16 Fr", "quantity": 1, "isOptional": false, "notes": "Use 14 Fr for smaller patients"},
+        {"name": "Sterile Drainage Bag", "quantity": 1, "isOptional": false},
+        {"name": "Sterile Gloves", "size": "7.0", "quantity": 2, "isOptional": false, "notes": "Second pair as backup"},
+        {"name": "Sterile Lubricant", "quantity": 1, "isOptional": false},
+        {"name": "Antiseptic Solution", "quantity": 1, "isOptional": false, "notes": "Povidone-iodine or chlorhexidine"},
+        {"name": "Sterile Drape", "quantity": 1, "isOptional": false},
+        {"name": "Securement Device (StatLock)", "quantity": 1, "isOptional": false},
+        {"name": "10 mL Syringe (prefilled with sterile water)", "quantity": 1, "isOptional": false},
+        {"name": "Underpad (Chux)", "quantity": 1, "isOptional": false},
+        {"name": "Bag for waste", "quantity": 1, "isOptional": true}
+      ]
+    },
+    {
+      "id": "foley-insertion-male",
+      "name": "Foley Catheter Insertion (Male)",
+      "category": "Genitourinary",
+      "description": "Indwelling urinary catheter insertion for male patients using sterile technique.",
+      "iconName": "water_drop",
+      "supplies": [
+        {"name": "Foley Catheter Kit", "size": "16 Fr", "quantity": 1, "isOptional": false},
+        {"name": "Sterile Drainage Bag", "quantity": 1, "isOptional": false},
+        {"name": "Sterile Gloves", "size": "7.5", "quantity": 2, "isOptional": false},
+        {"name": "Sterile Lubricant (lidocaine 2%)", "quantity": 1, "isOptional": false, "notes": "10 mL preferred for male anatomy"},
+        {"name": "Antiseptic Solution", "quantity": 1, "isOptional": false},
+        {"name": "Sterile Drape", "quantity": 1, "isOptional": false},
+        {"name": "Securement Device (StatLock)", "quantity": 1, "isOptional": false},
+        {"name": "10 mL Syringe (prefilled with sterile water)", "quantity": 1, "isOptional": false},
+        {"name": "Underpad (Chux)", "quantity": 1, "isOptional": false}
+      ]
+    },
+    {
+      "id": "iv-start-peripheral",
+      "name": "Peripheral IV Start",
+      "category": "Vascular Access",
+      "description": "Insertion of a peripheral intravenous catheter for fluid or medication administration.",
+      "iconName": "colorize",
+      "supplies": [
+        {"name": "IV Start Kit", "quantity": 1, "isOptional": false},
+        {"name": "IV Catheter", "size": "20 ga", "quantity": 2, "isOptional": false, "notes": "Have 22 ga as backup"},
+        {"name": "Tourniquet", "quantity": 1, "isOptional": false},
+        {"name": "Chlorhexidine Prep Swab", "quantity": 1, "isOptional": false},
+        {"name": "Saline Flush", "size": "10 mL", "quantity": 2, "isOptional": false},
+        {"name": "Transparent Dressing (Tegaderm)", "quantity": 1, "isOptional": false},
+        {"name": "Tape", "quantity": 1, "isOptional": false},
+        {"name": "Non-Sterile Gloves", "quantity": 1, "isOptional": false},
+        {"name": "Gauze 2x2", "quantity": 2, "isOptional": false},
+        {"name": "Alcohol Prep Pad", "quantity": 2, "isOptional": false}
+      ]
+    },
+    {
+      "id": "central-line-dressing",
+      "name": "Central Line Dressing Change",
+      "category": "Vascular Access",
+      "description": "Sterile dressing change for central venous catheter per CLABSI prevention bundle.",
+      "iconName": "medical_services",
+      "supplies": [
+        {"name": "Central Line Dressing Change Kit", "quantity": 1, "isOptional": false},
+        {"name": "Chlorhexidine Applicator (3 mL)", "quantity": 1, "isOptional": false},
+        {"name": "Sterile Gloves", "size": "7.0", "quantity": 2, "isOptional": false},
+        {"name": "Mask with Face Shield", "quantity": 2, "isOptional": false, "notes": "Both nurse and patient"},
+        {"name": "Biopatch (Chlorhexidine Disc)", "quantity": 1, "isOptional": false},
+        {"name": "Transparent Dressing (Tegaderm)", "size": "Large", "quantity": 1, "isOptional": false},
+        {"name": "Sterile Saline", "quantity": 1, "isOptional": false},
+        {"name": "Securement Device (StatLock)", "quantity": 1, "isOptional": true}
+      ]
+    },
+    {
+      "id": "trach-care",
+      "name": "Tracheostomy Care",
+      "category": "Respiratory",
+      "description": "Sterile cleaning and dressing change for tracheostomy site.",
+      "iconName": "air",
+      "supplies": [
+        {"name": "Trach Care Kit", "quantity": 1, "isOptional": false},
+        {"name": "Sterile Gloves", "size": "7.0", "quantity": 1, "isOptional": false},
+        {"name": "Suction Catheter", "size": "14 Fr", "quantity": 2, "isOptional": false},
+        {"name": "Sterile Saline", "quantity": 2, "isOptional": false},
+        {"name": "Trach Dressing (split gauze)", "quantity": 1, "isOptional": false},
+        {"name": "Trach Ties", "quantity": 1, "isOptional": false},
+        {"name": "Hydrogen Peroxide", "quantity": 1, "isOptional": true},
+        {"name": "Mask with Face Shield", "quantity": 1, "isOptional": false}
+      ]
+    },
+    {
+      "id": "ng-tube-insertion",
+      "name": "NG Tube Insertion",
+      "category": "Gastrointestinal",
+      "description": "Nasogastric tube insertion for feeding, decompression, or medication.",
+      "iconName": "south",
+      "supplies": [
+        {"name": "NG Tube", "size": "16 Fr", "quantity": 1, "isOptional": false},
+        {"name": "Water-Soluble Lubricant", "quantity": 1, "isOptional": false},
+        {"name": "60 mL Catheter-Tip Syringe", "quantity": 1, "isOptional": false},
+        {"name": "pH Indicator Strips", "quantity": 1, "isOptional": false},
+        {"name": "Tape or Securement Device", "quantity": 1, "isOptional": false},
+        {"name": "Cup of Water with Straw", "quantity": 1, "isOptional": false},
+        {"name": "Emesis Basin", "quantity": 1, "isOptional": false},
+        {"name": "Stethoscope", "quantity": 1, "isOptional": false},
+        {"name": "Non-Sterile Gloves", "quantity": 1, "isOptional": false}
+      ]
+    },
+    {
+      "id": "wound-dressing-clean",
+      "name": "Clean Wound Dressing Change",
+      "category": "Wound Care",
+      "description": "Routine clean (non-sterile) dressing change for stable wounds.",
+      "iconName": "healing",
+      "supplies": [
+        {"name": "Non-Sterile Gloves", "quantity": 2, "isOptional": false},
+        {"name": "Saline Wound Wash", "quantity": 1, "isOptional": false},
+        {"name": "Gauze 4x4", "quantity": 4, "isOptional": false},
+        {"name": "Wound Dressing (per wound type)", "quantity": 1, "isOptional": false},
+        {"name": "Tape", "quantity": 1, "isOptional": false},
+        {"name": "Bag for waste", "quantity": 1, "isOptional": false}
+      ]
+    },
+    {
+      "id": "wound-dressing-sterile",
+      "name": "Sterile Wound Dressing Change",
+      "category": "Wound Care",
+      "description": "Sterile dressing change for surgical sites or contaminated wounds.",
+      "iconName": "healing",
+      "supplies": [
+        {"name": "Sterile Dressing Change Kit", "quantity": 1, "isOptional": false},
+        {"name": "Sterile Gloves", "size": "7.0", "quantity": 1, "isOptional": false},
+        {"name": "Sterile Saline", "quantity": 1, "isOptional": false},
+        {"name": "Sterile Gauze 4x4", "quantity": 6, "isOptional": false},
+        {"name": "Wound Dressing", "quantity": 1, "isOptional": false},
+        {"name": "Tape", "quantity": 1, "isOptional": false},
+        {"name": "Mask", "quantity": 1, "isOptional": false}
+      ]
+    },
+    {
+      "id": "blood-draw",
+      "name": "Venipuncture / Blood Draw",
+      "category": "Lab",
+      "description": "Phlebotomy for laboratory specimen collection.",
+      "iconName": "science",
+      "supplies": [
+        {"name": "Vacutainer Holder", "quantity": 1, "isOptional": false},
+        {"name": "Needle (Vacutainer)", "size": "21 ga", "quantity": 1, "isOptional": false},
+        {"name": "Blood Collection Tubes (per order)", "quantity": 4, "isOptional": false},
+        {"name": "Tourniquet", "quantity": 1, "isOptional": false},
+        {"name": "Alcohol Prep Pad", "quantity": 2, "isOptional": false},
+        {"name": "Gauze 2x2", "quantity": 2, "isOptional": false},
+        {"name": "Coban or Bandage", "quantity": 1, "isOptional": false},
+        {"name": "Non-Sterile Gloves", "quantity": 1, "isOptional": false},
+        {"name": "Sharps Container Access", "quantity": 1, "isOptional": false}
+      ]
+    },
+    {
+      "id": "im-injection",
+      "name": "Intramuscular (IM) Injection",
+      "category": "Medication",
+      "description": "Intramuscular medication administration.",
+      "iconName": "vaccines",
+      "supplies": [
+        {"name": "Syringe", "size": "3 mL", "quantity": 1, "isOptional": false},
+        {"name": "Needle for Drawing", "size": "18 ga", "quantity": 1, "isOptional": false},
+        {"name": "Needle for Injecting", "size": "22 ga, 1.5 in", "quantity": 1, "isOptional": false, "notes": "Adjust length for patient size"},
+        {"name": "Alcohol Prep Pad", "quantity": 2, "isOptional": false},
+        {"name": "Gauze 2x2", "quantity": 1, "isOptional": false},
+        {"name": "Bandage", "quantity": 1, "isOptional": true},
+        {"name": "Non-Sterile Gloves", "quantity": 1, "isOptional": false}
+      ]
+    },
+    {
+      "id": "subq-injection",
+      "name": "Subcutaneous (Sub-Q) Injection",
+      "category": "Medication",
+      "description": "Subcutaneous medication administration (insulin, heparin, enoxaparin).",
+      "iconName": "vaccines",
+      "supplies": [
+        {"name": "Syringe (insulin or tuberculin)", "size": "1 mL", "quantity": 1, "isOptional": false},
+        {"name": "Needle", "size": "25 ga, 5/8 in", "quantity": 1, "isOptional": false},
+        {"name": "Alcohol Prep Pad", "quantity": 1, "isOptional": false},
+        {"name": "Non-Sterile Gloves", "quantity": 1, "isOptional": false}
+      ]
+    },
+    {
+      "id": "suctioning-oral",
+      "name": "Oropharyngeal Suctioning",
+      "category": "Respiratory",
+      "description": "Clearance of oral secretions using Yankauer suction.",
+      "iconName": "air",
+      "supplies": [
+        {"name": "Yankauer Suction Catheter", "quantity": 1, "isOptional": false},
+        {"name": "Suction Tubing", "quantity": 1, "isOptional": false},
+        {"name": "Sterile Saline", "quantity": 1, "isOptional": false, "notes": "For rinsing catheter"},
+        {"name": "Non-Sterile Gloves", "quantity": 1, "isOptional": false},
+        {"name": "Mask with Face Shield", "quantity": 1, "isOptional": false}
+      ]
+    },
+    {
+      "id": "ostomy-care",
+      "name": "Ostomy Pouch Change",
+      "category": "Gastrointestinal",
+      "description": "Routine change of ostomy appliance (colostomy, ileostomy, urostomy).",
+      "iconName": "circle",
+      "supplies": [
+        {"name": "Ostomy Pouch (per system)", "quantity": 1, "isOptional": false},
+        {"name": "Skin Barrier Wafer", "quantity": 1, "isOptional": false},
+        {"name": "Stoma Measuring Guide", "quantity": 1, "isOptional": false},
+        {"name": "Skin Prep Wipes", "quantity": 2, "isOptional": false},
+        {"name": "Stoma Powder", "quantity": 1, "isOptional": true, "notes": "If skin is irritated"},
+        {"name": "Gauze 4x4", "quantity": 4, "isOptional": false},
+        {"name": "Non-Sterile Gloves", "quantity": 2, "isOptional": false},
+        {"name": "Bag for waste (odor-control)", "quantity": 1, "isOptional": false}
+      ]
+    },
+    {
+      "id": "glucose-check",
+      "name": "Capillary Blood Glucose Check",
+      "category": "Lab",
+      "description": "Bedside fingerstick glucose monitoring.",
+      "iconName": "bloodtype",
+      "supplies": [
+        {"name": "Glucometer", "quantity": 1, "isOptional": false},
+        {"name": "Test Strips (per glucometer brand)", "quantity": 1, "isOptional": false},
+        {"name": "Lancet", "quantity": 1, "isOptional": false},
+        {"name": "Alcohol Prep Pad", "quantity": 1, "isOptional": false},
+        {"name": "Cotton Ball or Gauze", "quantity": 1, "isOptional": false},
+        {"name": "Non-Sterile Gloves", "quantity": 1, "isOptional": false}
+      ]
+    },
+    {
+      "id": "suture-removal",
+      "name": "Suture Removal",
+      "category": "Wound Care",
+      "description": "Removal of skin sutures from healed surgical site.",
+      "iconName": "content_cut",
+      "supplies": [
+        {"name": "Suture Removal Kit", "quantity": 1, "isOptional": false},
+        {"name": "Sterile Gloves", "size": "7.0", "quantity": 1, "isOptional": false},
+        {"name": "Antiseptic Wipes", "quantity": 2, "isOptional": false},
+        {"name": "Steri-Strips", "quantity": 1, "isOptional": true},
+        {"name": "Gauze 2x2", "quantity": 2, "isOptional": false},
+        {"name": "Bandage or Dressing", "quantity": 1, "isOptional": false}
+      ]
+    },
+    {
+      "id": "staple-removal",
+      "name": "Staple Removal",
+      "category": "Wound Care",
+      "description": "Removal of surgical staples from healed surgical incision.",
+      "iconName": "content_cut",
+      "supplies": [
+        {"name": "Staple Removal Kit", "quantity": 1, "isOptional": false},
+        {"name": "Sterile Gloves", "size": "7.0", "quantity": 1, "isOptional": false},
+        {"name": "Antiseptic Wipes", "quantity": 2, "isOptional": false},
+        {"name": "Steri-Strips", "quantity": 1, "isOptional": true},
+        {"name": "Gauze 2x2", "quantity": 2, "isOptional": false},
+        {"name": "Bandage", "quantity": 1, "isOptional": false}
+      ]
+    },
+    {
+      "id": "isolation-room-setup",
+      "name": "Isolation Room Setup",
+      "category": "Infection Control",
+      "description": "Preparation of contact / droplet / airborne isolation room.",
+      "iconName": "shield",
+      "supplies": [
+        {"name": "Isolation Cart", "quantity": 1, "isOptional": false},
+        {"name": "Isolation Gowns", "quantity": 10, "isOptional": false, "notes": "Stock cart"},
+        {"name": "N95 Respirators (if airborne)", "quantity": 10, "isOptional": false},
+        {"name": "Surgical Masks (if droplet)", "quantity": 20, "isOptional": false},
+        {"name": "Face Shields", "quantity": 10, "isOptional": false},
+        {"name": "Non-Sterile Gloves (boxes)", "quantity": 4, "isOptional": false, "notes": "S, M, L, XL"},
+        {"name": "Hand Sanitizer Dispenser", "quantity": 2, "isOptional": false},
+        {"name": "Isolation Signage", "quantity": 1, "isOptional": false},
+        {"name": "Trash Receptacle (red bag)", "quantity": 1, "isOptional": false}
+      ]
+    },
+    {
+      "id": "code-cart-restock",
+      "name": "Code Blue Cart Restock Check",
+      "category": "Emergency",
+      "description": "Daily inventory and restock of crash cart.",
+      "iconName": "emergency",
+      "supplies": [
+        {"name": "Bag-Valve-Mask (Adult)", "quantity": 1, "isOptional": false},
+        {"name": "Defibrillator Pads (Adult)", "quantity": 2, "isOptional": false},
+        {"name": "Endotracheal Tubes", "size": "7.0, 7.5, 8.0", "quantity": 3, "isOptional": false},
+        {"name": "Laryngoscope Blades + Handles", "quantity": 1, "isOptional": false},
+        {"name": "IV Start Kits", "quantity": 4, "isOptional": false},
+        {"name": "IO Needle (EZ-IO)", "quantity": 2, "isOptional": false},
+        {"name": "Code Medications (per facility list)", "quantity": 1, "isOptional": false, "notes": "Check expiration"},
+        {"name": "Suction Setup", "quantity": 1, "isOptional": false},
+        {"name": "Cardiac Monitor Cables", "quantity": 1, "isOptional": false}
+      ]
+    },
+    {
+      "id": "admission-kit",
+      "name": "Patient Admission Setup",
+      "category": "General",
+      "description": "Standard supplies for new patient admission.",
+      "iconName": "person_add",
+      "supplies": [
+        {"name": "Admission Kit (basin, comb, lotion, etc.)", "quantity": 1, "isOptional": false},
+        {"name": "Patient Gown", "quantity": 2, "isOptional": false},
+        {"name": "Linens (sheet, blanket, pillowcase)", "quantity": 1, "isOptional": false},
+        {"name": "Bedpan or Urinal", "quantity": 1, "isOptional": false},
+        {"name": "Water Pitcher and Cup", "quantity": 1, "isOptional": false},
+        {"name": "ID Bracelet", "quantity": 1, "isOptional": false},
+        {"name": "Allergy Bracelet", "quantity": 1, "isOptional": true},
+        {"name": "Yellow Fall-Risk Bracelet", "quantity": 1, "isOptional": true},
+        {"name": "Pulse Ox Sensor (disposable)", "quantity": 1, "isOptional": false},
+        {"name": "ECG Electrodes", "quantity": 5, "isOptional": false}
+      ]
+    },
+    {
+      "id": "foley-removal",
+      "name": "Foley Catheter Removal",
+      "category": "Genitourinary",
+      "description": "Discontinuation of indwelling urinary catheter.",
+      "iconName": "water_drop",
+      "supplies": [
+        {"name": "10 mL Syringe (empty)", "quantity": 1, "isOptional": false, "notes": "To deflate balloon"},
+        {"name": "Non-Sterile Gloves", "quantity": 1, "isOptional": false},
+        {"name": "Underpad (Chux)", "quantity": 1, "isOptional": false},
+        {"name": "Bag for waste", "quantity": 1, "isOptional": false},
+        {"name": "Wash Cloths", "quantity": 2, "isOptional": false}
+      ]
+    }
+  ]
+}

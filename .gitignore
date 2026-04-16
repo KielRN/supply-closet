@@ -1,0 +1,33 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Flutter
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.packages
+**/.pub-cache/
+**/.pub/
+**/build/
+
+# Firebase
+**/firebase-debug.log
+**/firebase-debug.*.log
+**/.firebase/
+**/functions/node_modules/
+
+# Environment
+.env
+.env.local
+*.local
+
+# Misc
+*.log
