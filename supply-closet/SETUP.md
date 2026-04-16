@@ -234,14 +234,22 @@ If you accidentally commit any of these, rotate the credentials immediately.
 
 **Firestore writes are denied** — check `firestore.rules` is deployed and your user document exists. The first sign-in creates the user doc; if that failed, the user is authed but rules block their writes.
 
+## ⚠️ Security Notice
+
+An adversarial review identified **21 findings** across security, data integrity, and gamification exploits. **2 critical issues** (role escalation, XP farming) must be fixed before any deployment.
+
+See the full review: [`adversarial-review.md`](../adversarial-review.md)
+Track remediation progress: [`remediation-plan.md`](../remediation-plan.md)
+
 ## What's next
 
 After you have it running locally, the immediate roadmap is:
 
-1. Test the full sign-in → tag → find loop on a real device
-2. Recruit a friendly nurse (you?) to tag 50 real supplies in a supply room
-3. Validate the gamification feels rewarding
-4. Set up Crashlytics + Analytics
-5. Submit to TestFlight (iOS) and Internal Testing (Android)
+1. **Fix critical security findings** (see remediation plan)
+2. Test the full sign-in → tag → find loop on a real device
+3. Recruit a friendly nurse (you?) to tag 50 real supplies in a supply room
+4. Validate the gamification feels rewarding
+5. Set up Crashlytics + Analytics
+6. Submit to TestFlight (iOS) and Internal Testing (Android)
 
 When you're ready for pilot, see `data-strategy.md` for the Founding Tagger onboarding flow.
