@@ -100,21 +100,24 @@ class FirestoreService {
     }
 
     if (existing.docs.isNotEmpty) {
-      // Update existing — boost confidence, update location
+      // Update existing — use transaction for atomic confidence update
       final doc = existing.docs.first;
-      final currentData = doc.data() as Map<String, dynamic>;
-      final currentConfidence =
-          (currentData['confidence'] ?? 0.5).toDouble();
-      final newConfidence =
-          (currentConfidence + AppConstants.confidenceConfirmBoost)
-              .clamp(0.0, 1.0);
+      await _db.runTransaction((tx) async {
+        final snap = await tx.get(doc.reference);
+        final currentData = snap.data() as Map<String, dynamic>;
+        final currentConfidence =
+            (currentData['confidence'] ?? 0.5).toDouble();
+        final newConfidence =
+            (currentConfidence + AppConstants.confidenceConfirmBoost)
+                .clamp(0.0, 1.0);
 
-      await doc.reference.update({
-        'location': location.toMap(),
-        'confidence': newConfidence,
-        'lastConfirmed': Timestamp.now(),
-        'tagCount': FieldValue.increment(1),
-        'taggedByUserIds': FieldValue.arrayUnion([userId]),
+        tx.update(doc.reference, {
+          'location': location.toMap(),
+          'confidence': newConfidence,
+          'lastConfirmed': Timestamp.now(),
+          'tagCount': FieldValue.increment(1),
+          'taggedByUserIds': FieldValue.arrayUnion([userId]),
+        });
       });
     } else {
       // New supply tag

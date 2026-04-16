@@ -50,8 +50,11 @@ service cloud.firestore {
 
     // ─── Users ──────────────────────────────────────────────────
     match /users/{userId} {
-      // Anyone authed can read profiles (for leaderboards)
-      allow read: if isAuthed();
+      // Users can read their own profile, or profiles of users in the same facility
+      allow read: if isAuthed() && (
+        isOwner(userId) ||
+        (resource.data.facilityId != null && userFacility() == resource.data.facilityId)
+      );
 
       // User can create their own profile on first sign-in
       // Role must be 'nurse' — prevents privilege escalation

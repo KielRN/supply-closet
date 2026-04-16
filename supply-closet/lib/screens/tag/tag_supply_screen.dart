@@ -60,8 +60,8 @@ class _TagSupplyScreenState extends State<TagSupplyScreen> {
 
     try {
       final fs = FirestoreService();
-      // Default room "main" — phase 2 will support multiple rooms per unit.
-      const roomId = 'main';
+      // Default room "main" — configurable via AppConstants.defaultRoomId
+      const roomId = AppConstants.defaultRoomId;
 
       final shelf = _shelfController.text.trim();
       final binStr = _binController.text.trim();

@@ -20,6 +20,9 @@ class AppConstants {
   static const double arOverlayMinConfidence = 0.4;
   static const double arMarkerScale = 0.08; // meters
 
+  // Rooms
+  static const String defaultRoomId = 'main';
+
   // UI
   static const double minTouchTarget = 48.0; // dp, glove-friendly
   static const int maxProcedureNameLength = 60;

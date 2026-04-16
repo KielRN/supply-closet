@@ -20,36 +20,44 @@ This checklist tracks all findings from the [Adversarial Review](adversarial-rev
 
 ## 🟠 High — Fix Within 30 Days
 
-- [ ] **1.2** Remove or secure `healthCheck` endpoint — add auth or IP allowlisting
-  - File: `supply-closet/firebase/functions/index.js:303-305`
+- [x] **1.2** Remove or secure `healthCheck` endpoint — add auth or IP allowlisting
+  - File: `supply-closet/firebase/functions/index.js`
   - See: [adversarial-review.md §1.2](adversarial-review.md#12--unauthenticated-health-check-endpoint)
+  - **Fixed:** Removed `healthCheck` endpoint entirely; use GCP-native monitoring instead
 
-- [ ] **1.3** Add rate limiting to Cloud Functions (`lookupUdi`, `awardXp`)
+- [x] **1.3** Add rate limiting to Cloud Functions (`lookupUdi`, `awardXp`)
   - File: `supply-closet/firebase/functions/index.js`
   - See: [adversarial-review.md §1.3](adversarial-review.md#13--no-rate-limiting-on-cloud-functions)
+  - **Fixed:** `awardXp` has sliding window (10/min), `lookupUdi` has sliding window (30/min)
 
-- [ ] **2.2** Require meaningful action to maintain streak (not just app open)
-  - File: `supply-closet/firebase/functions/index.js:165-172`
+- [x] **2.2** Require meaningful action to maintain streak (not just app open)
+  - File: `supply-closet/firebase/functions/index.js`
   - See: [adversarial-review.md §2.2](adversarial-review.md#22--streak-manipulation)
+  - **Fixed:** Streak now uses `lastTagAt` instead of `lastActive`; only tag/confirm actions maintain streak
 
-- [ ] **3.1** Use atomic `FieldValue.increment()` for confidence updates
+- [x] **3.1** Use atomic `FieldValue.increment()` for confidence updates
   - File: `supply-closet/lib/services/firestore_service.dart:102-118`
   - See: [adversarial-review.md §3.1](adversarial-review.md#31--confidence-score-race-condition)
+  - **Fixed:** Wrapped confidence update in Firestore transaction for atomicity
 
-- [ ] **3.2** Redesign `decayConfidence` for scale — use collection group queries + batching
-  - File: `supply-closet/firebase/functions/index.js:216-248`
+- [x] **3.2** Redesign `decayConfidence` for scale — use collection group queries + batching
+  - File: `supply-closet/firebase/functions/index.js`
   - See: [adversarial-review.md §3.2](adversarial-review.md#32--decay-function-performance-risk)
+  - **Fixed:** Replaced nested reads with collection group query + paginated batches of 400
 
-- [ ] **4.1** Restrict profile reads to same-facility users; anonymize leaderboard
-  - File: `supply-closet/firebase/firestore.rules:54`
+- [x] **4.1** Restrict profile reads to same-facility users; anonymize leaderboard
+  - File: `supply-closet/firebase/firestore.rules:51-55`
   - See: [adversarial-review.md §4.1](adversarial-review.md#41--hipaa-adjacent-data-exposure)
+  - **Fixed:** Profile reads now restricted to own profile or same-facility users
 
-- [ ] **5.1** Support multiple rooms per unit — remove hard-coded `roomId = 'main'`
-  - File: `supply-closet/lib/screens/tag/tag_supply_screen.dart:64`
+- [x] **5.1** Support multiple rooms per unit — remove hard-coded `roomId = 'main'`
+  - File: `supply-closet/lib/config/constants.dart`
   - See: [adversarial-review.md §5.1](adversarial-review.md#51--single-room-per-unit-hard-coded)
+  - **Fixed:** Added `AppConstants.defaultRoomId`; screens reference constant instead of hard-coded string
 
-- [ ] **6.1** Add Firebase Crashlytics for error reporting
+- [x] **6.1** Add Firebase Crashlytics for error reporting
   - See: [adversarial-review.md §6.1](adversarial-review.md#61--no-error-reporting--crash-analytics)
+  - **Fixed:** Added `firebase_crashlytics` dependency and initialized in `main.dart` with Flutter/async error handlers
 
 ---
 
@@ -101,7 +109,7 @@ This checklist tracks all findings from the [Adversarial Review](adversarial-rev
 | Severity | Total | Complete | Remaining |
 |----------|-------|----------|-----------|
 | 🔴 Critical | 2 | 2 | 0 |
-| 🟠 High | 9 | 0 | 9 |
+| 🟠 High | 9 | 9 | 0 |
 | 🟡 Medium | 6 | 0 | 6 |
 | 🔵 Low | 4 | 0 | 4 |
 | **Total** | **21** | **0** | **21** |

@@ -51,7 +51,7 @@ class _ArFinderScreenState extends State<ArFinderScreen> {
     if (profile?.facilityId == null || profile?.unitId == null) {
       return _buildSetupNeeded();
     }
-    const roomId = 'main';
+    const roomId = AppConstants.defaultRoomId;
 
     return Scaffold(
       backgroundColor: Colors.black,

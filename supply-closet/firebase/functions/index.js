@@ -39,6 +39,26 @@ exports.lookupUdi = onCall({region: "us-central1"}, async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "Sign in required.");
   }
+
+  // Rate limit: max 30 lookups per minute per user
+  const uid = request.auth.uid;
+  const userRef = db.collection("users").doc(uid);
+  const userSnap = await userRef.get();
+  if (userSnap.exists) {
+    const profile = userSnap.data();
+    const now = Date.now();
+    const windowMs = 60000;
+    const maxLookups = 30;
+    const recentLookups = (profile.udiLookupTimestamps || [])
+        .map((ts) => (typeof ts === "number" ? ts : ts.toMillis()))
+        .filter((ts) => now - ts < windowMs);
+    if (recentLookups.length >= maxLookups) {
+      throw new HttpsError("resource-exhausted", "Too many lookups. Please wait.");
+    }
+    recentLookups.push(now);
+    await userRef.update({udiLookupTimestamps: recentLookups});
+  }
+
   const barcode = (request.data && request.data.barcode) || "";
   if (!barcode || barcode.length < 8) {
     throw new HttpsError("invalid-argument", "barcode required");
@@ -183,7 +203,8 @@ exports.awardXp = onCall({region: "us-central1"}, async (request) => {
     if (isFirstTagOnUnit) xp += POINTS.firstTagOnUnit;
     if (isNightShift) xp = Math.round(xp * 1.25);
 
-    const streakDays = updateStreak(profile);
+    const isTagAction = action === "tagNew" || action === "confirmExisting";
+    const streakDays = updateStreak(profile, isTagAction);
     xp = Math.round(xp * streakMultiplier(streakDays));
 
     const newPoints = (profile.points || 0) + xp;
@@ -191,7 +212,7 @@ exports.awardXp = onCall({region: "us-central1"}, async (request) => {
     const newTotalTags = (profile.totalTags || 0) +
         (action === "tagNew" || action === "confirmExisting" ? 1 : 0);
 
-    tx.update(userRef, {
+    const updateData = {
       points: newPoints,
       totalTags: newTotalTags,
       tagsThisMonth: (profile.tagsThisMonth || 0) + 1,
@@ -199,7 +220,12 @@ exports.awardXp = onCall({region: "us-central1"}, async (request) => {
       badges: Array.from(new Set([...(profile.badges || []), ...newBadges])),
       lastActive: admin.firestore.FieldValue.serverTimestamp(),
       xpAwardTimestamps: recentTimestamps,
-    });
+    };
+    // Only update lastTagAt for tag actions (streak requires tagging)
+    if (isTagAction) {
+      updateData.lastTagAt = admin.firestore.FieldValue.serverTimestamp();
+    }
+    tx.update(userRef, updateData);
 
     return {xpAwarded: xp, newPoints, newBadges};
   });
@@ -244,14 +270,19 @@ async function _verifyRecentTag(uid, facilityId, unitId, supplyId) {
   return (Date.now() - lastConfirmed) < 60000;
 }
 
-function updateStreak(profile) {
-  const last = profile.lastActive ? profile.lastActive.toDate() : null;
-  if (!last) return 1;
+/**
+ * Update streak based on last meaningful tag action.
+ * Requires at least one tag/confirm per day to maintain streak.
+ * Uses lastTagAt (set when a tag action occurs) instead of lastActive.
+ */
+function updateStreak(profile, isTagAction) {
+  const lastTag = profile.lastTagAt ? profile.lastTagAt.toDate() : null;
+  if (!lastTag) return isTagAction ? 1 : (profile.streakDays || 1);
   const now = new Date();
-  const diffHours = (now - last) / (1000 * 60 * 60);
+  const diffHours = (now - lastTag) / (1000 * 60 * 60);
   if (diffHours < 24) return profile.streakDays || 1; // same day
   if (diffHours < 48) return (profile.streakDays || 0) + 1; // next day
-  return 1; // streak broken
+  return isTagAction ? 1 : (profile.streakDays || 1); // streak broken unless starting fresh
 }
 
 function streakMultiplier(streak) {
@@ -293,39 +324,52 @@ exports.onSupplyTagged = onDocumentCreated(
 
 // ─── decayConfidence (daily) ────────────────────────────────────────
 //
-// Walks all supply documents and decays confidence based on staleness.
-// Documents older than 30 days with low confidence are flagged for re-tag.
+// Uses a collection group query to efficiently scan all supplies across
+// all facilities. Processes in batches of 400 (Firestore batch limit is 500).
 exports.decayConfidence = onSchedule({
   schedule: "every day 03:00",
   region: "us-central1",
+  timeoutSeconds: 540,
+  memory: "512MiB",
 }, async () => {
   const now = Date.now();
-  const facilitiesSnap = await db.collection("facilities").get();
+  const staleThresholdMs = 7 * 24 * 60 * 60 * 1000; // 7 days
   let processed = 0;
+  let lastDoc = null;
+  const batchSize = 400;
 
-  for (const fac of facilitiesSnap.docs) {
-    const unitsSnap = await fac.ref.collection("units").get();
-    for (const unit of unitsSnap.docs) {
-      const roomsSnap = await unit.ref.collection("supplyRooms").get();
-      for (const room of roomsSnap.docs) {
-        const suppliesSnap = await room.ref.collection("supplies").get();
-        const batch = db.batch();
-        for (const supply of suppliesSnap.docs) {
-          const d = supply.data();
-          const lastConfirmed = d.lastConfirmed
-              ? d.lastConfirmed.toMillis() : now;
-          const daysSince = (now - lastConfirmed) / (1000 * 60 * 60 * 24);
-          if (daysSince > 7) {
-            const decay = Math.min(0.5, (daysSince - 7) * 0.02);
-            const newConfidence = Math.max(0, (d.confidence || 0.5) - decay);
-            batch.update(supply.ref, {confidence: newConfidence});
-            processed++;
-          }
-        }
-        if (processed > 0) await batch.commit();
-      }
+  // Paginate through all supplies using collection group query
+  while (true) {
+    let query = db.collectionGroup("supplies")
+        .where("lastConfirmed", "<",
+            new Date(now - staleThresholdMs))
+        .limit(batchSize);
+
+    if (lastDoc) {
+      query = query.startAfter(lastDoc);
     }
+
+    const snap = await query.get();
+    if (snap.empty) break;
+
+    const batch = db.batch();
+    for (const doc of snap.docs) {
+      const d = doc.data();
+      const lastConfirmed = d.lastConfirmed ? d.lastConfirmed.toMillis() : now;
+      const daysSince = (now - lastConfirmed) / (1000 * 60 * 60 * 24);
+      const decay = Math.min(0.5, (daysSince - 7) * 0.02);
+      const newConfidence = Math.max(0, (d.confidence || 0.5) - decay);
+      batch.update(doc.ref, {confidence: newConfidence});
+      processed++;
+    }
+
+    await batch.commit();
+    lastDoc = snap.docs[snap.docs.length - 1];
+
+    // Safety: if we got fewer than batchSize, we're done
+    if (snap.docs.length < batchSize) break;
   }
+
   logger.info("decayConfidence done", {processed});
 });
 
@@ -381,7 +425,4 @@ exports.rolloverDailyChallenges = onSchedule({
   logger.info("Daily challenge rollover", {dateKey});
 });
 
-// ─── healthCheck ────────────────────────────────────────────────────
-exports.healthCheck = onRequest({region: "us-central1"}, (req, res) => {
-  res.json({ok: true, time: new Date().toISOString()});
-});
+// healthCheck removed — use GCP-native health monitoring instead
