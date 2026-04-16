@@ -425,4 +425,49 @@ exports.rolloverDailyChallenges = onSchedule({
   logger.info("Daily challenge rollover", {dateKey});
 });
 
+// ─── cleanupStaleSupplies (weekly) ──────────────────────────────────
+//
+// Deletes supplies with confidence < 0.1 that haven't been confirmed
+// in 30+ days. Prevents unbounded data growth.
+exports.cleanupStaleSupplies = onSchedule({
+  schedule: "every sunday 05:00",
+  region: "us-central1",
+  timeoutSeconds: 540,
+  memory: "512MiB",
+}, async () => {
+  const now = Date.now();
+  const staleThresholdMs = 30 * 24 * 60 * 60 * 1000; // 30 days
+  let deleted = 0;
+  let lastDoc = null;
+  const batchSize = 400;
+
+  while (true) {
+    let query = db.collectionGroup("supplies")
+        .where("confidence", "<", 0.1)
+        .where("lastConfirmed", "<",
+            new Date(now - staleThresholdMs))
+        .limit(batchSize);
+
+    if (lastDoc) {
+      query = query.startAfter(lastDoc);
+    }
+
+    const snap = await query.get();
+    if (snap.empty) break;
+
+    const batch = db.batch();
+    for (const doc of snap.docs) {
+      batch.delete(doc.ref);
+      deleted++;
+    }
+
+    await batch.commit();
+    lastDoc = snap.docs[snap.docs.length - 1];
+
+    if (snap.docs.length < batchSize) break;
+  }
+
+  logger.info("cleanupStaleSupplies done", {deleted});
+});
+
 // healthCheck removed — use GCP-native health monitoring instead

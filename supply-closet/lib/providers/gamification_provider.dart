@@ -5,7 +5,10 @@ import '../models/user_profile.dart';
 /// Manages live gamification state — daily challenges, current streak,
 /// pending XP awards, level-up animations, badge reveals
 class GamificationProvider extends ChangeNotifier {
-  final GamificationService _service = GamificationService();
+  final GamificationService _service;
+
+  GamificationProvider({GamificationService? service})
+      : _service = service ?? GamificationService();
 
   // Active challenges for this shift
   List<DailyChallenge> _dailyChallenges = [];

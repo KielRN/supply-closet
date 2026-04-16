@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../config/theme.dart';
 import '../../providers/auth_provider.dart';
 
@@ -105,7 +106,12 @@ class LoginScreen extends StatelessWidget {
                       ElevatedButton.icon(
                         onPressed: auth.isLoading
                             ? null
-                            : () => auth.signInWithGoogle(),
+                            : () {
+                                FirebaseAnalytics.instance.logLogin(
+                                  loginMethod: 'google',
+                                );
+                                auth.signInWithGoogle();
+                              },
                         icon: auth.isLoading
                             ? const SizedBox(
                                 width: 20,

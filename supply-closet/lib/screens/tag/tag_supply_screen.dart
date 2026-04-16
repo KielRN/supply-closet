@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
 import 'package:camera/camera.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../config/theme.dart';
 import '../../config/constants.dart';
 import '../../models/supply_item.dart';
@@ -93,6 +94,16 @@ class _TagSupplyScreenState extends State<TagSupplyScreen> {
         isNightShift: _isNightShift(),
         facilityId: profile.facilityId,
         unitId: profile.unitId,
+      );
+
+      // Log analytics event
+      FirebaseAnalytics.instance.logEvent(
+        name: 'supply_tagged',
+        parameters: {
+          'supply_name': _supplyName ?? 'unknown',
+          'has_barcode': _barcode != null,
+          'is_first_tag': _isFirstTagOnUnit,
+        },
       );
 
       if (mounted) {

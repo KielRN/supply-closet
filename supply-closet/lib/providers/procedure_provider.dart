@@ -5,7 +5,10 @@ import '../models/procedure.dart';
 import '../services/firestore_service.dart';
 
 class ProcedureProvider extends ChangeNotifier {
-  final FirestoreService _firestore = FirestoreService();
+  final FirestoreService _firestore;
+
+  ProcedureProvider({FirestoreService? firestoreService})
+      : _firestore = firestoreService ?? FirestoreService();
 
   List<Procedure> _procedures = [];
   List<Procedure> get procedures => _procedures;

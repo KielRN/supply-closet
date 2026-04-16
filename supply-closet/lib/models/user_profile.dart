@@ -70,7 +70,6 @@ class UserProfile {
   Map<String, dynamic> toFirestore() {
     return {
       'displayName': displayName,
-      'email': email,
       'photoUrl': photoUrl,
       'facilityId': facilityId,
       'facilityName': facilityName,

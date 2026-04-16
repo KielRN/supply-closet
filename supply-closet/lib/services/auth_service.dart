@@ -63,10 +63,10 @@ class AuthService {
     }
 
     // New user — create profile
+    // Note: email is stored in Firebase Auth only, not in Firestore
     final profile = UserProfile(
       uid: user.uid,
       displayName: user.displayName ?? 'Nurse',
-      email: user.email,
       photoUrl: user.photoURL,
     );
 
@@ -124,5 +124,18 @@ class AuthService {
   Future<void> signOut() async {
     await _googleSignIn.signOut();
     await _auth.signOut();
+  }
+
+  /// Delete user account and all associated data
+  /// Deletes Firestore profile, then Firebase Auth account
+  Future<void> deleteAccount() async {
+    final user = currentUser;
+    if (user == null) throw Exception('Not authenticated');
+
+    // Delete Firestore profile document
+    await _db.collection(AppConstants.usersCollection).doc(user.uid).delete();
+
+    // Delete Firebase Auth account
+    await user.delete();
   }
 }

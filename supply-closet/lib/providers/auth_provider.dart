@@ -4,7 +4,7 @@ import '../models/user_profile.dart';
 import '../services/auth_service.dart';
 
 class AuthProvider extends ChangeNotifier {
-  final AuthService _authService = AuthService();
+  final AuthService _authService;
 
   UserProfile? _profile;
   bool _isLoading = false;
@@ -16,7 +16,8 @@ class AuthProvider extends ChangeNotifier {
   String? get error => _error;
   User? get firebaseUser => _authService.currentUser;
 
-  AuthProvider() {
+  AuthProvider({AuthService? authService})
+      : _authService = authService ?? AuthService() {
     // Listen for auth state changes
     _authService.authStateChanges.listen((user) async {
       if (user != null) {

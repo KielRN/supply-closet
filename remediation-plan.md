@@ -94,19 +94,23 @@ This checklist tracks all findings from the [Adversarial Review](adversarial-rev
 
 ## 🔵 Low — Backlog
 
-- [ ] **3.3** Implement data retention policy and user account deletion
+- [x] **3.3** Implement data retention policy and user account deletion
   - See: [adversarial-review.md §3.3](adversarial-review.md#33--no-data-retention-policy)
+  - **Fixed:** Added `deleteAccount()` to AuthService; added `cleanupStaleSupplies` Cloud Function (weekly, deletes supplies with confidence < 0.1 older than 30 days)
 
-- [ ] **4.3** Remove email from Firestore profile (already in Firebase Auth)
-  - File: `supply-closet/lib/services/auth_service.dart:69`
+- [x] **4.3** Remove email from Firestore profile (already in Firebase Auth)
+  - File: `supply-closet/lib/services/auth_service.dart`
   - See: [adversarial-review.md §4.3](adversarial-review.md#43--email-exposure-in-user-profiles)
+  - **Fixed:** Removed email from UserProfile.toFirestore() and auth_service profile creation
 
-- [ ] **5.3** Refactor providers to use dependency injection
-  - File: `supply-closet/lib/providers/auth_provider.dart:7`
+- [x] **5.3** Refactor providers to use dependency injection
+  - File: `supply-closet/lib/providers/`
   - See: [adversarial-review.md §5.3](adversarial-review.md#53--provider-instantiation-anti-pattern)
+  - **Fixed:** All providers now accept services via optional constructor parameters
 
-- [ ] **6.3** Add custom analytics events for key user actions
+- [x] **6.3** Add custom analytics events for key user actions
   - See: [adversarial-review.md §6.3](adversarial-review.md#63--no-analytics-event-tracking)
+  - **Fixed:** Added `logLogin` on sign-in and `logEvent` for supply_tagged with metadata
 
 ---
 
@@ -117,5 +121,5 @@ This checklist tracks all findings from the [Adversarial Review](adversarial-rev
 | 🔴 Critical | 2 | 2 | 0 |
 | 🟠 High | 9 | 9 | 0 |
 | 🟡 Medium | 6 | 6 | 0 |
-| 🔵 Low | 4 | 0 | 4 |
-| **Total** | **21** | **17** | **4** |
+| 🔵 Low | 4 | 4 | 0 |
+| **Total** | **21** | **21** | **0** |
