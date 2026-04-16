@@ -85,11 +85,14 @@ class _TagSupplyScreenState extends State<TagSupplyScreen> {
       );
 
       // Award XP via the gamification provider
+      // Pass facility/unit/supply IDs so the server can verify the tag
       await game.recordAction(
         profile: profile,
         action: GameAction.tagNew,
         isFirstTagOnUnit: _isFirstTagOnUnit,
         isNightShift: _isNightShift(),
+        facilityId: profile.facilityId,
+        unitId: profile.unitId,
       );
 
       if (mounted) {

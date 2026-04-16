@@ -6,13 +6,15 @@ This checklist tracks all findings from the [Adversarial Review](adversarial-rev
 
 ## 🔴 Critical — Fix Before Any Deployment
 
-- [ ] **1.1** Fix role escalation in Firestore rules — validate `role == 'nurse'` on profile creation
+- [x] **1.1** Fix role escalation in Firestore rules — validate `role == 'nurse'` on profile creation
   - File: `supply-closet/firebase/firestore.rules:57-60`
   - See: [adversarial-review.md §1.1](adversarial-review.md#11--role-escalation-via-profile-creation)
+  - **Fixed:** Added `role == 'nurse'` validation plus gamification field zero-checks on profile creation
 
-- [ ] **2.1** Add server-side XP verification in `awardXp` — confirm action actually occurred before awarding XP
+- [x] **2.1** Add server-side XP verification in `awardXp` — confirm action actually occurred before awarding XP
   - File: `supply-closet/firebase/functions/index.js:124-163`
   - See: [adversarial-review.md §2.1](adversarial-review.md#21--xp-farming-via-rapid-tagging)
+  - **Fixed:** Added 5-second rate limit per user and tag verification (checks `taggedByUserIds` + `lastConfirmed` within 60s). Client now calls Cloud Function instead of direct Firestore write.
 
 ---
 
@@ -98,7 +100,7 @@ This checklist tracks all findings from the [Adversarial Review](adversarial-rev
 
 | Severity | Total | Complete | Remaining |
 |----------|-------|----------|-----------|
-| 🔴 Critical | 2 | 0 | 2 |
+| 🔴 Critical | 2 | 2 | 0 |
 | 🟠 High | 9 | 0 | 9 |
 | 🟡 Medium | 6 | 0 | 6 |
 | 🔵 Low | 4 | 0 | 4 |

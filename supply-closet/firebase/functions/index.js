@@ -121,21 +121,57 @@ function extractDi(barcode) {
 // Server-side XP engine. Client cannot write to its own points field;
 // it calls this function. Function applies multipliers, bonuses, and
 // updates streak / badges atomically.
+//
+// Anti-farming measures:
+//  - Rate limit: minimum 5 seconds between XP awards per user
+//  - Action verification: tag actions require a recent supply tag by this user
 exports.awardXp = onCall({region: "us-central1"}, async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "Sign in required.");
   }
   const uid = request.auth.uid;
-  const {action, isFirstTagOnUnit, isNightShift} = request.data || {};
+  const {action, isFirstTagOnUnit, isNightShift, supplyId, facilityId, unitId} =
+      request.data || {};
   if (!action || !POINTS[action]) {
     throw new HttpsError("invalid-argument", "Unknown action");
   }
 
   const userRef = db.collection("users").doc(uid);
+
   return db.runTransaction(async (tx) => {
     const snap = await tx.get(userRef);
     if (!snap.exists) throw new HttpsError("not-found", "User missing");
     const profile = snap.data();
+
+    // ── Rate limit: 5-second cooldown between awards ──────────────
+    const lastActive = profile.lastActive ? profile.lastActive.toDate() : null;
+    if (lastActive) {
+      const elapsedMs = Date.now() - lastActive.getTime();
+      if (elapsedMs < 5000) {
+        throw new HttpsError(
+            "resource-exhausted",
+            "Please wait a few seconds between actions.",
+        );
+      }
+    }
+
+    // ── Verify tag actions actually occurred ───────────────────────
+    if (action === "tagNew" || action === "confirmExisting") {
+      if (!facilityId || !unitId) {
+        throw new HttpsError(
+            "invalid-argument",
+            "facilityId and unitId required for tag actions.",
+        );
+      }
+      // Check that this user recently tagged a supply in their unit
+      const recentTag = await _verifyRecentTag(uid, facilityId, unitId, supplyId);
+      if (!recentTag) {
+        throw new HttpsError(
+            "failed-precondition",
+            "No recent tag found. Tag a supply first.",
+        );
+      }
+    }
 
     let xp = POINTS[action];
     if (isFirstTagOnUnit) xp += POINTS.firstTagOnUnit;
@@ -161,6 +197,45 @@ exports.awardXp = onCall({region: "us-central1"}, async (request) => {
     return {xpAwarded: xp, newPoints, newBadges};
   });
 });
+
+/**
+ * Verify that the user recently tagged a supply in the given unit.
+ * Checks the supply document for the user's ID in taggedByUserIds
+ * and confirms the tag was created/updated within the last 60 seconds.
+ */
+async function _verifyRecentTag(uid, facilityId, unitId, supplyId) {
+  // If a specific supplyId is provided, check that one
+  if (supplyId) {
+    const supplyRef = db
+        .collection("facilities").doc(facilityId)
+        .collection("units").doc(unitId)
+        .collection("supplyRooms").doc("main")
+        .collection("supplies").doc(supplyId);
+    const doc = await supplyRef.get();
+    if (!doc.exists) return false;
+    const data = doc.data();
+    const taggedBy = data.taggedByUserIds || [];
+    if (!taggedBy.includes(uid)) return false;
+    const lastConfirmed = data.lastConfirmed ? data.lastConfirmed.toMillis() : 0;
+    return (Date.now() - lastConfirmed) < 60000; // within 60 seconds
+  }
+
+  // Otherwise, scan recent supplies for this user's tags
+  const suppliesRef = db
+      .collection("facilities").doc(facilityId)
+      .collection("units").doc(unitId)
+      .collection("supplyRooms").doc("main")
+      .collection("supplies")
+      .where("taggedByUserIds", "array-contains", uid)
+      .orderBy("lastConfirmed", "desc")
+      .limit(1);
+
+  const snap = await suppliesRef.get();
+  if (snap.empty) return false;
+  const data = snap.docs[0].data();
+  const lastConfirmed = data.lastConfirmed ? data.lastConfirmed.toMillis() : 0;
+  return (Date.now() - lastConfirmed) < 60000;
+}
 
 function updateStreak(profile) {
   const last = profile.lastActive ? profile.lastActive.toDate() : null;

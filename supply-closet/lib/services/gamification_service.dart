@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import '../config/constants.dart';
 import '../models/user_profile.dart';
 
@@ -483,7 +484,10 @@ class GamificationService {
     );
   }
 
-  /// Award XP and update user profile in Firestore
+  /// Award XP via the server-side Cloud Function.
+  ///
+  /// The server validates the action actually occurred (anti-farming)
+  /// and applies streak/bonus multipliers atomically.
   Future<XpAwardResult> awardXp({
     required String userId,
     required GameAction action,
@@ -491,39 +495,37 @@ class GamificationService {
     required int userLevel,
     bool isFirstTagOnUnit = false,
     bool isNightShift = false,
-    int? challengeXp,
-    int? badgeXp,
+    String? facilityId,
+    String? unitId,
+    String? supplyId,
   }) async {
-    final result = calculateXp(
-      action: action,
-      streakDays: streakDays,
-      userLevel: userLevel,
-      isFirstTagOnUnit: isFirstTagOnUnit,
-      isNightShift: isNightShift,
-    );
+    // Map client action enum to server action string
+    final actionStr = switch (action) {
+      GameAction.tagNew => 'tagNew',
+      GameAction.confirmExisting => 'confirmExisting',
+      GameAction.completeProcedure => 'completeProcedure',
+      GameAction.reportNotFound => 'reportNotFound',
+    };
 
-    int totalAward = result.totalXp;
-    if (challengeXp != null) totalAward += challengeXp;
-    if (badgeXp != null) totalAward += badgeXp;
-
-    // Update Firestore
-    final userRef =
-        _db.collection(AppConstants.usersCollection).doc(userId);
-
-    await userRef.update({
-      'points': FieldValue.increment(totalAward),
-      'totalTags': action == GameAction.tagNew ||
-              action == GameAction.confirmExisting
-          ? FieldValue.increment(1)
-          : FieldValue.increment(0),
-      'tagsThisMonth': action == GameAction.tagNew ||
-              action == GameAction.confirmExisting
-          ? FieldValue.increment(1)
-          : FieldValue.increment(0),
-      'lastActive': Timestamp.now(),
+    final callable = FirebaseFunctions.instance.httpsCallable('awardXp');
+    final response = await callable.call({
+      'action': actionStr,
+      'isFirstTagOnUnit': isFirstTagOnUnit,
+      'isNightShift': isNightShift,
+      'facilityId': facilityId,
+      'unitId': unitId,
+      'supplyId': supplyId,
     });
 
-    return result;
+    final data = response.data as Map<String, dynamic>;
+    final xpAwarded = data['xpAwarded'] as int? ?? 0;
+
+    return XpAwardResult(
+      baseXp: xpAwarded,
+      streakMultiplier: 1.0, // server handles this
+      totalXp: xpAwarded,
+      newBadges: List<String>.from(data['newBadges'] ?? []),
+    );
   }
 
   // ─── WEEKLY UNIT CHALLENGES (cooperative) ─────────────────────

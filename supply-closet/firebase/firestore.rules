@@ -54,9 +54,14 @@ service cloud.firestore {
       allow read: if isAuthed();
 
       // User can create their own profile on first sign-in
+      // Role must be 'nurse' — prevents privilege escalation
       allow create: if isOwner(userId)
         && request.resource.data.uid == userId
+        && request.resource.data.role == 'nurse'
         && request.resource.data.points == 0
+        && request.resource.data.totalTags == 0
+        && request.resource.data.tagsThisMonth == 0
+        && request.resource.data.streakDays == 0
         && request.resource.data.badges.size() == 0;
 
       // User can update only safe profile fields. XP/badges/streak come

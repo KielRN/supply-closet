@@ -156,6 +156,9 @@ class _ArFinderScreenState extends State<ArFinderScreen> {
             action: GameAction.confirmExisting,
             isNightShift:
                 DateTime.now().hour >= 19 || DateTime.now().hour < 7,
+            facilityId: auth.profile!.facilityId,
+            unitId: auth.profile!.unitId,
+            supplyId: supply.id,
           );
         }
       }

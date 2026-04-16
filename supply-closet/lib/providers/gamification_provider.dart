@@ -39,11 +39,17 @@ class GamificationProvider extends ChangeNotifier {
   }
 
   /// Award XP for an action and queue celebrations
+  ///
+  /// For tag actions, pass [facilityId], [unitId], and optionally [supplyId]
+  /// so the server can verify the action actually occurred.
   Future<void> recordAction({
     required UserProfile profile,
     required GameAction action,
     bool isFirstTagOnUnit = false,
     bool isNightShift = false,
+    String? facilityId,
+    String? unitId,
+    String? supplyId,
   }) async {
     final result = GamificationService.calculateXp(
       action: action,
@@ -76,7 +82,7 @@ class GamificationProvider extends ChangeNotifier {
     // Update challenge progress
     _updateChallengeProgress(action);
 
-    // Award the XP via Firestore
+    // Award the XP via Cloud Function (server validates the action)
     await _service.awardXp(
       userId: profile.uid,
       action: action,
@@ -84,6 +90,9 @@ class GamificationProvider extends ChangeNotifier {
       userLevel: newLevel,
       isFirstTagOnUnit: isFirstTagOnUnit,
       isNightShift: isNightShift,
+      facilityId: facilityId ?? profile.facilityId,
+      unitId: unitId ?? profile.unitId,
+      supplyId: supplyId,
     );
 
     notifyListeners();
