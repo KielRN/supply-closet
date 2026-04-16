@@ -40,8 +40,8 @@ class GamificationProvider extends ChangeNotifier {
 
   /// Award XP for an action and queue celebrations
   ///
-  /// For tag actions, pass [facilityId], [unitId], and optionally [supplyId]
-  /// so the server can verify the action actually occurred.
+  /// The server validates the action and returns the actual XP awarded.
+  /// Client uses server response for celebrations (no client-side prediction).
   Future<void> recordAction({
     required UserProfile profile,
     required GameAction action,
@@ -51,23 +51,31 @@ class GamificationProvider extends ChangeNotifier {
     String? unitId,
     String? supplyId,
   }) async {
-    final result = GamificationService.calculateXp(
+    // Update challenge progress locally (UI feedback)
+    _updateChallengeProgress(action);
+
+    // Award XP via Cloud Function — server is source of truth
+    final serverResult = await _service.awardXp(
+      userId: profile.uid,
       action: action,
       streakDays: profile.streakDays,
       userLevel: GamificationService.levelFromXp(profile.points),
       isFirstTagOnUnit: isFirstTagOnUnit,
       isNightShift: isNightShift,
+      facilityId: facilityId ?? profile.facilityId,
+      unitId: unitId ?? profile.unitId,
+      supplyId: supplyId,
     );
 
-    // Check for level up
+    // Use server-returned XP for celebrations
     final oldLevel = GamificationService.levelFromXp(profile.points);
-    final newLevel =
-        GamificationService.levelFromXp(profile.points + result.totalXp);
+    final newLevel = GamificationService.levelFromXp(
+        profile.points + serverResult.totalXp);
 
     // Queue XP burst celebration
     _celebrationQueue.add(CelebrationEvent(
       type: CelebrationType.xpAward,
-      xpResult: result,
+      xpResult: serverResult,
     ));
 
     // Queue level up if it happened
@@ -78,22 +86,6 @@ class GamificationProvider extends ChangeNotifier {
         newTitle: GamificationService.titleForLevel(newLevel),
       ));
     }
-
-    // Update challenge progress
-    _updateChallengeProgress(action);
-
-    // Award the XP via Cloud Function (server validates the action)
-    await _service.awardXp(
-      userId: profile.uid,
-      action: action,
-      streakDays: profile.streakDays,
-      userLevel: newLevel,
-      isFirstTagOnUnit: isFirstTagOnUnit,
-      isNightShift: isNightShift,
-      facilityId: facilityId ?? profile.facilityId,
-      unitId: unitId ?? profile.unitId,
-      supplyId: supplyId,
-    );
 
     notifyListeners();
   }

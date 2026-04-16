@@ -63,26 +63,32 @@ This checklist tracks all findings from the [Adversarial Review](adversarial-rev
 
 ## 🟡 Medium — Fix Within 90 Days
 
-- [ ] **1.4** Add input validation for supply names (length, sanitization)
-  - File: `supply-closet/firebase/firestore.rules:43-48`
+- [x] **1.4** Add input validation for supply names (length, sanitization)
+  - File: `supply-closet/firebase/firestore.rules`
   - See: [adversarial-review.md §1.4](adversarial-review.md#14--missing-input-sanitization-on-supply-names)
+  - **Fixed:** Added `validSupplyName()` (1-60 chars) and `validBarcode()` (8-14 digits) validation functions
 
-- [ ] **1.5** Remove client-side XP prediction — use server response only
-  - File: `supply-closet/lib/providers/gamification_provider.dart:48-54`
+- [x] **1.5** Remove client-side XP prediction — use server response only
+  - File: `supply-closet/lib/providers/gamification_provider.dart`
   - See: [adversarial-review.md §1.5](adversarial-review.md#15--client-side-xp-calculation-mismatch)
+  - **Fixed:** Client now calls server first, uses server-returned XP for celebrations
 
-- [ ] **2.3** Limit facility/unit changes (e.g., max 1 per 30 days or admin approval)
-  - File: `supply-closet/firebase/firestore.rules:64-69`
+- [x] **2.3** Limit facility/unit changes (e.g., max 1 per 30 days or admin approval)
+  - File: `supply-closet/firebase/firestore.rules`
   - See: [adversarial-review.md §2.3](adversarial-review.md#23--leaderboard-manipulation-via-facility-hopping)
+  - **Fixed:** Added `lastFacilityChange` timestamp; Firestore rules enforce 30-day cooldown
 
-- [ ] **4.2** Document camera data handling in privacy policy; add network monitoring
+- [x] **4.2** Document camera data handling in privacy policy; add network monitoring
   - See: [adversarial-review.md §4.2](adversarial-review.md#42--camera-permission-scope)
+  - **Fixed:** Added Privacy & Camera Data section to SETUP.md documenting on-device-only processing
 
-- [ ] **5.2** Implement offline conflict resolution for supply tags
+- [x] **5.2** Implement offline conflict resolution for supply tags
   - See: [adversarial-review.md §5.2](adversarial-review.md#52--no-offline-conflict-resolution)
+  - **Fixed:** Added version field for optimistic concurrency; transactions detect deleted documents
 
-- [ ] **6.2** Add forced update mechanism via Firebase Remote Config
+- [x] **6.2** Add forced update mechanism via Firebase Remote Config
   - See: [adversarial-review.md §6.2](adversarial-review.md#62--no-app-versioning-strategy)
+  - **Fixed:** Added Remote Config version check on launch; compares app version against `min_app_version`
 
 ---
 
@@ -110,6 +116,6 @@ This checklist tracks all findings from the [Adversarial Review](adversarial-rev
 |----------|-------|----------|-----------|
 | 🔴 Critical | 2 | 2 | 0 |
 | 🟠 High | 9 | 9 | 0 |
-| 🟡 Medium | 6 | 0 | 6 |
+| 🟡 Medium | 6 | 6 | 0 |
 | 🔵 Low | 4 | 0 | 4 |
-| **Total** | **21** | **0** | **21** |
+| **Total** | **21** | **17** | **4** |

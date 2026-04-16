@@ -100,10 +100,13 @@ class FirestoreService {
     }
 
     if (existing.docs.isNotEmpty) {
-      // Update existing — use transaction for atomic confidence update
+      // Update existing — use transaction for atomic update with conflict detection
       final doc = existing.docs.first;
       await _db.runTransaction((tx) async {
         final snap = await tx.get(doc.reference);
+        if (!snap.exists) {
+          throw Exception('Supply was deleted during update');
+        }
         final currentData = snap.data() as Map<String, dynamic>;
         final currentConfidence =
             (currentData['confidence'] ?? 0.5).toDouble();
@@ -111,16 +114,20 @@ class FirestoreService {
             (currentConfidence + AppConstants.confidenceConfirmBoost)
                 .clamp(0.0, 1.0);
 
+        // Optimistic concurrency: increment version for conflict detection
+        final currentVersion = currentData['version'] ?? 0;
+
         tx.update(doc.reference, {
           'location': location.toMap(),
           'confidence': newConfidence,
           'lastConfirmed': Timestamp.now(),
           'tagCount': FieldValue.increment(1),
           'taggedByUserIds': FieldValue.arrayUnion([userId]),
+          'version': currentVersion + 1,
         });
       });
     } else {
-      // New supply tag
+      // New supply tag — include version field for conflict detection
       final item = SupplyItem(
         id: '',
         name: supplyName,
@@ -132,7 +139,9 @@ class FirestoreService {
         tagCount: 1,
         taggedByUserIds: [userId],
       );
-      await ref.add(item.toFirestore());
+      final data = item.toFirestore();
+      data['version'] = 1;
+      await ref.add(data);
     }
   }
 

@@ -234,6 +234,20 @@ If you accidentally commit any of these, rotate the credentials immediately.
 
 **Firestore writes are denied** — check `firestore.rules` is deployed and your user document exists. The first sign-in creates the user doc; if that failed, the user is authed but rules block their writes.
 
+## 🔒 Privacy & Camera Data
+
+**Camera frames never leave the device.** All AR processing and barcode scanning happens on-device using:
+- ARCore (Android) / ARKit (iOS) for spatial mapping
+- Google ML Kit for barcode scanning
+- TensorFlow Lite for future supply recognition
+
+No camera images are uploaded to Firebase, GCP, or any server. The app only transmits:
+- Supply metadata (name, barcode, location coordinates)
+- User profile data (display name, facility/unit selection)
+- Gamification events (tag confirmations, XP awards)
+
+Network traffic is limited to Firestore sync and Cloud Function calls. Camera permissions are used solely for on-device AR overlay and barcode scanning.
+
 ## ⚠️ Security Notice
 
 An adversarial review identified **21 findings** across security, data integrity, and gamification exploits. **2 critical issues** (role escalation, XP farming) must be fixed before any deployment.

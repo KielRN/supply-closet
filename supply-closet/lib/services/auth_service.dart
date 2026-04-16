@@ -101,6 +101,7 @@ class AuthService {
   }
 
   /// Update facility and unit selection (onboarding)
+  /// Sets lastFacilityChange timestamp to enforce 30-day cooldown
   Future<void> updateFacilityAndUnit({
     required String facilityId,
     required String facilityName,
@@ -115,6 +116,7 @@ class AuthService {
       'facilityName': facilityName,
       'unitId': unitId,
       'unitName': unitName,
+      'lastFacilityChange': Timestamp.now(),
     });
   }
 
