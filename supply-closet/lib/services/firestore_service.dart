@@ -30,10 +30,8 @@ class FirestoreService {
   /// Search procedures by name
   Stream<List<Procedure>> searchProcedures(String query) {
     final queryLower = query.toLowerCase();
-    return _db
-        .collection(AppConstants.proceduresCollection)
-        .snapshots()
-        .map((snap) => snap.docs
+    return _db.collection(AppConstants.proceduresCollection).snapshots().map(
+        (snap) => snap.docs
             .map((doc) => Procedure.fromFirestore(doc))
             .where((p) => p.name.toLowerCase().contains(queryLower))
             .toList());
@@ -76,7 +74,7 @@ class FirestoreService {
   }
 
   /// Tag a new supply location (or update existing)
-  Future<void> tagSupply({
+  Future<TagSupplyResult> tagSupply({
     required String facilityId,
     required String unitId,
     required String roomId,
@@ -93,10 +91,7 @@ class FirestoreService {
     if (barcode != null) {
       existing = await ref.where('barcode', isEqualTo: barcode).limit(1).get();
     } else {
-      existing = await ref
-          .where('name', isEqualTo: supplyName)
-          .limit(1)
-          .get();
+      existing = await ref.where('name', isEqualTo: supplyName).limit(1).get();
     }
 
     if (existing.docs.isNotEmpty) {
@@ -108,8 +103,7 @@ class FirestoreService {
           throw Exception('Supply was deleted during update');
         }
         final currentData = snap.data() as Map<String, dynamic>;
-        final currentConfidence =
-            (currentData['confidence'] ?? 0.5).toDouble();
+        final currentConfidence = (currentData['confidence'] ?? 0.5).toDouble();
         final newConfidence =
             (currentConfidence + AppConstants.confidenceConfirmBoost)
                 .clamp(0.0, 1.0);
@@ -126,6 +120,10 @@ class FirestoreService {
           'version': currentVersion + 1,
         });
       });
+      return TagSupplyResult(
+        supplyId: doc.id,
+        action: TagSupplyAction.confirmedExisting,
+      );
     } else {
       // New supply tag — include version field for conflict detection
       final item = SupplyItem(
@@ -141,7 +139,11 @@ class FirestoreService {
       );
       final data = item.toFirestore();
       data['version'] = 1;
-      await ref.add(data);
+      final doc = await ref.add(data);
+      return TagSupplyResult(
+        supplyId: doc.id,
+        action: TagSupplyAction.createdNew,
+      );
     }
   }
 
@@ -153,24 +155,31 @@ class FirestoreService {
     required String supplyId,
     required String userId,
   }) async {
-    final ref =
-        _suppliesRef(facilityId, unitId, roomId).doc(supplyId);
-    await ref.update({
-      'confidence': FieldValue.increment(-0.15),
-      'notFoundReports': FieldValue.arrayUnion([
-        {
-          'userId': userId,
-          'timestamp': Timestamp.now(),
-        }
-      ]),
+    final ref = _suppliesRef(facilityId, unitId, roomId).doc(supplyId);
+    await _db.runTransaction((tx) async {
+      final snap = await tx.get(ref);
+      if (!snap.exists) {
+        throw Exception('Supply was deleted before it could be reported');
+      }
+      final currentData = snap.data() as Map<String, dynamic>;
+      final currentVersion = currentData['version'] ?? 0;
+      tx.update(ref, {
+        'confidence': FieldValue.increment(-0.15),
+        'notFoundReports': FieldValue.arrayUnion([
+          {
+            'userId': userId,
+            'timestamp': Timestamp.now(),
+          }
+        ]),
+        'version': currentVersion + 1,
+      });
     });
   }
 
   // ─── LEADERBOARD ─────────────────────────────────────────────
 
   /// Get top users for a unit (unit leaderboard)
-  Stream<List<UserProfile>> unitLeaderboard(
-      String facilityId, String unitId,
+  Stream<List<UserProfile>> unitLeaderboard(String facilityId, String unitId,
       {int limit = 20}) {
     return _db
         .collection(AppConstants.usersCollection)
@@ -202,11 +211,27 @@ class FirestoreService {
   Future<void> seedProcedures(List<Map<String, dynamic>> procedures) async {
     final batch = _db.batch();
     for (final proc in procedures) {
-      final ref = _db
-          .collection(AppConstants.proceduresCollection)
-          .doc(proc['id']);
+      final ref =
+          _db.collection(AppConstants.proceduresCollection).doc(proc['id']);
       batch.set(ref, proc, SetOptions(merge: true));
     }
     await batch.commit();
   }
+}
+
+enum TagSupplyAction {
+  createdNew,
+  confirmedExisting,
+}
+
+class TagSupplyResult {
+  final String supplyId;
+  final TagSupplyAction action;
+
+  const TagSupplyResult({
+    required this.supplyId,
+    required this.action,
+  });
+
+  bool get createdNew => action == TagSupplyAction.createdNew;
 }

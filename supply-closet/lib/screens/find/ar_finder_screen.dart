@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
+import 'package:ar_flutter_plugin/ar_flutter_plugin.dart';
+import 'package:ar_flutter_plugin/datatypes/config_planedetection.dart';
+import 'package:ar_flutter_plugin/managers/ar_anchor_manager.dart';
+import 'package:ar_flutter_plugin/managers/ar_location_manager.dart';
+import 'package:ar_flutter_plugin/managers/ar_object_manager.dart';
+import 'package:ar_flutter_plugin/managers/ar_session_manager.dart';
+import 'package:vector_math/vector_math_64.dart' show Matrix4, Vector3;
 import '../../config/theme.dart';
 import '../../config/constants.dart';
 import '../../models/supply_item.dart';
@@ -30,18 +38,25 @@ class ArFinderScreen extends StatefulWidget {
 class _ArFinderScreenState extends State<ArFinderScreen> {
   final _firestore = FirestoreService();
   final Set<String> _foundSupplyIds = {};
-  bool _arSupported = true; // toggled by AR init
-  String? _activeFilter;
+  ARSessionManager? _arSessionManager;
+  bool _arSupported = true;
+  bool _arReady = false;
+  bool _originSet = false;
+  bool _settingOrigin = false;
+  Matrix4? _originPose;
 
   @override
   void initState() {
     super.initState();
-    _activeFilter = widget.targetSupplyNames?.isNotEmpty == true
-        ? widget.targetSupplyNames!.first
-        : null;
-    // Real implementation initializes ARSessionManager from ar_flutter_plugin
-    // and registers anchor placement callbacks. We default to AR-supported
-    // and let the build method gracefully degrade if needed.
+    _arSupported = !kIsWeb &&
+        (defaultTargetPlatform == TargetPlatform.android ||
+            defaultTargetPlatform == TargetPlatform.iOS);
+  }
+
+  @override
+  void dispose() {
+    _arSessionManager?.dispose();
+    super.dispose();
   }
 
   @override
@@ -66,6 +81,7 @@ class _ArFinderScreenState extends State<ArFinderScreen> {
             children: [
               _buildArView(),
               ..._buildOverlayMarkers(supplies),
+              _buildOriginPrompt(),
               _buildTopBar(context, supplies),
               _buildBottomChecklist(context, profile.uid, supplies),
             ],
@@ -76,8 +92,7 @@ class _ArFinderScreenState extends State<ArFinderScreen> {
   }
 
   List<SupplyItem> _filterSupplies(List<SupplyItem> all) {
-    if (widget.targetSupplyNames == null ||
-        widget.targetSupplyNames!.isEmpty) {
+    if (widget.targetSupplyNames == null || widget.targetSupplyNames!.isEmpty) {
       return all;
     }
     final targets = widget.targetSupplyNames!.map((n) => n.toLowerCase());
@@ -102,36 +117,100 @@ class _ArFinderScreenState extends State<ArFinderScreen> {
         ),
       );
     }
-    // In production, this is the ARView from ar_flutter_plugin with
-    // onArViewCreated wired to ARSessionManager + anchor management.
-    // Placeholder gradient simulates the camera feed for now.
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Colors.grey.shade800, Colors.grey.shade900],
-        ),
+    return Positioned.fill(
+      child: ARView(
+        onARViewCreated: _onARViewCreated,
+        planeDetectionConfig: PlaneDetectionConfig.horizontalAndVertical,
+        permissionPromptDescription:
+            'Camera access is needed to use AR finder.',
+        permissionPromptButtonText: 'Enable camera',
       ),
-      child: const Center(
-        child: Icon(Icons.camera_alt_outlined,
-            size: 64, color: Colors.white24),
+    );
+  }
+
+  void _onARViewCreated(
+    ARSessionManager sessionManager,
+    ARObjectManager objectManager,
+    ARAnchorManager anchorManager,
+    ARLocationManager locationManager,
+  ) {
+    _arSessionManager = sessionManager;
+    sessionManager.onInitialize(
+      showAnimatedGuide: true,
+      showFeaturePoints: false,
+      showPlanes: true,
+      showWorldOrigin: false,
+      handleTaps: true,
+    );
+    objectManager.onInitialize();
+    if (mounted) {
+      setState(() => _arReady = true);
+    }
+  }
+
+  Future<void> _setStartPoint() async {
+    if (_arSessionManager == null || _settingOrigin) return;
+    setState(() => _settingOrigin = true);
+    final pose = await _arSessionManager!.getCameraPose();
+    if (!mounted) return;
+    setState(() {
+      _originPose = pose;
+      _originSet = pose != null;
+      _settingOrigin = false;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          pose == null
+              ? 'AR is still finding the room. Try again in a moment.'
+              : 'Start point set from the closet entrance.',
+        ),
+        backgroundColor: pose == null
+            ? SupplyClosetColors.warning
+            : SupplyClosetColors.success,
+      ),
+    );
+  }
+
+  Widget _buildOriginPrompt() {
+    if (!_arSupported) return const SizedBox.shrink();
+    final top = MediaQuery.of(context).padding.top + 68;
+    return Positioned(
+      top: top,
+      left: 16,
+      right: 16,
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 200),
+        child: _originSet
+            ? _ArStatusPill(
+                key: const ValueKey('origin-set'),
+                icon: Icons.my_location,
+                label: 'Entrance start set',
+                actionLabel: 'Recenter',
+                onPressed: _setStartPoint,
+              )
+            : _ArStatusPill(
+                key: const ValueKey('origin-needed'),
+                icon: _arReady ? Icons.door_front_door : Icons.view_in_ar,
+                label: _arReady
+                    ? 'Stand at entrance, face shelves'
+                    : 'Starting AR session',
+                actionLabel: _settingOrigin ? 'Setting...' : 'Set Start',
+                onPressed: _arReady && !_settingOrigin ? _setStartPoint : null,
+              ),
       ),
     );
   }
 
   List<Widget> _buildOverlayMarkers(List<SupplyItem> supplies) {
-    // Real impl: project 3D anchor positions to screen space.
-    // For Phase 1 we render markers in a grid based on relative confidence.
     return supplies.asMap().entries.take(8).map((entry) {
       final i = entry.key;
       final supply = entry.value;
       final isFound = _foundSupplyIds.contains(supply.id);
-      final col = i % 3;
-      final row = i ~/ 3;
+      final markerOffset = _markerOffsetFor(supply, i);
       return Positioned(
-        left: 40 + col * 100.0,
-        top: 140 + row * 90.0,
+        left: markerOffset.dx,
+        top: markerOffset.dy,
         child: _ArMarker(
           supply: supply,
           isFound: isFound,
@@ -139,6 +218,26 @@ class _ArFinderScreenState extends State<ArFinderScreen> {
         ),
       );
     }).toList();
+  }
+
+  Offset _markerOffsetFor(SupplyItem supply, int index) {
+    final size = MediaQuery.of(context).size;
+    if (_originSet && _originPose != null) {
+      final relative = Vector3(
+        supply.location.x,
+        supply.location.y,
+        supply.location.z,
+      );
+      final x = (size.width / 2) + (relative.x * 90);
+      final y = (size.height * 0.35) - (relative.y * 55) + (relative.z * 35);
+      return Offset(
+        x.clamp(24.0, size.width - 132.0),
+        y.clamp(112.0, size.height - 260.0),
+      );
+    }
+    final col = index % 3;
+    final row = index ~/ 3;
+    return Offset(40 + col * 100.0, 150 + row * 90.0);
   }
 
   void _onMarkerTap(SupplyItem supply) {
@@ -154,10 +253,10 @@ class _ArFinderScreenState extends State<ArFinderScreen> {
           game.recordAction(
             profile: auth.profile!,
             action: GameAction.confirmExisting,
-            isNightShift:
-                DateTime.now().hour >= 19 || DateTime.now().hour < 7,
+            isNightShift: DateTime.now().hour >= 19 || DateTime.now().hour < 7,
             facilityId: auth.profile!.facilityId,
             unitId: auth.profile!.unitId,
+            roomId: AppConstants.defaultRoomId,
             supplyId: supply.id,
           );
         }
@@ -166,7 +265,8 @@ class _ArFinderScreenState extends State<ArFinderScreen> {
   }
 
   Widget _buildTopBar(BuildContext context, List<SupplyItem> supplies) {
-    final foundCount = supplies.where((s) => _foundSupplyIds.contains(s.id)).length;
+    final foundCount =
+        supplies.where((s) => _foundSupplyIds.contains(s.id)).length;
     return Positioned(
       top: MediaQuery.of(context).padding.top + 12,
       left: 16,
@@ -186,7 +286,8 @@ class _ArFinderScreenState extends State<ArFinderScreen> {
             ),
             child: Row(
               children: [
-                Icon(Icons.check_circle, color: SupplyClosetColors.success, size: 18),
+                Icon(Icons.check_circle,
+                    color: SupplyClosetColors.success, size: 18),
                 const SizedBox(width: 8),
                 Text(
                   '$foundCount / ${supplies.length}',
@@ -296,14 +397,15 @@ class _ArFinderScreenState extends State<ArFinderScreen> {
     await _firestore.reportNotFound(
       facilityId: profile.facilityId!,
       unitId: profile.unitId!,
-      roomId: 'main',
+      roomId: AppConstants.defaultRoomId,
       supplyId: supply.id,
       userId: userId,
     );
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Marked "${supply.name}" as not found at this location'),
+          content:
+              Text('Marked "${supply.name}" as not found at this location'),
           backgroundColor: SupplyClosetColors.warning,
         ),
       );
@@ -349,8 +451,7 @@ class _ArFinderScreenState extends State<ArFinderScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.location_off,
-                  size: 64, color: Colors.grey.shade400),
+              Icon(Icons.location_off, size: 64, color: Colors.grey.shade400),
               const SizedBox(height: 16),
               const Text('Set your unit first',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
@@ -397,12 +498,12 @@ class _ArMarker extends StatelessWidget {
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: color.withOpacity(0.9),
+              color: color.withValues(alpha: 0.9),
               shape: BoxShape.circle,
               border: Border.all(color: Colors.white, width: 3),
               boxShadow: [
                 BoxShadow(
-                  color: color.withOpacity(0.5),
+                  color: color.withValues(alpha: 0.5),
                   blurRadius: 12,
                   spreadRadius: 2,
                 ),
@@ -427,7 +528,9 @@ class _ArMarker extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
-                  color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600),
+                  color: Colors.white,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -437,6 +540,65 @@ class _ArMarker extends StatelessWidget {
 }
 
 // ─── Bottom sheet list tile ────────────────────────────────────────
+
+class _ArStatusPill extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String actionLabel;
+  final VoidCallback? onPressed;
+
+  const _ArStatusPill({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.actionLabel,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.62),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.white24),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.white, size: 20),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 13,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          TextButton(
+            onPressed: onPressed,
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.white,
+              backgroundColor: SupplyClosetColors.teal,
+              minimumSize: const Size(88, 36),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+            ),
+            child: Text(actionLabel),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class _SupplyListTile extends StatelessWidget {
   final SupplyItem supply;
@@ -466,15 +628,12 @@ class _SupplyListTile extends StatelessWidget {
                 : SupplyClosetColors.warmWhite,
             shape: BoxShape.circle,
             border: Border.all(
-              color: isFound
-                  ? SupplyClosetColors.success
-                  : Colors.grey.shade300,
+              color:
+                  isFound ? SupplyClosetColors.success : Colors.grey.shade300,
               width: 2,
             ),
           ),
-          child: isFound
-              ? const Icon(Icons.check, color: Colors.white)
-              : null,
+          child: isFound ? const Icon(Icons.check, color: Colors.white) : null,
         ),
       ),
       title: Text(

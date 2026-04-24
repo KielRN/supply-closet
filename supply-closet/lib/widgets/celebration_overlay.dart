@@ -83,7 +83,7 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
         return Opacity(
           opacity: _exitOpacityAnim.value,
           child: Material(
-            color: Colors.black.withOpacity(0.6 * _opacityAnim.value),
+            color: Colors.black.withValues(alpha: 0.6 * _opacityAnim.value),
             child: GestureDetector(
               onTap: () {
                 _exitCtrl.forward().then((_) => widget.onDismiss());
@@ -108,7 +108,8 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
           level: widget.event.newLevel!,
           title: widget.event.newTitle!,
         ),
-      CelebrationType.badgeReveal => _BadgeRevealCard(badge: widget.event.badge!),
+      CelebrationType.badgeReveal =>
+        _BadgeRevealCard(badge: widget.event.badge!),
       CelebrationType.challengeComplete =>
         _ChallengeCompleteCard(challenge: widget.event.challenge!),
       CelebrationType.streakMilestone => const SizedBox.shrink(),
@@ -133,7 +134,7 @@ class _XpBurstCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: SupplyClosetColors.teal.withOpacity(0.5),
+            color: SupplyClosetColors.teal.withValues(alpha: 0.5),
             blurRadius: 30,
             spreadRadius: 4,
           ),
@@ -196,8 +197,8 @@ class _LevelUpCard extends StatelessWidget {
                   begin: Alignment.center,
                   end: Alignment.topCenter,
                   colors: [
-                    Colors.amber.withOpacity(0.0),
-                    Colors.amber.withOpacity(0.8),
+                    Colors.amber.withValues(alpha: 0.0),
+                    Colors.amber.withValues(alpha: 0.8),
                   ],
                 ),
               ),
@@ -211,7 +212,7 @@ class _LevelUpCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: Colors.amber.withOpacity(0.6),
+                color: Colors.amber.withValues(alpha: 0.6),
                 blurRadius: 40,
                 spreadRadius: 8,
               ),
@@ -240,7 +241,7 @@ class _LevelUpCard extends StatelessWidget {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.amber.withOpacity(0.5),
+                      color: Colors.amber.withValues(alpha: 0.5),
                       blurRadius: 20,
                     ),
                   ],
@@ -300,7 +301,7 @@ class _BadgeRevealCard extends StatelessWidget {
         border: Border.all(color: rarityColor, width: 3),
         boxShadow: [
           BoxShadow(
-            color: rarityColor.withOpacity(0.6),
+            color: rarityColor.withValues(alpha: 0.6),
             blurRadius: 40,
             spreadRadius: 4,
           ),
@@ -335,13 +336,13 @@ class _BadgeRevealCard extends StatelessWidget {
               shape: BoxShape.circle,
               gradient: RadialGradient(
                 colors: [
-                  rarityColor.withOpacity(0.9),
+                  rarityColor.withValues(alpha: 0.9),
                   rarityColor,
                 ],
               ),
               boxShadow: [
                 BoxShadow(
-                  color: rarityColor.withOpacity(0.5),
+                  color: rarityColor.withValues(alpha: 0.5),
                   blurRadius: 30,
                   spreadRadius: 6,
                 ),
@@ -420,7 +421,7 @@ class _ChallengeCompleteCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: SupplyClosetColors.success.withOpacity(0.5),
+            color: SupplyClosetColors.success.withValues(alpha: 0.5),
             blurRadius: 30,
             spreadRadius: 4,
           ),

@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import '../config/constants.dart';
 import '../models/user_profile.dart';
@@ -18,25 +17,23 @@ import '../models/user_profile.dart';
 /// Even a 10-second tag should produce visible XP movement.
 
 class GamificationService {
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
-
   // ─── XP & LEVELING SYSTEM ────────────────────────────────────
 
   /// XP thresholds for each level (RPG-style curve)
   static const List<int> levelThresholds = [
-    0,      // Level 1: New Nurse
-    100,    // Level 2: Scout
-    300,    // Level 3: Pathfinder
-    600,    // Level 4: Explorer
-    1000,   // Level 5: Supply Pro
-    1500,   // Level 6: Floor Expert
-    2200,   // Level 7: Unit Champion
-    3000,   // Level 8: Supply Veteran
-    4000,   // Level 9: Master Tagger
-    5000,   // Level 10: Supply Sensei
-    6500,   // Level 11: Legend
-    8000,   // Level 12: Mythic
-    10000,  // Level 13: Transcendent
+    0, // Level 1: New Nurse
+    100, // Level 2: Scout
+    300, // Level 3: Pathfinder
+    600, // Level 4: Explorer
+    1000, // Level 5: Supply Pro
+    1500, // Level 6: Floor Expert
+    2200, // Level 7: Unit Champion
+    3000, // Level 8: Supply Veteran
+    4000, // Level 9: Master Tagger
+    5000, // Level 10: Supply Sensei
+    6500, // Level 11: Legend
+    8000, // Level 12: Mythic
+    10000, // Level 13: Transcendent
   ];
 
   static const List<String> levelTitles = [
@@ -456,7 +453,8 @@ class GamificationService {
 
     if (isFirstTagOnUnit) {
       bonusXp += AppConstants.pointsFirstTagOnUnit;
-      bonusReasons.add('First tag on this unit! +${AppConstants.pointsFirstTagOnUnit}');
+      bonusReasons
+          .add('First tag on this unit! +${AppConstants.pointsFirstTagOnUnit}');
     }
 
     if (isNightShift && action == GameAction.tagNew) {
@@ -470,8 +468,7 @@ class GamificationService {
     final streakBonus = multipliedXp - (baseXp + bonusXp);
 
     if (streakBonus > 0) {
-      bonusReasons.add(
-          '${multiplier}x streak multiplier +$streakBonus');
+      bonusReasons.add('${multiplier}x streak multiplier +$streakBonus');
     }
 
     return XpAwardResult(
@@ -497,6 +494,7 @@ class GamificationService {
     bool isNightShift = false,
     String? facilityId,
     String? unitId,
+    String? roomId,
     String? supplyId,
   }) async {
     // Map client action enum to server action string
@@ -505,6 +503,10 @@ class GamificationService {
       GameAction.confirmExisting => 'confirmExisting',
       GameAction.completeProcedure => 'completeProcedure',
       GameAction.reportNotFound => 'reportNotFound',
+      GameAction.completeChallenge ||
+      GameAction.earnBadge =>
+        throw ArgumentError(
+            'Action $action is server-driven; clients cannot award it'),
     };
 
     final callable = FirebaseFunctions.instance.httpsCallable('awardXp');
@@ -514,16 +516,15 @@ class GamificationService {
       'isNightShift': isNightShift,
       'facilityId': facilityId,
       'unitId': unitId,
+      'roomId': roomId,
       'supplyId': supplyId,
     });
 
     final data = response.data as Map<String, dynamic>;
     final xpAwarded = data['xpAwarded'] as int? ?? 0;
 
-    return XpAwardResult(
-      baseXp: xpAwarded,
-      streakMultiplier: 1.0, // server handles this
-      totalXp: xpAwarded,
+    return XpAwardResult.fromServer(
+      xp: xpAwarded,
       newBadges: List<String>.from(data['newBadges'] ?? []),
     );
   }
@@ -598,8 +599,7 @@ class GamificationService {
       return SeasonalEvent(
         id: 'nurses_week',
         name: 'Nurses Week Special',
-        description:
-            'Happy Nurses Week! All XP is doubled. You deserve it.',
+        description: 'Happy Nurses Week! All XP is doubled. You deserve it.',
         xpMultiplier: 2.0,
         targetCategories: null, // All categories
         startDate: DateTime(now.year, 5, 6),
@@ -663,6 +663,7 @@ class XpAwardResult {
   final int totalXp;
   final double multiplier;
   final List<String> bonusReasons;
+  final List<String> newBadges;
 
   XpAwardResult({
     required this.baseXp,
@@ -671,7 +672,18 @@ class XpAwardResult {
     required this.totalXp,
     required this.multiplier,
     required this.bonusReasons,
+    this.newBadges = const [],
   });
+
+  XpAwardResult.fromServer({
+    required int xp,
+    required this.newBadges,
+  })  : baseXp = xp,
+        bonusXp = 0,
+        streakBonus = 0,
+        totalXp = xp,
+        multiplier = 1.0,
+        bonusReasons = const [];
 
   bool get hasBonuses => bonusReasons.isNotEmpty;
 }
@@ -714,8 +726,7 @@ class DailyChallenge {
   });
 
   bool get isComplete => currentProgress >= targetCount;
-  double get progress =>
-      (currentProgress / targetCount).clamp(0.0, 1.0);
+  double get progress => (currentProgress / targetCount).clamp(0.0, 1.0);
 }
 
 class UnitChallenge {
@@ -738,8 +749,7 @@ class UnitChallenge {
   });
 
   bool get isComplete => currentProgress >= targetCount;
-  double get progress =>
-      (currentProgress / targetCount).clamp(0.0, 1.0);
+  double get progress => (currentProgress / targetCount).clamp(0.0, 1.0);
 }
 
 class SeasonalEvent {
@@ -768,8 +778,7 @@ class SeasonalEvent {
     return now.isAfter(startDate) && now.isBefore(endDate);
   }
 
-  int get daysRemaining =>
-      endDate.difference(DateTime.now()).inDays;
+  int get daysRemaining => endDate.difference(DateTime.now()).inDays;
 }
 
 class GameBadge {
@@ -791,11 +800,11 @@ class GameBadge {
 
   /// Rarity color for UI rendering
   int get rarityColor => switch (rarity) {
-        BadgeRarity.common => 0xFF94A3B8,     // Slate
-        BadgeRarity.uncommon => 0xFF22C55E,    // Green
-        BadgeRarity.rare => 0xFF3B82F6,        // Blue
-        BadgeRarity.epic => 0xFF8B5CF6,        // Purple
-        BadgeRarity.legendary => 0xFFFFD700,   // Gold
+        BadgeRarity.common => 0xFF94A3B8, // Slate
+        BadgeRarity.uncommon => 0xFF22C55E, // Green
+        BadgeRarity.rare => 0xFF3B82F6, // Blue
+        BadgeRarity.epic => 0xFF8B5CF6, // Purple
+        BadgeRarity.legendary => 0xFFFFD700, // Gold
       };
 
   String get rarityLabel => switch (rarity) {

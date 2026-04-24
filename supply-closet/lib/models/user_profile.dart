@@ -87,8 +87,7 @@ class UserProfile {
   }
 
   /// Whether the user has completed onboarding (selected facility + unit)
-  bool get hasCompletedOnboarding =>
-      facilityId != null && unitId != null;
+  bool get hasCompletedOnboarding => facilityId != null && unitId != null;
 
   /// Rank title based on total points
   String get rankTitle {

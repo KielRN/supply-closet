@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/auth_provider.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/home/home_screen.dart';
 import '../screens/procedures/procedure_list_screen.dart';
 import '../screens/procedures/procedure_detail_screen.dart';
-import '../screens/ar/ar_finder_screen.dart';
+import '../screens/find/ar_finder_screen.dart';
 import '../screens/tag/tag_supply_screen.dart';
 import '../screens/leaderboard/leaderboard_screen.dart';
 import '../screens/profile/profile_screen.dart';

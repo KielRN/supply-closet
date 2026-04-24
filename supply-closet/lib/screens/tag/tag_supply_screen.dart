@@ -68,7 +68,7 @@ class _TagSupplyScreenState extends State<TagSupplyScreen> {
       final binStr = _binController.text.trim();
       final bin = int.tryParse(binStr);
 
-      await fs.tagSupply(
+      final tagResult = await fs.tagSupply(
         facilityId: profile.facilityId!,
         unitId: profile.unitId!,
         roomId: roomId,
@@ -89,11 +89,15 @@ class _TagSupplyScreenState extends State<TagSupplyScreen> {
       // Pass facility/unit/supply IDs so the server can verify the tag
       await game.recordAction(
         profile: profile,
-        action: GameAction.tagNew,
+        action: tagResult.createdNew
+            ? GameAction.tagNew
+            : GameAction.confirmExisting,
         isFirstTagOnUnit: _isFirstTagOnUnit,
         isNightShift: _isNightShift(),
         facilityId: profile.facilityId,
         unitId: profile.unitId,
+        roomId: roomId,
+        supplyId: tagResult.supplyId,
       );
 
       // Log analytics event
@@ -103,6 +107,7 @@ class _TagSupplyScreenState extends State<TagSupplyScreen> {
           'supply_name': _supplyName ?? 'unknown',
           'has_barcode': _barcode != null,
           'is_first_tag': _isFirstTagOnUnit,
+          'tag_action': tagResult.createdNew ? 'created' : 'confirmed',
         },
       );
 
@@ -254,8 +259,9 @@ class _StepIndicator extends StatelessWidget {
 // ─── Step 1: Identify ──────────────────────────────────────────────
 
 class _IdentifyStep extends StatefulWidget {
-  final void Function(String name, String? category, String? size,
-      String? barcode) onIdentified;
+  final void Function(
+          String name, String? category, String? size, String? barcode)
+      onIdentified;
 
   const _IdentifyStep({super.key, required this.onIdentified});
 
@@ -471,15 +477,14 @@ class _LocateStep extends StatelessWidget {
               padding: const EdgeInsets.all(12),
               child: Row(
                 children: [
-                  Icon(Icons.lightbulb_outline,
-                      color: SupplyClosetColors.teal),
+                  Icon(Icons.lightbulb_outline, color: SupplyClosetColors.teal),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       'Tip: Stand in front of the bin while tagging — '
                       'we use your phone to refine the location for AR.',
-                      style: TextStyle(
-                          fontSize: 13, color: Colors.grey.shade800),
+                      style:
+                          TextStyle(fontSize: 13, color: Colors.grey.shade800),
                     ),
                   ),
                 ],
@@ -531,8 +536,7 @@ class _ConfirmStep extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('Confirm tag',
-              style: Theme.of(context).textTheme.headlineSmall),
+          Text('Confirm tag', style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 16),
           Card(
             child: Padding(
@@ -559,12 +563,11 @@ class _ConfirmStep extends StatelessWidget {
                           children: [
                             Text(name,
                                 style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600)),
+                                    fontSize: 18, fontWeight: FontWeight.w600)),
                             if (size != null)
                               Text(size!,
-                                  style: TextStyle(
-                                      color: Colors.grey.shade600)),
+                                  style:
+                                      TextStyle(color: Colors.grey.shade600)),
                           ],
                         ),
                       ),
@@ -583,7 +586,7 @@ class _ConfirmStep extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: SupplyClosetColors.tealLight.withOpacity(0.15),
+              color: SupplyClosetColors.tealLight.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -626,8 +629,7 @@ class _ConfirmStep extends StatelessWidget {
           SizedBox(
               width: 80,
               child: Text(key,
-                  style: TextStyle(
-                      color: Colors.grey.shade600, fontSize: 13))),
+                  style: TextStyle(color: Colors.grey.shade600, fontSize: 13))),
           Expanded(
               child: Text(value,
                   style: const TextStyle(fontWeight: FontWeight.w500))),

@@ -31,7 +31,8 @@ class ProcedureProvider extends ChangeNotifier {
     }
     if (_searchQuery.isNotEmpty) {
       final q = _searchQuery.toLowerCase();
-      filtered = filtered.where((p) => p.name.toLowerCase().contains(q)).toList();
+      filtered =
+          filtered.where((p) => p.name.toLowerCase().contains(q)).toList();
     }
     return filtered;
   }
@@ -50,7 +51,8 @@ class ProcedureProvider extends ChangeNotifier {
 
     // Load from local seed JSON for instant UX
     try {
-      final raw = await rootBundle.loadString('assets/data/seed_procedures.json');
+      final raw =
+          await rootBundle.loadString('assets/data/seed_procedures.json');
       final List<dynamic> data = json.decode(raw);
       _procedures = data.map((j) => Procedure.fromJson(j)).toList();
       notifyListeners();

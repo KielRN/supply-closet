@@ -33,8 +33,8 @@ class SupplyItem {
       category: data['category'],
       location: SupplyLocation.fromMap(data['location'] ?? {}),
       confidence: (data['confidence'] ?? 0.5).toDouble(),
-      lastConfirmed: (data['lastConfirmed'] as Timestamp?)?.toDate() ??
-          DateTime.now(),
+      lastConfirmed:
+          (data['lastConfirmed'] as Timestamp?)?.toDate() ?? DateTime.now(),
       tagCount: data['tagCount'] ?? 0,
       taggedByUserIds: List<String>.from(data['taggedByUserIds'] ?? []),
     );
@@ -58,8 +58,7 @@ class SupplyItem {
 
   /// Whether this item's location data is stale and needs reconfirmation
   bool get isStale {
-    final daysSinceConfirmed =
-        DateTime.now().difference(lastConfirmed).inDays;
+    final daysSinceConfirmed = DateTime.now().difference(lastConfirmed).inDays;
     return daysSinceConfirmed > 7;
   }
 

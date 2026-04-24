@@ -91,8 +91,7 @@ class _ProcedureListScreenState extends State<ProcedureListScreen> {
                       ],
                     ),
                     const SizedBox(height: 20),
-                    if (profile != null)
-                      XpBar(currentXp: profile.points),
+                    if (profile != null) XpBar(currentXp: profile.points),
                   ],
                 ),
               ),
@@ -206,8 +205,7 @@ class _SectionHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title,
-            style:
-                const TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
         const SizedBox(height: 2),
         Text(subtitle,
             style: const TextStyle(
@@ -247,7 +245,7 @@ class _ProcedureTile extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: SupplyClosetColors.teal.withOpacity(0.1),
+                  color: SupplyClosetColors.teal.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(Icons.medical_services_rounded,
@@ -299,7 +297,7 @@ class _SeasonalEventBanner extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.25),
+              color: Colors.white.withValues(alpha: 0.25),
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(Icons.event_rounded, color: Colors.white),
@@ -315,7 +313,7 @@ class _SeasonalEventBanner extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.25),
+                        color: Colors.white.withValues(alpha: 0.25),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
@@ -350,7 +348,7 @@ class _SeasonalEventBanner extends StatelessWidget {
                 Text(
                   event.description,
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withValues(alpha: 0.9),
                     fontSize: 12,
                   ),
                 ),

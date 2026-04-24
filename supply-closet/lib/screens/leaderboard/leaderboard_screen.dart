@@ -71,8 +71,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.leaderboard,
-                size: 64, color: Colors.grey.shade400),
+            Icon(Icons.leaderboard, size: 64, color: Colors.grey.shade400),
             const SizedBox(height: 12),
             const Text('Pick your unit to see rankings',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
@@ -128,8 +127,7 @@ class _FacilityTab extends StatelessWidget {
         }
         final users = snapshot.data!;
         if (users.isEmpty) {
-          return const Center(
-              child: Text('No tags yet at this facility.'));
+          return const Center(child: Text('No tags yet at this facility.'));
         }
         return _buildLeaderboardList(context, users, profile.uid,
             subtitle: profile.facilityName ?? 'Your hospital');
@@ -188,7 +186,8 @@ class _UnitVsUnitTab extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          _UnitVsUnitRow(name: profile.unitName ?? 'Your Unit', tags: 142, isYours: true),
+          _UnitVsUnitRow(
+              name: profile.unitName ?? 'Your Unit', tags: 142, isYours: true),
           _UnitVsUnitRow(name: 'ICU', tags: 128),
           _UnitVsUnitRow(name: 'Med-Surg 5', tags: 97),
           _UnitVsUnitRow(name: 'ED', tags: 86),
@@ -212,7 +211,9 @@ class _UnitVsUnitRow extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 6),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: isYours ? SupplyClosetColors.tealLight.withOpacity(0.15) : null,
+        color: isYours
+            ? SupplyClosetColors.tealLight.withValues(alpha: 0.15)
+            : null,
         border: Border.all(
           color: isYours ? SupplyClosetColors.teal : Colors.grey.shade200,
           width: isYours ? 2 : 1,
@@ -231,8 +232,7 @@ class _UnitVsUnitRow extends StatelessWidget {
           ),
           Text('$tags tags',
               style: TextStyle(
-                  color: SupplyClosetColors.teal,
-                  fontWeight: FontWeight.w600)),
+                  color: SupplyClosetColors.teal, fontWeight: FontWeight.w600)),
         ],
       ),
     );
@@ -254,8 +254,7 @@ Widget _buildLeaderboardList(
           children: [
             Text(subtitle,
                 style: TextStyle(
-                    color: Colors.grey.shade700,
-                    fontWeight: FontWeight.w500)),
+                    color: Colors.grey.shade700, fontWeight: FontWeight.w500)),
             const Spacer(),
             Text('${users.length} ranked',
                 style: TextStyle(color: Colors.grey.shade600)),
@@ -351,8 +350,7 @@ class _PodiumColumn extends StatelessWidget {
               user.photoUrl != null ? NetworkImage(user.photoUrl!) : null,
           child: user.photoUrl == null
               ? Text(user.displayName.substring(0, 1).toUpperCase(),
-                  style: const TextStyle(
-                      color: Colors.white, fontSize: 22))
+                  style: const TextStyle(color: Colors.white, fontSize: 22))
               : null,
         ),
         const SizedBox(height: 6),
@@ -373,8 +371,8 @@ class _PodiumColumn extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                _medalColor().withOpacity(0.7),
-                _medalColor().withOpacity(0.4),
+                _medalColor().withValues(alpha: 0.7),
+                _medalColor().withValues(alpha: 0.4),
               ],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -415,7 +413,7 @@ class _LeaderboardRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: isCurrentUser
-            ? SupplyClosetColors.tealLight.withOpacity(0.15)
+            ? SupplyClosetColors.tealLight.withValues(alpha: 0.15)
             : null,
         borderRadius: BorderRadius.circular(12),
         border: isCurrentUser
@@ -493,8 +491,7 @@ class _LeaderboardRow extends StatelessWidget {
                   style: const TextStyle(
                       fontWeight: FontWeight.w700, fontSize: 16)),
               Text('XP',
-                  style:
-                      TextStyle(color: Colors.grey.shade500, fontSize: 11)),
+                  style: TextStyle(color: Colors.grey.shade500, fontSize: 11)),
             ],
           ),
         ],

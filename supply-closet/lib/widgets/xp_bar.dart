@@ -22,8 +22,7 @@ class XpBar extends StatefulWidget {
   State<XpBar> createState() => _XpBarState();
 }
 
-class _XpBarState extends State<XpBar>
-    with SingleTickerProviderStateMixin {
+class _XpBarState extends State<XpBar> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _progressAnim;
 
@@ -145,7 +144,8 @@ class _XpBarState extends State<XpBar>
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: SupplyClosetColors.teal.withOpacity(0.4),
+                            color:
+                                SupplyClosetColors.teal.withValues(alpha: 0.4),
                             blurRadius: 8,
                             spreadRadius: 1,
                           ),

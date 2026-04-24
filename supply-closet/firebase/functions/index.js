@@ -150,8 +150,15 @@ exports.awardXp = onCall({region: "us-central1"}, async (request) => {
     throw new HttpsError("unauthenticated", "Sign in required.");
   }
   const uid = request.auth.uid;
-  const {action, isFirstTagOnUnit, isNightShift, supplyId, facilityId, unitId} =
-      request.data || {};
+  const {
+    action,
+    isFirstTagOnUnit,
+    isNightShift,
+    supplyId,
+    facilityId,
+    unitId,
+    roomId,
+  } = request.data || {};
   if (!action || !POINTS[action]) {
     throw new HttpsError("invalid-argument", "Unknown action");
   }
@@ -190,7 +197,13 @@ exports.awardXp = onCall({region: "us-central1"}, async (request) => {
         );
       }
       // Check that this user recently tagged a supply in their unit
-      const recentTag = await _verifyRecentTag(uid, facilityId, unitId, supplyId);
+      const recentTag = await _verifyRecentTag(
+          uid,
+          facilityId,
+          unitId,
+          roomId || "main",
+          supplyId,
+      );
       if (!recentTag) {
         throw new HttpsError(
             "failed-precondition",
@@ -236,13 +249,13 @@ exports.awardXp = onCall({region: "us-central1"}, async (request) => {
  * Checks the supply document for the user's ID in taggedByUserIds
  * and confirms the tag was created/updated within the last 60 seconds.
  */
-async function _verifyRecentTag(uid, facilityId, unitId, supplyId) {
+async function _verifyRecentTag(uid, facilityId, unitId, roomId, supplyId) {
   // If a specific supplyId is provided, check that one
   if (supplyId) {
     const supplyRef = db
         .collection("facilities").doc(facilityId)
         .collection("units").doc(unitId)
-        .collection("supplyRooms").doc("main")
+        .collection("supplyRooms").doc(roomId)
         .collection("supplies").doc(supplyId);
     const doc = await supplyRef.get();
     if (!doc.exists) return false;
@@ -257,7 +270,7 @@ async function _verifyRecentTag(uid, facilityId, unitId, supplyId) {
   const suppliesRef = db
       .collection("facilities").doc(facilityId)
       .collection("units").doc(unitId)
-      .collection("supplyRooms").doc("main")
+      .collection("supplyRooms").doc(roomId)
       .collection("supplies")
       .where("taggedByUserIds", "array-contains", uid)
       .orderBy("lastConfirmed", "desc")

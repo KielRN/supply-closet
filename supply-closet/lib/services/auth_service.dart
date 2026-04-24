@@ -47,9 +47,7 @@ class AuthService {
 
   /// Get existing profile or create a new one
   Future<UserProfile> _getOrCreateProfile(User user) async {
-    final docRef = _db
-        .collection(AppConstants.usersCollection)
-        .doc(user.uid);
+    final docRef = _db.collection(AppConstants.usersCollection).doc(user.uid);
     final doc = await docRef.get();
 
     if (doc.exists) {
@@ -79,10 +77,8 @@ class AuthService {
     final user = currentUser;
     if (user == null) return null;
 
-    final doc = await _db
-        .collection(AppConstants.usersCollection)
-        .doc(user.uid)
-        .get();
+    final doc =
+        await _db.collection(AppConstants.usersCollection).doc(user.uid).get();
 
     if (!doc.exists) return null;
     return UserProfile.fromFirestore(doc);

@@ -44,7 +44,7 @@ class _StreakCardState extends State<StreakCard>
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: isHot
-              ? [color, color.withOpacity(0.7)]
+              ? [color, color.withValues(alpha: 0.7)]
               : [Colors.white, SupplyClosetColors.surfaceLight],
         ),
         borderRadius: BorderRadius.circular(20),
@@ -54,7 +54,7 @@ class _StreakCardState extends State<StreakCard>
         boxShadow: isHot
             ? [
                 BoxShadow(
-                  color: color.withOpacity(0.4),
+                  color: color.withValues(alpha: 0.4),
                   blurRadius: 16,
                   offset: const Offset(0, 4),
                 ),
@@ -73,7 +73,7 @@ class _StreakCardState extends State<StreakCard>
                   height: 56,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: isHot ? Colors.white : color.withOpacity(0.15),
+                    color: isHot ? Colors.white : color.withValues(alpha: 0.15),
                   ),
                   child: Icon(
                     isHot ? Icons.local_fire_department : Icons.bolt,
@@ -96,7 +96,8 @@ class _StreakCardState extends State<StreakCard>
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.w900,
-                        color: isHot ? Colors.white : SupplyClosetColors.charcoal,
+                        color:
+                            isHot ? Colors.white : SupplyClosetColors.charcoal,
                         height: 1,
                       ),
                     ),
@@ -109,7 +110,7 @@ class _StreakCardState extends State<StreakCard>
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                           color: isHot
-                              ? Colors.white.withOpacity(0.9)
+                              ? Colors.white.withValues(alpha: 0.9)
                               : SupplyClosetColors.textSecondary,
                         ),
                       ),
@@ -122,7 +123,7 @@ class _StreakCardState extends State<StreakCard>
                         decoration: BoxDecoration(
                           color: isHot
                               ? Colors.white
-                              : color.withOpacity(0.15),
+                              : color.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
@@ -143,9 +144,8 @@ class _StreakCardState extends State<StreakCard>
                     fontSize: 13,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 1.2,
-                    color: isHot
-                        ? Colors.white
-                        : SupplyClosetColors.textSecondary,
+                    color:
+                        isHot ? Colors.white : SupplyClosetColors.textSecondary,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -154,7 +154,7 @@ class _StreakCardState extends State<StreakCard>
                   style: TextStyle(
                     fontSize: 12,
                     color: isHot
-                        ? Colors.white.withOpacity(0.85)
+                        ? Colors.white.withValues(alpha: 0.85)
                         : SupplyClosetColors.textTertiary,
                   ),
                 ),

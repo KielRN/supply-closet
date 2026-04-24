@@ -46,7 +46,7 @@ class ProfileScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                XpBar(currentXp: profile.points, level: level),
+                XpBar(currentXp: profile.points),
                 const SizedBox(height: 16),
                 StreakCard(streakDays: profile.streakDays),
                 const SizedBox(height: 16),
@@ -86,8 +86,9 @@ class ProfileScreen extends StatelessWidget {
           CircleAvatar(
             radius: 36,
             backgroundColor: Colors.white,
-            backgroundImage:
-                profile.photoUrl != null ? NetworkImage(profile.photoUrl!) : null,
+            backgroundImage: profile.photoUrl != null
+                ? NetworkImage(profile.photoUrl!)
+                : null,
             child: profile.photoUrl == null
                 ? Text(profile.displayName.substring(0, 1).toUpperCase(),
                     style: TextStyle(
@@ -196,7 +197,8 @@ class ProfileScreen extends StatelessWidget {
               final fac = facilityCtrl.text.trim();
               final unit = unitCtrl.text.trim();
               if (fac.isEmpty || unit.isEmpty) return;
-              final facilityId = fac.toLowerCase().replaceAll(RegExp(r'\s+'), '_');
+              final facilityId =
+                  fac.toLowerCase().replaceAll(RegExp(r'\s+'), '_');
               final unitId = unit.toLowerCase().replaceAll(RegExp(r'\s+'), '_');
               await context.read<AuthProvider>().updateFacilityAndUnit(
                     facilityId: facilityId,
@@ -253,7 +255,8 @@ class _StatCard extends StatelessWidget {
   final String label;
   final String value;
   final IconData icon;
-  const _StatCard({required this.label, required this.value, required this.icon});
+  const _StatCard(
+      {required this.label, required this.value, required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -270,8 +273,8 @@ class _StatCard extends StatelessWidget {
           Icon(icon, color: SupplyClosetColors.teal, size: 24),
           const SizedBox(height: 6),
           Text(value,
-              style: const TextStyle(
-                  fontSize: 20, fontWeight: FontWeight.w700)),
+              style:
+                  const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
           Text(label,
               style: TextStyle(color: Colors.grey.shade600, fontSize: 11)),
         ],
@@ -338,7 +341,9 @@ class _BadgeTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: earned ? SupplyClosetColors.tealLight.withOpacity(0.2) : Colors.grey.shade100,
+          color: earned
+              ? SupplyClosetColors.tealLight.withValues(alpha: 0.2)
+              : Colors.grey.shade100,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: earned ? SupplyClosetColors.teal : Colors.grey.shade300,

@@ -113,7 +113,7 @@ class SupplyClosetTheme {
       ),
 
       // Cards
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: Colors.white,
         elevation: 0,
         shape: RoundedRectangleBorder(
@@ -149,7 +149,8 @@ class SupplyClosetTheme {
         selectedItemColor: SupplyClosetColors.teal,
         unselectedItemColor: SupplyClosetColors.textTertiary,
         type: BottomNavigationBarType.fixed,
-        selectedLabelStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+        selectedLabelStyle:
+            TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
         unselectedLabelStyle: TextStyle(fontSize: 12),
       ),
 

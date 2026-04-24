@@ -33,7 +33,7 @@ class LoginScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
-                      color: SupplyClosetColors.teal.withOpacity(0.3),
+                      color: SupplyClosetColors.teal.withValues(alpha: 0.3),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                     ),
@@ -119,8 +119,9 @@ class LoginScreen extends StatelessWidget {
                                 child: CircularProgressIndicator(
                                     strokeWidth: 2, color: Colors.white))
                             : const Icon(Icons.login_rounded),
-                        label:
-                            Text(auth.isLoading ? 'Signing in...' : 'Continue with Google'),
+                        label: Text(auth.isLoading
+                            ? 'Signing in...'
+                            : 'Continue with Google'),
                       ),
                       const SizedBox(height: 12),
                       const Text(
@@ -162,7 +163,7 @@ class _Feature extends StatelessWidget {
           width: 44,
           height: 44,
           decoration: BoxDecoration(
-            color: SupplyClosetColors.teal.withOpacity(0.1),
+            color: SupplyClosetColors.teal.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: SupplyClosetColors.teal),

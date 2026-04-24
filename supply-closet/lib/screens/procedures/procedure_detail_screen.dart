@@ -27,8 +27,9 @@ class _ProcedureDetailScreenState extends State<ProcedureDetailScreen> {
       );
     }
 
-    final progress =
-        procedure.supplies.isEmpty ? 0.0 : _checked.length / procedure.supplies.length;
+    final progress = procedure.supplies.isEmpty
+        ? 0.0
+        : _checked.length / procedure.supplies.length;
 
     return Scaffold(
       appBar: AppBar(
@@ -187,9 +188,7 @@ class _SupplyCheckTile extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      decoration: checked
-                          ? TextDecoration.lineThrough
-                          : null,
+                      decoration: checked ? TextDecoration.lineThrough : null,
                       color: checked
                           ? SupplyClosetColors.textSecondary
                           : SupplyClosetColors.charcoal,

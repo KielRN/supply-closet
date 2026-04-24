@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Real ARCore/ARKit finder session using `ar_flutter_plugin`, with an
+  entrance-based `Set Start` and `Recenter` flow for human-defined closet
+  origins.
+- MVP launch recommendations checklist
+  ([`mvp-launch-recommendations-checklist.md`](mvp-launch-recommendations-checklist.md)).
+- Smoke tests for gamification level math, tag result classification, and
+  new-tag versus confirmation XP.
 - Initial project scaffolding (Flutter + Firebase)
 - AR-powered supply finder with camera overlay
 - Supply tagging flow with barcode scanning (ML Kit)
@@ -20,6 +27,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Seed data for procedures and supplies
 - Adversarial security review ([`adversarial-review.md`](adversarial-review.md))
 - Remediation plan checklist ([`remediation-plan.md`](remediation-plan.md))
+
+### Changed
+- Supply tagging now returns the tagged supply id and whether the write created
+  a new supply or confirmed an existing one.
+- XP awarding now passes `supplyId` and `roomId` through the client and Cloud
+  Function verifier, avoiding ambiguous recent-tag scans for normal tagging.
+- Existing supply confirmations now award `confirmExisting` XP instead of
+  always being treated as new tags.
+- Replaced deprecated Flutter color opacity calls with `withValues`.
+
+### Fixed
+- `reportNotFound()` now increments supply `version` in a transaction so it
+  satisfies the optimistic concurrency Firestore rule.
 
 ### Security
 - Identified role escalation vulnerability in Firestore user creation rules

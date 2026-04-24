@@ -52,6 +52,7 @@ class GamificationProvider extends ChangeNotifier {
     bool isNightShift = false,
     String? facilityId,
     String? unitId,
+    String? roomId,
     String? supplyId,
   }) async {
     // Update challenge progress locally (UI feedback)
@@ -67,13 +68,14 @@ class GamificationProvider extends ChangeNotifier {
       isNightShift: isNightShift,
       facilityId: facilityId ?? profile.facilityId,
       unitId: unitId ?? profile.unitId,
+      roomId: roomId,
       supplyId: supplyId,
     );
 
     // Use server-returned XP for celebrations
     final oldLevel = GamificationService.levelFromXp(profile.points);
-    final newLevel = GamificationService.levelFromXp(
-        profile.points + serverResult.totalXp);
+    final newLevel =
+        GamificationService.levelFromXp(profile.points + serverResult.totalXp);
 
     // Queue XP burst celebration
     _celebrationQueue.add(CelebrationEvent(
@@ -97,13 +99,13 @@ class GamificationProvider extends ChangeNotifier {
     for (final challenge in _dailyChallenges) {
       final shouldIncrement = switch (challenge.type) {
         ChallengeType.tagCount =>
-            action == GameAction.tagNew || action == GameAction.confirmExisting,
+          action == GameAction.tagNew || action == GameAction.confirmExisting,
         ChallengeType.confirmCount => action == GameAction.confirmExisting,
         ChallengeType.newTagCount => action == GameAction.tagNew,
         ChallengeType.procedureComplete =>
-            action == GameAction.completeProcedure,
+          action == GameAction.completeProcedure,
         ChallengeType.speedTag =>
-            action == GameAction.tagNew || action == GameAction.confirmExisting,
+          action == GameAction.tagNew || action == GameAction.confirmExisting,
         ChallengeType.barcodeScan => action == GameAction.tagNew,
         ChallengeType.metaChallenge => false,
       };

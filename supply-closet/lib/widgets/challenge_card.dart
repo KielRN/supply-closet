@@ -32,8 +32,8 @@ class ChallengeCard extends StatelessWidget {
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: challenge.isBonus
-                      ? SupplyClosetColors.coral.withOpacity(0.15)
-                      : SupplyClosetColors.teal.withOpacity(0.15),
+                      ? SupplyClosetColors.coral.withValues(alpha: 0.15)
+                      : SupplyClosetColors.teal.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(

@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -57,7 +58,8 @@ Future<void> _checkForUpdate() async {
     if (_isVersionBelow(currentVersion, minVersion)) {
       // Show blocking update dialog
       // Note: In production, this would show a dialog requiring app store update
-      debugPrint('UPDATE REQUIRED: Current $currentVersion < Minimum $minVersion');
+      debugPrint(
+          'UPDATE REQUIRED: Current $currentVersion < Minimum $minVersion');
     }
   } catch (e) {
     // If Remote Config fails, allow app to continue
