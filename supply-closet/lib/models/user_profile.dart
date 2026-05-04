@@ -58,10 +58,7 @@ class UserProfile {
       tagsThisMonth: data['tagsThisMonth'] ?? 0,
       streakDays: data['streakDays'] ?? 0,
       badges: List<String>.from(data['badges'] ?? []),
-      xpAwardTimestamps: (data['xpAwardTimestamps'] as List<dynamic>?)
-              ?.map((ts) => (ts as Timestamp).toDate())
-              .toList() ??
-          [],
+      xpAwardTimestamps: _parseTimestampList(data['xpAwardTimestamps']),
       createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
       lastActive: (data['lastActive'] as Timestamp?)?.toDate(),
     );
@@ -69,6 +66,7 @@ class UserProfile {
 
   Map<String, dynamic> toFirestore() {
     return {
+      'uid': uid,
       'displayName': displayName,
       'photoUrl': photoUrl,
       'facilityId': facilityId,
@@ -84,6 +82,21 @@ class UserProfile {
       'createdAt': Timestamp.fromDate(createdAt),
       'lastActive': Timestamp.fromDate(lastActive),
     };
+  }
+
+  static List<DateTime> _parseTimestampList(dynamic value) {
+    if (value is! List) return [];
+    return value
+        .map((ts) {
+          if (ts is Timestamp) return ts.toDate();
+          if (ts is int) return DateTime.fromMillisecondsSinceEpoch(ts);
+          if (ts is double) {
+            return DateTime.fromMillisecondsSinceEpoch(ts.round());
+          }
+          return null;
+        })
+        .whereType<DateTime>()
+        .toList();
   }
 
   /// Whether the user has completed onboarding (selected facility + unit)

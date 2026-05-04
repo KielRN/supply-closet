@@ -10,9 +10,8 @@
  *  - rolloverDailyChallenges: scheduled job to expire stale challenges at midnight UTC
  */
 
-const {onCall, onRequest, HttpsError} = require("firebase-functions/v2/https");
-const {onDocumentCreated, onDocumentUpdated} =
-    require("firebase-functions/v2/firestore");
+const {onCall, HttpsError} = require("firebase-functions/v2/https");
+const {onDocumentCreated} = require("firebase-functions/v2/firestore");
 const {onSchedule} = require("firebase-functions/v2/scheduler");
 const {logger} = require("firebase-functions");
 const admin = require("firebase-admin");
@@ -50,7 +49,7 @@ exports.lookupUdi = onCall({region: "us-central1"}, async (request) => {
     const windowMs = 60000;
     const maxLookups = 30;
     const recentLookups = (profile.udiLookupTimestamps || [])
-        .map((ts) => (typeof ts === "number" ? ts : ts.toMillis()))
+        .map(timestampMillis)
         .filter((ts) => now - ts < windowMs);
     if (recentLookups.length >= maxLookups) {
       throw new HttpsError("resource-exhausted", "Too many lookups. Please wait.");
@@ -136,6 +135,12 @@ function extractDi(barcode) {
   return b;
 }
 
+function timestampMillis(value) {
+  if (typeof value === "number") return value;
+  if (value && typeof value.toMillis === "function") return value.toMillis();
+  return 0;
+}
+
 // ─── awardXp ────────────────────────────────────────────────────────
 //
 // Server-side XP engine. Client cannot write to its own points field;
@@ -175,7 +180,7 @@ exports.awardXp = onCall({region: "us-central1"}, async (request) => {
     const windowMs = 60000; // 1 minute
     const maxAwards = 10;
     const recentTimestamps = (profile.xpAwardTimestamps || [])
-        .map((ts) => (typeof ts === "number" ? ts : ts.toMillis()))
+        .map(timestampMillis)
         .filter((ts) => now - ts < windowMs);
 
     if (recentTimestamps.length >= maxAwards) {
@@ -232,7 +237,8 @@ exports.awardXp = onCall({region: "us-central1"}, async (request) => {
       streakDays,
       badges: Array.from(new Set([...(profile.badges || []), ...newBadges])),
       lastActive: admin.firestore.FieldValue.serverTimestamp(),
-      xpAwardTimestamps: recentTimestamps,
+      xpAwardTimestamps: recentTimestamps.map((ts) =>
+        admin.firestore.Timestamp.fromMillis(ts)),
     };
     // Only update lastTagAt for tag actions (streak requires tagging)
     if (isTagAction) {
@@ -356,6 +362,7 @@ exports.decayConfidence = onSchedule({
     let query = db.collectionGroup("supplies")
         .where("lastConfirmed", "<",
             new Date(now - staleThresholdMs))
+        .orderBy("lastConfirmed")
         .limit(batchSize);
 
     if (lastDoc) {
@@ -459,6 +466,8 @@ exports.cleanupStaleSupplies = onSchedule({
         .where("confidence", "<", 0.1)
         .where("lastConfirmed", "<",
             new Date(now - staleThresholdMs))
+        .orderBy("confidence")
+        .orderBy("lastConfirmed")
         .limit(batchSize);
 
     if (lastDoc) {

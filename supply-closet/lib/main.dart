@@ -6,13 +6,16 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:provider/provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'app.dart';
+import 'firebase_options.dart';
 import 'providers/auth_provider.dart';
 import 'providers/procedure_provider.dart';
 import 'providers/gamification_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   // Pass all uncaught Flutter errors to Crashlytics
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;

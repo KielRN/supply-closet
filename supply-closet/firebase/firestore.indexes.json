@@ -24,6 +24,22 @@
         {"fieldPath": "confidence", "order": "DESCENDING"},
         {"fieldPath": "lastConfirmed", "order": "DESCENDING"}
       ]
+    },
+    {
+      "collectionGroup": "supplies",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "taggedByUserIds", "arrayConfig": "CONTAINS"},
+        {"fieldPath": "lastConfirmed", "order": "DESCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "supplies",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {"fieldPath": "confidence", "order": "ASCENDING"},
+        {"fieldPath": "lastConfirmed", "order": "ASCENDING"}
+      ]
     }
   ],
   "fieldOverrides": []

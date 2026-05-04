@@ -44,7 +44,7 @@ service cloud.firestore {
       return request.resource.data.keys().hasOnly([
         'name', 'barcode', 'category', 'location',
         'confidence', 'lastConfirmed', 'tagCount', 'taggedByUserIds',
-        'notFoundReports'
+        'notFoundReports', 'version'
       ]);
     }
 
@@ -125,17 +125,21 @@ service cloud.firestore {
         && validSupplyName()
         && validBarcode()
         && request.resource.data.tagCount == 1
-        && request.auth.uid in request.resource.data.taggedByUserIds;
+        && request.auth.uid in request.resource.data.taggedByUserIds
+        && request.resource.data.version == 1;
 
       // Update: authed user from the same facility, only allowed
-      // confidence shifts and metadata changes
+      // confidence shifts and metadata changes. Version must increment by
+      // exactly 1 (optimistic concurrency control).
       allow update: if isAuthed()
         && userFacility() == facilityId
         && request.resource.data.diff(resource.data).affectedKeys()
           .hasOnly([
             'location', 'confidence', 'lastConfirmed',
-            'tagCount', 'taggedByUserIds', 'notFoundReports'
-          ]);
+            'tagCount', 'taggedByUserIds', 'notFoundReports', 'version'
+          ])
+        && request.resource.data.version
+            == (resource.data.version == null ? 0 : resource.data.version) + 1;
 
       // Charge nurse + admin can delete bad data
       allow delete: if isCharge() && userFacility() == facilityId;
