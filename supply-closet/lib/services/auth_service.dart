@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -40,7 +41,7 @@ class AuthService {
       final profile = await _getOrCreateProfile(user);
       return profile;
     } catch (e) {
-      print('Google Sign-In error: $e');
+      debugPrint('Google Sign-In error: $e');
       rethrow;
     }
   }

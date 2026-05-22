@@ -34,7 +34,7 @@ class _TagSupplyScreenState extends State<TagSupplyScreen> {
   final _binController = TextEditingController();
 
   bool _isSubmitting = false;
-  bool _isFirstTagOnUnit = false;
+  final bool _isFirstTagOnUnit = false;
 
   @override
   void dispose() {
