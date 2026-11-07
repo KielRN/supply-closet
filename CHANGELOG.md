@@ -33,6 +33,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Seed data for procedures and supplies
 
 ### Changed
+- Updated `TagSupplyScreen` (`supply-closet/lib/screens/tag/tag_supply_screen.dart`) to open directly to instant search and glove-friendly 1-tap common supply buttons instead of waiting on the barcode camera (`DEC-011`).
+- Updated `ROADMAP.md` and `DECISIONS.md` (`DEC-008`) to center Track 3 on the 3-Layer "God's Eye View" Digital Twin (Point Cloud localization + Clickable 3D Bin Boxes + Gaussian Splat visual layer).
 - Reconciled documentation across [`prd.md`](prd.md), [`mvp-launch-recommendations-checklist.md`](mvp-launch-recommendations-checklist.md), and [`supply-closet/SETUP.md`](supply-closet/SETUP.md); removed unused `graphify-out/` artifacts.
 - Supply tagging now returns the tagged supply id and whether the write created
   a new supply or confirmed an existing one.

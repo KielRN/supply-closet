@@ -11,11 +11,11 @@
 
 | Status | Priority Item | Track | What Needs to Happen |
 | :---: | :--- | :--- | :--- |
-| 🔴 | **Finish Camera Barcode Scanning** | Mobile App | Connect the phone camera stream in `tag_supply_screen.dart` to decode barcodes automatically |
+| 🔴 | **Map One Real Room (30–50 Items)** | Spatial / 3D | Pick one test room, enter 30–50 common supplies, and allow one item to live in multiple bins |
+| 🔴 | **Build "God's Eye View" 3D Room Viewer** | Spatial / 3D | Interactive 3D room view where searching an item flies the camera to the glowing bin (with Gaussian Splat toggle) |
 | 🔴 | **Test Security Rules in Emulator** | Launch Prep | Verify new tags, confirmations, "not found" reports, and XP protections work end-to-end |
 | 🔴 | **Pre-Submission IP & Policy Check** | Funding | Confirm Texas AI Consulting owns all IP and review Methodist outside-work policy |
 | 🔴 | **Submit NSF SBIR Project Pitch** | Funding | Complete SBA / Research.gov registrations and submit the pitch before the March 4, 2027 window |
-| 🔴 | **Map One Real Room (30–50 Items)** | Spatial / AR | Pick one test room, enter 30–50 common supplies, and support one item living in multiple bins |
 
 ---
 
@@ -26,15 +26,16 @@
 | 🟢 | **App Setup & Navigation** | Flutter mobile app connected to Firebase backend | iOS & Android scaffolding ready |
 | 🟢 | **Google Sign-In** | Nurses sign in quickly with a personal Google account | No hospital IT setup needed |
 | 🟢 | **20 Procedure Checklists** | Pre-built supply lists for common nursing tasks (IV start, Foley, wound care) | Works offline on the phone |
-| 🟢 | **Starter Supply Catalog** | ~200 common medical supplies pre-loaded with FDA barcode lookup (`lookupUdi`) | Seeded in `assets/data/` |
+| 🟢 | **Starter Supply Catalog** | ~200 common medical supplies pre-loaded with FDA lookup (`lookupUdi`) | Seeded in `assets/data/` |
+| 🟢 | **Quick Search & 1-Tap Tagging** | Default tagging step uses instant search and glove-friendly 1-tap supply buttons | Replaced slow package barcode scanning as default (`DEC-011`) |
 | 🟢 | **Supply Tagging & Confirming** | Nurses can tag where a supply is stored or confirm it is still there | Saves shelf and bin location |
 | 🟢 | **"Not Found" Reporting** | Nurses can flag when an item is missing from its listed bin | Lowers location confidence score |
 | 🟢 | **Points, Streaks & Leaderboards** | Nurses earn XP, level up, keep shift streaks, and compete on their unit | Verified on the server so points can't be faked |
 | 🟢 | **Confidence Decay** | Old locations slowly lose confidence until a nurse confirms them again | Runs daily via Cloud Functions |
 | 🟢 | **FDA Recall Checks** | Daily background check against FDA recall data | Runs daily via Cloud Functions |
-| 🔴 | **Live Camera Barcode Decode** | Point the camera at a package barcode to auto-fill the supply | Camera UI is built; frame decoding needs wiring |
-| 🔴 | **Multiple Bins per Item** | Allow the same supply SKU to be saved in more than one bin | Currently overwrites single barcode entry |
+| 🔴 | **Multiple Bins per Item** | Allow the same supply SKU to be saved in more than one bin | Currently overwrites single entry |
 | 🔴 | **Room Picker** | Let nurses switch between different supply rooms on a floor | Currently defaults to `main` room |
+| 🔴 | **On-Device Bin Label OCR** | Read printed shelf/bin labels with the camera during room setup | Stronger fit than crinkled package barcodes (`nsf-project-pitch-draft.md`) |
 
 ---
 
@@ -49,20 +50,23 @@
 | 🔴 | **Firestore Emulator Rule Tests** | Automated test suite proving security rules allow normal use and block tampering | Needed before public store launch |
 | 🔴 | **Clear Text Fallback** | Always show plain "Shelf + Bin" text whenever camera or AR is off or unsure | Never block a nurse waiting on AR |
 | 🔴 | **Basic Usage Tracking** | Log tags vs. confirmations, search times, and how often AR needs recentering | Needed to measure pilot success |
-| 🔴 | **Beta Store Release** | Publish closed beta to Apple TestFlight and Google Play Internal Testing | Ready once barcode & rule tests finish |
+| 🔴 | **Beta Store Release** | Publish closed beta to Apple TestFlight and Google Play Internal Testing | Ready once rule tests finish |
 
 ---
 
-## 3. Room View & AR Guidance (Spatial Track)
+## 3. "God's Eye View" 3D Room & AR Guidance (Spatial Track)
+
+We use a **3-Layer Hybrid Spatial Model** from a single 5-minute room scan (see [`reviews/2026-10-21-spatial-product-research.md`](reviews/2026-10-21-spatial-product-research.md) and `DEC-008`):
 
 | Status | Milestone | Simple Description | Notes |
 | :---: | :--- | :--- | :--- |
 | 🟢 | **Doorway "Set Start" Flow** | Nurses stand at the doorway and tap `Set Start` or `Recenter` to align the room | No QR codes or beacons needed |
 | 🟢 | **Basic AR Camera Session** | Live ARCore / ARKit camera view inside the finder screen | Runs on-device; no video leaves the phone |
-| 🟢 | **Spatial Research & Plan** | Evaluated 3D room viewers, Google Cloud Anchors, and MultiSet VPS | Documented in `reviews/2026-10-21-spatial-product-research.md` |
-| 🔴 | **Save Real 3D Tag Coordinates** | Record actual shelf/bin positions during room setup instead of `0, 0, 0` | Needed so markers stick to real shelves |
-| 🔴 | **3D Room Overview ("God's Eye View")** | Simple interactive 3D/cutaway map of one room where clicking a supply highlights its bin | Browser + app companion view |
-| 🔴 | **Two-Phone Alignment Test** | Test whether Nurse B's phone highlights the exact same bin that Nurse A mapped | Benchmark doorway start vs. Cloud Anchors |
+| 🟢 | **"God's Eye View" & 3DGS Research** | Evaluated `bilawalsidhu/gods-eye-view`, Three.js, Gaussian Splats, Point Clouds, and Cloud Anchors | Documented in `reviews/2026-10-21-spatial-product-research.md` |
+| 🔴 | **Layer 1: Point Cloud & Anchors** | Capture a room point cloud / anchor map so any nurse's phone knows where it is standing | Benchmark Cloud Anchors vs. MultiSet VPS + doorway start |
+| 🔴 | **Layer 2: Clickable 3D Bin Boxes ("God's Eye View")** | Interactive 3D room view (Three.js) where searching a supply or procedure flies the camera to the glowing bin | Works remotely at the nurses' station or on the phone |
+| 🔴 | **Layer 3: Gaussian Splat Visual Layer** | Photorealistic 3D Gaussian Splat scan layered over the clickable 3D shelf boxes | Lets users toggle between clean schematic boxes and real 3D visuals |
+| 🔴 | **Two-Phone Alignment Test** | Test whether Nurse B's phone highlights the exact same physical bin that Nurse A mapped | Measure target accuracy across shifts and lighting |
 | 🔴 | **One-Room Nurse Pilot** | Test 1 supply room, 30–50 supplies, and 5–10 nurses; measure time saved | Target: ≥90% right-bin accuracy |
 
 ---
@@ -72,7 +76,7 @@
 | Status | Stage | Simple Description | Target Price / Goal |
 | :---: | :--- | :--- | :--- |
 | 🟢 | **Market & Brand Strategy** | Defined brand voice, target market sizing, and cold-start data plan | Documented in `prd.md`, `branding-brief.md`, `data-strategy.md` |
-| 🟢 | **Consumer-Wedge Plan** | Strategy to launch text + checklist app directly to travel nurses first | Documented in `consumer-wedge-gtm.md` |
+| 🟢 | **Consumer-Wedge Plan** | Strategy to launch checklist + quick-search app directly to travel nurses first | Documented in `consumer-wedge-gtm.md` |
 | 🔴 | **Waitlist & Nurse Creator Videos** | Simple landing page (`supplycloset.app`) and short nurse videos showing the pain | 50–100 beta nurses on waitlist |
 | 🔴 | **Stage 1: Individual Nurse App** | Self-serve download for travel nurses, float pool, and new grads | $4.99/mo or $39/yr |
 | 🔴 | **Stage 2: Unit Plan** | Pitch charge nurses once 5+ nurses on the same floor use the app | $49/mo per unit |

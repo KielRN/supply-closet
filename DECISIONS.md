@@ -20,9 +20,10 @@ This document is the single source of truth for major product, technical, commer
 | 🟢 | **DEC-005** | 2026-04-16 | **Consumer-Wedge GTM Before Enterprise** | Ship text + checklist app directly to travel nurses ($4.99/mo) first instead of waiting on slow hospital sales |
 | 🟢 | **DEC-006** | 2026-04-20 | **Server-Verified XP & Safe Writes** | All XP/badges are verified by Cloud Functions; Firestore rules block role tampering and require version checks |
 | 🟢 | **DEC-007** | 2026-04-24 | **Hardware-Free Doorway AR Origin** | No QR codes, beacons, or RFID tags required; AR initializes from the supply room doorway (`Set Start`) |
-| 🟢 | **DEC-008** | 2026-10-21 | **One-Room Digital Twin First** | Prove a 3D room overview ("God's Eye View") and shared bin alignment in a single room before scaling hospital-wide |
+| 🟢 | **DEC-008** | 2026-10-21 | **3-Layer "God's Eye View" Digital Twin** | Combine Point Clouds (phone localization), Clickable 3D Bin Boxes (search/fly-to), and Gaussian Splats (visual layer) in one room first |
 | 🟢 | **DEC-009** | 2026-11-07 | **NSF SBIR Phase I for Spatial R&D** | Apply for ~$305K non-dilutive NSF SBIR funding to pay for hard AR/CV research; Elliott becomes full-time PI upon award |
 | 🟢 | **DEC-010** | 2026-11-07 | **Drop Graphify & Standardize Repo** | Removed `graphify-out`; standardized on `ROADMAP.md`, `DECISIONS.md`, `AGENT.md`, git-ignored `.tmp/`, and `skills/` |
+| 🟢 | **DEC-011** | 2026-11-07 | **Quick Search + Bin OCR Over Package Barcodes** | Default tagging to instant search / 1-tap chips instead of package barcode scanning; reserve camera for Bin Label OCR and 3D room capture |
 | 🔴 | **OPEN-001** | 2026-11-07 | **IP Assignment & Employer Policy Check** | Confirm written IP ownership in TxAI and review Methodist employment/outside-work policy before SBIR submission |
 | 🔴 | **OPEN-002** | 2026-11-07 | **Phase I Pilot Site & Advisors** | Select nursing simulation lab / unit partner and CV + nursing advisors for the NSF pitch and proposal |
 
@@ -88,15 +89,15 @@ This document is the single source of truth for major product, technical, commer
 - **Decision:** Keep SupplyCloset 100% hardware-free. For AR mode, nurses stand at the supply closet entrance threshold and tap `Set Start` (or `Recenter`) to initialize the local coordinate origin, with plain shelf/bin text always visible as a fallback.
 - **Docs Reconciled:** [mvp-launch-recommendations-checklist.md](mvp-launch-recommendations-checklist.md).
 
-### DEC-008: One-Room Digital Twin ("God's Eye View") Architecture
-- **Date:** October 21, 2026
+### DEC-008: 3-Layer "God's Eye View" Digital Twin Architecture
+- **Date:** October 21, 2026 (refined November 7, 2026)
 - **Status:** 🟢 Active
-- **Context:** Evaluated how to achieve an interactive "God's Eye View" room experience alongside phone AR guidance.
-- **Decision:** Separate the spatial problem into three distinct layers backed by one shared data model (`Facility -> Unit -> Room -> Map Revision -> Shelf -> Bin <- Placement <- SKU`):
-  1. **Display the room:** Interactive 3D cutaway/overhead room viewer (e.g., Three.js) with search and click-to-focus bin details.
-  2. **Locate the phone:** Persistent room anchors (benchmarking doorway alignment, on-device bin-label reading, and Google Cloud Anchors) so different phones resolve the same room frame.
-  3. **Know bin contents:** Separate catalog SKUs from bin placements so the same item can live in multiple bins with independent confidence and freshness decay.
-- **Docs Reconciled:** [reviews/2026-10-21-spatial-product-research.md](reviews/2026-10-21-spatial-product-research.md).
+- **Context:** Evaluated how to achieve an interactive "God's Eye View" room experience (inspired by `bilawalsidhu/gods-eye-view`) using 3D Gaussian Splatting (3DGS), Point Clouds, and clickable 3D room geometry alongside phone AR guidance.
+- **Decision:** Combine three complementary spatial layers from a single room scan, backed by one shared Firestore data model (`Facility -> Unit -> Room -> Map Revision -> Shelf -> Bin <- Placement <- SKU`):
+  1. **Layer 1 — Point Cloud & Anchors (Phone Localization):** Use point-cloud anchors (Google Cloud Anchors / MultiSet VPS + doorway origin) so any phone entering the closet resolves the same 3D coordinate frame.
+  2. **Layer 2 — Clickable 3D Bin Boxes ("God's Eye View" Interaction):** Use clean 3D shelf/bin volumes (Three.js companion viewer + mobile view) so searching an item or picking a procedure smoothly flies the camera straight to the glowing bins and shows confidence + freshness.
+  3. **Layer 3 — Gaussian Splat Overlay (Photorealistic Visual Layer):** Layer a 3D Gaussian Splat capture over the clickable bin geometry so users can toggle between a fast schematic view and photorealistic 3D shelf inspection.
+- **Docs Reconciled:** [reviews/2026-10-21-spatial-product-research.md](reviews/2026-10-21-spatial-product-research.md), [ROADMAP.md](ROADMAP.md).
 
 ### DEC-009: Pursue NSF SBIR Phase I & PI Full-Time Transition Plan
 - **Date:** November 7, 2026
@@ -110,3 +111,9 @@ This document is the single source of truth for major product, technical, commer
 - **Status:** 🟢 Active
 - **Context:** `graphify-out/` added large generated cache files that were not needed for this project, and the repo lacked root-level orientation docs (`README.md`, `ROADMAP.md`, `DECISIONS.md`, `AGENT.md`) and shared agent skills.
 - **Decision:** Delete `graphify-out/`, git-ignore `.tmp/` for scratch work, maintain a shared AI-agent-agnostic `skills/` folder at the repository root, and keep `ROADMAP.md` and `DECISIONS.md` updated as the primary project trackers.
+
+### DEC-011: Default to Quick Search & 1-Tap Tagging (Move Package Barcodes Off Critical Path)
+- **Date:** November 7, 2026
+- **Status:** 🟢 Active
+- **Context:** Individual medical supply peel-pouches have tiny, crinkled barcodes that glare under fluorescent lighting, and hospital bin barcodes are typically internal ERP codes rather than FDA GUDID barcodes. Opening the camera first on Step 1 of tagging slowed nurses down and violated the 30-second / 3-tap design rule.
+- **Decision:** Default `TagSupplyScreen` (`supply-closet/lib/screens/tag/tag_supply_screen.dart`) directly to **Quick Search + 1-Tap Common Supply buttons**. Keep camera scanning optional and focus future camera computer-vision work on **on-device printed bin-label OCR** and **3D room capture**, aligning directly with [nsf-project-pitch-draft.md](nsf-project-pitch-draft.md).

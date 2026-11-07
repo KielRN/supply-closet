@@ -23,10 +23,9 @@ SupplyCloset solves this without requiring hospitals to install RFID hardware, b
 
 | Area | Status | Details |
 | :---: | :---: | :--- |
-| **Flutter Mobile App** | 🟢 | Auth, 20 procedures, ~200 seeded supplies, tagging, gamification, and AR finder session built (`supply-closet/`) |
+| **Flutter Mobile App** | 🟢 | Auth, 20 procedures, ~200 seeded supplies, quick-search + 1-tap tagging, gamification, and AR finder session built (`supply-closet/`) |
 | **Firebase Backend** | 🟢 | Firestore security rules (21/21 audit fixes complete) + Cloud Functions (`lookupUdi`, `awardXp`, `decayConfidence`, `syncRecalls`) |
-| **Barcode Camera Stream** | 🔴 | UI and ML Kit dependency in place; live frame decoding in `tag_supply_screen.dart` is next |
-| **One-Room Pilot & 3D View** | 🔴 | Next spatial milestone: 30–50 supplies in one room + 3D cutaway viewer + two-phone anchor test |
+| **"God's Eye View" 3D Twin** | 🔴 | Next spatial milestone: 3-layer room model (Point Cloud anchors + Clickable 3D Bin Boxes + Gaussian Splat visual layer) for 1 room (30–50 items) |
 | **NSF SBIR Phase I Pitch** | 🔴 | Funding strategy and Project Pitch drafted (`nsf-project-pitch-draft.md`); pending IP/policy check and submission |
 
 See [ROADMAP.md](ROADMAP.md) for the complete status table.

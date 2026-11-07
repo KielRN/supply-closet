@@ -270,16 +270,40 @@ class _IdentifyStep extends StatefulWidget {
 }
 
 class _IdentifyStepState extends State<_IdentifyStep> {
+  static const List<Map<String, String>> _quickSupplies = [
+    {'name': '18G IV Catheter', 'category': 'IV Access', 'size': '18G'},
+    {'name': '20G IV Catheter', 'category': 'IV Access', 'size': '20G'},
+    {'name': '22G IV Catheter', 'category': 'IV Access', 'size': '22G'},
+    {'name': 'IV Start Kit', 'category': 'IV Access'},
+    {'name': '0.9% Normal Saline Flush 10mL', 'category': 'IV Access', 'size': '10mL'},
+    {'name': 'Foley Catheter Kit 16 Fr', 'category': 'Urinary', 'size': '16 Fr'},
+    {'name': '4x4 Sterile Gauze Pads', 'category': 'Wound Care', 'size': '4x4'},
+    {'name': 'Tegaderm Transparent Dressing', 'category': 'Wound Care'},
+    {'name': 'Chlorhexidine Prep Swab', 'category': 'Antiseptic'},
+    {'name': 'Blood Culture Bottles (Set)', 'category': 'Lab / Phlebotomy'},
+  ];
+
   CameraController? _camera;
   BarcodeScanner? _scanner;
   bool _isScanning = false;
-  bool _showManual = false;
+  bool _showManual = true;
+  String _query = '';
   final _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _initCamera();
+    _searchController.addListener(() {
+      if (mounted) {
+        setState(() => _query = _searchController.text.trim());
+      }
+    });
+  }
+
+  Future<void> _openCameraScanner() async {
+    setState(() => _showManual = false);
+    if (_camera != null && _camera!.value.isInitialized) return;
+    await _initCamera();
   }
 
   Future<void> _initCamera() async {
@@ -370,8 +394,17 @@ class _IdentifyStepState extends State<_IdentifyStep> {
   }
 
   Widget _buildManualSearch() {
-    // For phase 1, hand-typed entry. Phase 2: load seed_supplies.csv into a
-    // searchable typeahead.
+    final filtered = _query.isEmpty
+        ? _quickSupplies
+        : _quickSupplies
+            .where((item) =>
+                item['name']!.toLowerCase().contains(_query.toLowerCase()) ||
+                (item['category']
+                        ?.toLowerCase()
+                        .contains(_query.toLowerCase()) ??
+                    false))
+            .toList();
+
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -380,9 +413,9 @@ class _IdentifyStepState extends State<_IdentifyStep> {
           TextField(
             controller: _searchController,
             decoration: const InputDecoration(
-              labelText: 'Supply name',
-              hintText: 'e.g. Foley Catheter 16 Fr',
-              prefixIcon: Icon(Icons.medical_services_outlined),
+              labelText: 'Search or type supply name',
+              hintText: 'e.g. 18G IV, Foley 16 Fr, Saline Flush',
+              prefixIcon: Icon(Icons.search),
             ),
             autofocus: true,
             textInputAction: TextInputAction.done,
@@ -393,6 +426,61 @@ class _IdentifyStepState extends State<_IdentifyStep> {
             },
           ),
           const SizedBox(height: 16),
+          Text(
+            'Quick-Tap Common Supplies',
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey.shade700,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Expanded(
+            child: ListView.separated(
+              itemCount: filtered.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 6),
+              itemBuilder: (context, index) {
+                final item = filtered[index];
+                return OutlinedButton(
+                  onPressed: () => widget.onIdentified(
+                    item['name']!,
+                    item['category'],
+                    item['size'],
+                    null,
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(48),
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.medical_services_outlined, size: 20),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          item['name']!,
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      ),
+                      if (item['category'] != null)
+                        Text(
+                          item['category']!,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 12),
           ElevatedButton(
             onPressed: () {
               final v = _searchController.text.trim();
@@ -403,14 +491,14 @@ class _IdentifyStepState extends State<_IdentifyStep> {
             style: ElevatedButton.styleFrom(
               minimumSize: const Size.fromHeight(56),
             ),
-            child: const Text('Continue'),
+            child: const Text('Continue with Typed Name'),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 4),
           Center(
             child: TextButton.icon(
-              onPressed: () => setState(() => _showManual = false),
-              icon: const Icon(Icons.qr_code_scanner),
-              label: const Text('Scan barcode instead'),
+              onPressed: _openCameraScanner,
+              icon: const Icon(Icons.document_scanner_outlined),
+              label: const Text('Use camera scanner (optional)'),
             ),
           ),
         ],
