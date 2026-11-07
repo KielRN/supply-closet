@@ -2,7 +2,8 @@
 
 **Version:** 1.0
 **Date:** April 12, 2026
-**Author:** SupplyCloset founding team
+**Author:** SupplyCloset founding team (Texas AI Consulting, LLC)
+**Current Status & Revisions:** See **[ROADMAP.md](ROADMAP.md)** and **[DECISIONS.md](DECISIONS.md)**. Per `DEC-005` and `DEC-009`, the commercial v1 follows the [Consumer-Wedge GTM](consumer-wedge-gtm.md) (checklists + barcode + text shelf/bin locations for individual nurses first), while bin-level AR guidance and the 3D room viewer are advanced in parallel under the [SBIR Funding Strategy](funding-strategy.md) and [Spatial Research Plan](reviews/2026-10-21-spatial-product-research.md).
 
 ---
 

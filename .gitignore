@@ -31,3 +31,5 @@ desktop.ini
 
 # Misc
 *.log
+.tmp/
+graphify-out/

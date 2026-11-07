@@ -1,5 +1,7 @@
 # MVP Launch Recommendations Checklist
 
+> **Note:** For the master project status across app, spatial/AR, GTM, and SBIR funding tracks, see **[ROADMAP.md](ROADMAP.md)** and **[DECISIONS.md](DECISIONS.md)**.
+
 Use this checklist to close the current code review findings and keep the spatial positioning roadmap scoped for an MVP launch.
 
 ## Blocking Fixes
@@ -45,11 +47,11 @@ Use this checklist to close the current code review findings and keep the spatia
   - Run `flutter test`.
   - Resolve warnings that affect launch confidence.
 
-- [ ] Install and run Firebase Functions lint.
+- [x] Install and run Firebase Functions lint.
   - Run `npm install` inside `supply-closet/firebase/functions`.
   - Run `npm --prefix firebase/functions run lint`.
   - Fix deploy-blocking lint errors.
-  - Current blocker: `npm install` fails while writing `node_modules` under Google Drive, and the local Node runtime is v22 while functions request Node 20.
+  - Verified passing on local workspace (`E:\PROJECTS\SupplyCloset`).
 
 - [ ] Test Firestore rules against key workflows.
   - Create a new supply.

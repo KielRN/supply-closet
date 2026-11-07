@@ -248,22 +248,19 @@ No camera images are uploaded to Firebase, GCP, or any server. The app only tran
 
 Network traffic is limited to Firestore sync and Cloud Function calls. Camera permissions are used solely for on-device AR overlay and barcode scanning.
 
-## ⚠️ Security Notice
+## 🛡️ Security & Data Integrity
 
-An adversarial review identified **21 findings** across security, data integrity, and gamification exploits. **2 critical issues** (role escalation, XP farming) must be fixed before any deployment.
+All **21 findings** from the April 2026 adversarial security review (including role escalation prevention, server-side XP action verification, callable rate limiting, and optimistic concurrency `version` checks) have been remediated in `firestore.rules` and `firebase/functions/index.js`.
 
-See the full review: [`adversarial-review.md`](../adversarial-review.md)
-Track remediation progress: [`remediation-plan.md`](../remediation-plan.md)
+See [`../DECISIONS.md`](../DECISIONS.md) (`DEC-006`) for the security architecture summary and [`../ROADMAP.md`](../ROADMAP.md) for current launch milestones.
 
 ## What's next
 
-After you have it running locally, the immediate roadmap is:
+After you have it running locally, see [`../ROADMAP.md`](../ROADMAP.md) for the active priority list:
 
-1. **Fix critical security findings** (see remediation plan)
-2. Test the full sign-in → tag → find loop on a real device
-3. Recruit a friendly nurse (you?) to tag 50 real supplies in a supply room
-4. Validate the gamification feels rewarding
-5. Set up Crashlytics + Analytics
-6. Submit to TestFlight (iOS) and Internal Testing (Android)
+1. Complete live camera barcode frame decoding in `lib/screens/tag/tag_supply_screen.dart`
+2. Run Firestore emulator rule tests across tag, confirm, and "not found" workflows
+3. Map 30–50 supplies in one test room and benchmark two-phone alignment
+4. Set up Crashlytics + Analytics and publish beta builds to TestFlight (iOS) and Internal Testing (Android)
 
-When you're ready for pilot, see `data-strategy.md` for the Founding Tagger onboarding flow.
+When you're ready for pilot, see [`../data-strategy.md`](../data-strategy.md) for the Founding Tagger onboarding flow.
