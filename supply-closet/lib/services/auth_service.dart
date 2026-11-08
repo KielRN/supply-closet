@@ -7,8 +7,13 @@ import '../config/constants.dart';
 
 /// Handles Firebase Authentication and user profile management
 class AuthService {
+  static const String _webClientId =
+      '864793116884-1275n7kuc8osfehvkmnfdah5lancfleh.apps.googleusercontent.com';
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    serverClientId: _webClientId,
+  );
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   /// Current Firebase user (null if not signed in)
