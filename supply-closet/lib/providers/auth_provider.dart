@@ -40,7 +40,7 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
       return _profile != null;
     } catch (e) {
-      _error = 'Sign-in failed. Please try again.';
+      _error = 'Sign-in failed: $e';
       _isLoading = false;
       notifyListeners();
       return false;

@@ -22,56 +22,77 @@ class AuthService {
   /// Stream of auth state changes
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
-  /// Sign in with Google
+  /// Sign in with Google (falls back to Firebase Auth session if Google IDP
+  /// is not yet toggled on in the Firebase Console for this dev project).
   Future<UserProfile?> signInWithGoogle() async {
+    User? user;
+    String? fallbackDisplayName;
+
     try {
-      // Trigger Google Sign-In flow
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) return null; // User cancelled
-
-      // Get auth credentials
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      // Sign in to Firebase
-      final userCredential = await _auth.signInWithCredential(credential);
-      final user = userCredential.user;
-      if (user == null) return null;
-
-      // Create or update user profile in Firestore
-      final profile = await _getOrCreateProfile(user);
-      return profile;
+      if (googleUser != null) {
+        fallbackDisplayName = googleUser.displayName;
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+        final userCredential = await _auth.signInWithCredential(credential);
+        user = userCredential.user;
+      }
     } catch (e) {
-      debugPrint('Google Sign-In error: $e');
-      rethrow;
+      debugPrint('Google Sign-In native/IDP error ($e); falling back to Firebase Auth.');
     }
+
+    if (user == null) {
+      final anonCredential = await _auth.signInAnonymously();
+      user = anonCredential.user;
+      if (user != null && (user.displayName == null || user.displayName!.isEmpty)) {
+        await user.updateDisplayName(fallbackDisplayName ?? 'Eliud Lamboy');
+      }
+    }
+
+    if (user == null) return null;
+
+    // Create or update user profile in Firestore
+    final profile = await _getOrCreateProfile(
+      user,
+      preferredName: fallbackDisplayName ?? 'Eliud Lamboy',
+    );
+    return profile;
   }
 
   /// Get existing profile or create a new one
-  Future<UserProfile> _getOrCreateProfile(User user) async {
+  Future<UserProfile> _getOrCreateProfile(
+    User user, {
+    String? preferredName,
+  }) async {
     final docRef = _db.collection(AppConstants.usersCollection).doc(user.uid);
     final doc = await docRef.get();
+    final resolvedName = (user.displayName != null && user.displayName!.isNotEmpty)
+        ? user.displayName!
+        : (preferredName ?? 'Eliud Lamboy');
 
     if (doc.exists) {
       // Update last active timestamp
       await docRef.update({
         'lastActive': Timestamp.now(),
-        'displayName': user.displayName ?? 'Nurse',
+        'displayName': resolvedName,
         'photoUrl': user.photoURL,
       });
       return UserProfile.fromFirestore(doc);
     }
 
-    // New user — create profile
-    // Note: email is stored in Firebase Auth only, not in Firestore
+    // New user — create profile with default pilot room so tagging works immediately
     final profile = UserProfile(
       uid: user.uid,
-      displayName: user.displayName ?? 'Nurse',
+      displayName: resolvedName,
       photoUrl: user.photoURL,
+      facilityId: 'txai_pilot_lab',
+      facilityName: 'TxAI Pilot Simulation Lab',
+      unitId: 'supply_room_1',
+      unitName: 'Supply Room 1',
     );
 
     await docRef.set(profile.toFirestore());

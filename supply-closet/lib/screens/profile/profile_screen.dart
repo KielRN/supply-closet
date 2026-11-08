@@ -54,7 +54,10 @@ class ProfileScreen extends StatelessWidget {
                 const SizedBox(height: 24),
                 _BadgesSection(badges: profile.badges),
                 const SizedBox(height: 24),
-                _UnitInfoCard(profile: profile),
+                _UnitInfoCard(
+                  profile: profile,
+                  onTap: () => _changeFacility(context),
+                ),
                 const SizedBox(height: 24),
                 _SignOutButton(),
                 const SizedBox(height: 32),
@@ -405,7 +408,8 @@ class _BadgeTile extends StatelessWidget {
 
 class _UnitInfoCard extends StatelessWidget {
   final UserProfile profile;
-  const _UnitInfoCard({required this.profile});
+  final VoidCallback onTap;
+  const _UnitInfoCard({required this.profile, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -415,9 +419,7 @@ class _UnitInfoCard extends StatelessWidget {
         title: Text(profile.facilityName ?? 'No facility set'),
         subtitle: Text(profile.unitName ?? 'No unit selected'),
         trailing: const Icon(Icons.chevron_right),
-        onTap: () {
-          // Settings sheet handles the change flow
-        },
+        onTap: onTap,
       ),
     );
   }
