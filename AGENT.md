@@ -54,20 +54,19 @@ npm --prefix supply-closet/firebase/functions run lint
 
 ### Pushing Software to the User's Connected Phone (Moto G Stylus 5G - 2024)
 
-When the user connects their **Moto G Stylus 5G (2024)** via USB and asks to push/install the app:
+When the user connects their **Moto G Stylus 5G (2024)** (device ID `ZY22KP4X7C`) via USB and asks to push/install the app:
 
 ```powershell
 # 1. Verify the phone is connected and authorized
-adb devices
+& "C:\Users\Eliud\development\android-sdk\platform-tools\adb.exe" devices -l
+
+# 2. Build the debug APK (from supply-closet/)
 cd supply-closet
-flutter devices
-
-# 2. Build and install the debug APK directly to the connected phone (stays installed when unplugged)
 flutter build apk --debug
-flutter install -d <device-id>
 
-# Or launch a live session on the phone:
-flutter run -d <device-id>
+# 3. Install and launch directly on the Moto G Stylus 5G (2024)
+& "C:\Users\Eliud\development\android-sdk\platform-tools\adb.exe" -s ZY22KP4X7C install -r "e:\PROJECTS\SupplyCloset\supply-closet\build\app\outputs\flutter-apk\app-debug.apk"
+& "C:\Users\Eliud\development\android-sdk\platform-tools\adb.exe" -s ZY22KP4X7C shell am start -n app.supplycloset/.MainActivity
 ```
 
 ---
