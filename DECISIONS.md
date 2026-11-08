@@ -24,8 +24,7 @@ This document is the single source of truth for major product, technical, commer
 | 🟢 | **DEC-009** | 2026-11-07 | **NSF SBIR Phase I for Spatial R&D** | Apply for ~$305K non-dilutive NSF SBIR funding to pay for hard AR/CV research; Elliott becomes full-time PI upon award |
 | 🟢 | **DEC-010** | 2026-11-07 | **Drop Graphify & Standardize Repo** | Removed `graphify-out`; standardized on `ROADMAP.md`, `DECISIONS.md`, `AGENT.md`, git-ignored `.tmp/`, and `skills/` |
 | 🟢 | **DEC-011** | 2026-11-07 | **Quick Search + Bin OCR Over Package Barcodes** | Default tagging to instant search / 1-tap chips instead of package barcode scanning; reserve camera for Bin Label OCR and 3D room capture |
-| 🔴 | **OPEN-001** | 2026-11-07 | **IP Assignment & Employer Policy Check** | Confirm written IP ownership in TxAI and review Methodist employment/outside-work policy before SBIR submission |
-| 🔴 | **OPEN-002** | 2026-11-07 | **Phase I Pilot Site & Advisors** | Select nursing simulation lab / unit partner and CV + nursing advisors for the NSF pitch and proposal |
+| 🔴 | **OPEN-001** | 2026-11-07 | **Phase I Pilot Site & Advisors** | Select nursing simulation lab / unit partner and CV + nursing advisors for the NSF pitch and proposal |
 
 ---
 

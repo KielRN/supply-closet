@@ -14,7 +14,6 @@
 | 🔴 | **Map One Real Room (30–50 Items)** | Spatial / 3D | Pick one test room, enter 30–50 common supplies, and allow one item to live in multiple bins |
 | 🔴 | **Build "God's Eye View" 3D Room Viewer** | Spatial / 3D | Interactive 3D room view where searching an item flies the camera to the glowing bin (with Gaussian Splat toggle) |
 | 🔴 | **Test Security Rules in Emulator** | Launch Prep | Verify new tags, confirmations, "not found" reports, and XP protections work end-to-end |
-| 🔴 | **Pre-Submission IP & Policy Check** | Funding | Confirm Texas AI Consulting owns all IP and review Methodist outside-work policy |
 | 🔴 | **Submit NSF SBIR Project Pitch** | Funding | Complete SBA / Research.gov registrations and submit the pitch before the March 4, 2027 window |
 
 ---
@@ -93,7 +92,6 @@ We use a **3-Layer Hybrid Spatial Model** from a single 5-minute room scan (see 
 | 🟢 | **PI Full-Time Commitment Decision** | Decided Elliott will move full-time to Texas AI Consulting upon SBIR award | Removes PI eligibility blocker |
 | 🟢 | **SBIR Funding Strategy** | Mapped NSF Phase I (~$305K), NIH, and DoD grant options | See `funding-strategy.md` |
 | 🟢 | **NSF Project Pitch Draft** | Written 4-part pitch within NSF character limits | See `nsf-project-pitch-draft.md` |
-| 🔴 | **IP & Employer Policy Review** | Confirm written IP ownership in TxAI and check Methodist outside-work rules | Must finish before submitting pitch |
 | 🔴 | **SBA & Research.gov Signup** | Register on `sbir.gov` (SBC Control ID) and `Research.gov` | Required portal accounts |
 | 🔴 | **Pilot Site & Advisor Letters** | Line up a nursing simulation lab / unit and CV + nursing advisors | Fills `[PILOT-SITE]` and `[ADVISOR]` placeholders |
 | 🔴 | **Submit NSF Project Pitch** | Submit pitch to NSF Digital Health topic for Phase I invitation | Nov–Dec 2026 |

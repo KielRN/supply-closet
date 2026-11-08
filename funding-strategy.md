@@ -68,8 +68,7 @@ NSF and NIH fund **technical risk**, not routine app development. Our own Octobe
 | U.S. for-profit small business, ≤500 employees, ≥51% owned by U.S. citizens | Texas AI Consulting, LLC qualifies. Confirm the ownership details in the application. |
 | Active SAM.gov registration | **Active, All Awards.** UEI `LE9JXUK4C3P3`, CAGE `26UG0`. A renewal adding NAICS 611430/611420 was submitted 2026-11-07, pending validation. SAM must stay active through award. |
 | **PI primarily employed (>50%) by the company** at award and during the project | **Resolved by decision:** Elliott goes full time at TxAI if awarded. You can apply while still employed at Methodist; the requirement applies at award. Confirm the exact NSF 26-510 wording, and avoid outside employment beyond about 19.6 hours a week during the award. |
-| Company owns the IP | **Open.** Older docs say "founding team." Confirm in writing that Texas AI Consulting, LLC owns all SupplyCloset code, designs and data. |
-| Employer IP and outside-work policies | **Open, and important.** SupplyCloset addresses hospital supply rooms while Elliott works W-2 in healthcare IT at Methodist. Review the employment agreement and any invention-assignment or moonlighting policy **before** submitting anything. Do not use Methodist time, equipment, data or facilities without written permission. |
+| Company owns the IP & employer policy | **Confirmed (Eliud, 2026-11-08):** Eliud Lamboy is the sole owner of Texas AI Consulting, LLC, owns all SupplyCloset IP, and has verified Methodist policy compliance. |
 | Pilot site / letters of support | **Open.** A hospital unit, nursing school or simulation lab willing to host testing strengthens the proposal. Methodist can't be assumed. |
 | Human-subjects compliance | Testing with nurses is research with people. Plan for IRB review (or an exemption determination), especially for NIH. A mock room lowers the risk. |
 | Security screening (new in 2026 law) | Prepare to disclose foreign ties, funding sources and foreign components. None are known; confirm in the application. |
@@ -92,7 +91,7 @@ NSF and NIH fund **technical risk**, not routine app development. Our own Octobe
 
 | When | Step |
 |---|---|
-| Nov–Dec 2026 | Resolve the IP and ownership confirmation and the Methodist policy review. Complete the SBA Company Registry and Research.gov. Draft and submit the **NSF Project Pitch**. |
+| Nov–Dec 2026 | Complete the SBA Company Registry and Research.gov. Draft and submit the **NSF Project Pitch**. |
 | Dec 2026 – Jan 2027 | Receive the NSF invitation decision. If invited, start the full proposal: technical narrative, commercialization plan, budget, letters of support. |
 | Jan 5, 2027 (optional) | NIH SBIR receipt date, only if eRA Commons and a pilot partner are already in place. Otherwise target April 2027. |
 | **Mar 4, 2027** | **NSF full-proposal deadline** (if invited). |
@@ -120,10 +119,8 @@ NSF and NIH fund **technical risk**, not routine app development. Our own Octobe
 
 ## 9. Open Questions for Elliott
 
-1. Who besides Elliott is on the "founding team," and has everyone assigned their SupplyCloset IP to Texas AI Consulting, LLC?
-2. Has the Methodist employment agreement been checked for invention-assignment or outside-work terms?
-3. Which hospital unit, nursing school or simulation lab could host the Phase I study and write a letter of support?
-4. Engage Grant Engine, or write the Project Pitch in-house first?
+1. Which hospital unit, nursing school or simulation lab could host the Phase I study and write a letter of support?
+2. Engage Grant Engine, or write the Project Pitch in-house first?
 
 ---
 

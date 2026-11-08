@@ -10,7 +10,7 @@
 - **Topic area (recommended):** Digital Health, subtopic "Healthcare Workflow, Economics and Delivery." NSF says the topic aims to improve healthcare delivery through efficiency, lower cost or better outcomes, which is the problem SupplyCloset addresses.
 - **Alternate topic:** Augmented Virtual and Mixed Reality. Use it if Elliott wants AR specialists to review the work. The risk is that these reviewers may see phone AR as off-the-shelf, so the pitch leans on the domain-specific innovation.
 - **Applicant:** TEXAS AI CONSULTING, LLC (SAM registered name). UEI `LE9JXUK4C3P3`. PI: Eliud Lamboy.
-- **Before submitting:** complete the SBA Company Registry (SBC Control ID) and Research.gov if the pitch portal asks for them. Resolve the IP ownership and employer-policy items in funding-strategy.md §4.
+- **Before submitting:** complete the SBA Company Registry (SBC Control ID) and Research.gov if the pitch portal asks for them.
 - **Limits:** characters, including spaces. Section text below is plain text, ready to paste. Counts are in the table at the end.
 
 ### Placeholders to fill before submitting
