@@ -112,13 +112,26 @@ class _TagSupplyScreenState extends State<TagSupplyScreen> {
       );
 
       if (mounted) {
+        final taggedName = _supplyName ?? 'supply';
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Tagged ${_supplyName ?? "supply"}!'),
+            content: Text('Tagged $taggedName! Ready for next item.'),
             backgroundColor: SupplyClosetColors.success,
           ),
         );
-        Navigator.of(context).pop();
+        if (Navigator.of(context).canPop()) {
+          Navigator.of(context).pop();
+        } else {
+          setState(() {
+            _step = 0;
+            _supplyName = null;
+            _supplyCategory = null;
+            _supplySize = null;
+            _barcode = null;
+            _shelfController.clear();
+            _binController.clear();
+          });
+        }
       }
     } catch (e) {
       _showError('Failed to tag: $e');

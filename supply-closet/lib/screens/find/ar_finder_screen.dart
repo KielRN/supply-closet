@@ -40,6 +40,7 @@ class _ArFinderScreenState extends State<ArFinderScreen> {
   final Set<String> _foundSupplyIds = {};
   ARSessionManager? _arSessionManager;
   bool _arSupported = true;
+  bool _useArCamera = false;
   bool _arReady = false;
   bool _originSet = false;
   bool _settingOrigin = false;
@@ -102,16 +103,48 @@ class _ArFinderScreenState extends State<ArFinderScreen> {
   }
 
   Widget _buildArView() {
-    if (!_arSupported) {
+    if (!_arSupported || !_useArCamera) {
       return Container(
-        color: Colors.grey.shade900,
-        child: const Center(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF0F292A),
+              Color(0xFF1E293B),
+            ],
+          ),
+        ),
+        child: Center(
           child: Padding(
-            padding: EdgeInsets.all(32),
-            child: Text(
-              'AR not supported on this device — showing list view instead.',
-              style: TextStyle(color: Colors.white70, fontSize: 14),
-              textAlign: TextAlign.center,
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.grid_view_rounded,
+                  color: SupplyClosetColors.tealLight,
+                  size: 40,
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'Supply Room Shelf Map',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  _arSupported
+                      ? 'Tap any supply pin or use the AR toggle above to open camera overlay.'
+                      : 'AR not supported on this device — showing room shelf map.',
+                  style: const TextStyle(color: Colors.white70, fontSize: 13),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
           ),
         ),
@@ -173,7 +206,7 @@ class _ArFinderScreenState extends State<ArFinderScreen> {
   }
 
   Widget _buildOriginPrompt() {
-    if (!_arSupported) return const SizedBox.shrink();
+    if (!_arSupported || !_useArCamera) return const SizedBox.shrink();
     final top = MediaQuery.of(context).padding.top + 68;
     return Positioned(
       top: top,
@@ -273,10 +306,16 @@ class _ArFinderScreenState extends State<ArFinderScreen> {
       right: 16,
       child: Row(
         children: [
-          _circleButton(
-            icon: Icons.arrow_back,
-            onTap: () => Navigator.of(context).pop(),
-          ),
+          if (Navigator.of(context).canPop())
+            _circleButton(
+              icon: Icons.arrow_back,
+              onTap: () => Navigator.of(context).pop(),
+            )
+          else if (_arSupported)
+            _circleButton(
+              icon: _useArCamera ? Icons.grid_view_rounded : Icons.view_in_ar,
+              onTap: () => setState(() => _useArCamera = !_useArCamera),
+            ),
           const Spacer(),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),

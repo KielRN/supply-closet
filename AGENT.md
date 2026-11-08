@@ -9,6 +9,7 @@ This file provides workspace context, conventions, and guardrails for any AI cod
 - **Product:** **SupplyCloset** (`supplycloset.app`) — a mobile app that helps hospital nurses find clinical supplies in seconds using procedure checklists, crowdsourced shelf/bin locations, barcode scanning, and doorway-initialized AR guidance.
 - **Owner:** Texas AI Consulting, LLC (SDVOSB).
 - **Authoritative Trackers:**
+  - [`HANDOFF.md`](HANDOFF.md) — Latest session handoff, current phone test state, and immediate next tasks.
   - [`ROADMAP.md`](ROADMAP.md) — Current status (`🟢` Done / `🔴` To Do) across all tracks.
   - [`DECISIONS.md`](DECISIONS.md) — Single source of truth when older docs (`prd.md`, `tech-architecture.md`) differ from newer decisions.
   - [`USER.md`](USER.md) — Simple phone setup, USB connection, and room-mapping guide for the user's test device (**Moto G Stylus 5G - 2024**).
