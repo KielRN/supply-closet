@@ -4,7 +4,7 @@
 > A nurse-first mobile app that combines procedure supply checklists, crowdsourced shelf/bin locations, barcode scanning, and AR guidance so hospital nurses can find what they need in seconds.
 
 **Owner:** Texas AI Consulting, LLC (SDVOSB)  
-**Primary Trackers:** [ROADMAP.md](ROADMAP.md) · [DECISIONS.md](DECISIONS.md) · [CHANGELOG.md](CHANGELOG.md) · [AGENT.md](AGENT.md)
+**Primary Trackers:** [ROADMAP.md](ROADMAP.md) · [DECISIONS.md](DECISIONS.md) · [USER.md](USER.md) · [CHANGELOG.md](CHANGELOG.md) · [AGENT.md](AGENT.md)
 
 ---
 
@@ -62,6 +62,7 @@ SupplyCloset/
 | :--- | :--- |
 | **[ROADMAP.md](ROADMAP.md)** | Current status (`🟢` / `🔴`) across app, launch, spatial/AR, GTM, and SBIR funding tracks |
 | **[DECISIONS.md](DECISIONS.md)** | Authoritative log reconciling product, architecture, security, GTM, and grant decisions |
+| **[USER.md](USER.md)** | Simple step-by-step phone setup & room-testing guide (**Moto G Stylus 5G - 2024**) |
 | **[AGENT.md](AGENT.md)** | Workspace instructions, commands, and safety invariants for AI assistants |
 | **[prd.md](prd.md)** | Original Product Requirements Document (user flows, personas, gamification design) |
 | **[consumer-wedge-gtm.md](consumer-wedge-gtm.md)** | Faster-to-revenue B2C → PLG rollout plan starting with travel nurses ($4.99/mo) |

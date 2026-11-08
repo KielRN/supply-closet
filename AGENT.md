@@ -11,6 +11,7 @@ This file provides workspace context, conventions, and guardrails for any AI cod
 - **Authoritative Trackers:**
   - [`ROADMAP.md`](ROADMAP.md) — Current status (`🟢` Done / `🔴` To Do) across all tracks.
   - [`DECISIONS.md`](DECISIONS.md) — Single source of truth when older docs (`prd.md`, `tech-architecture.md`) differ from newer decisions.
+  - [`USER.md`](USER.md) — Simple phone setup, USB connection, and room-mapping guide for the user's test device (**Moto G Stylus 5G - 2024**).
   - [`CHANGELOG.md`](CHANGELOG.md) — Chronological history of changes.
 
 ---
@@ -49,6 +50,24 @@ flutter test --no-pub
 
 # Firebase Cloud Functions lint (run from repo root)
 npm --prefix supply-closet/firebase/functions run lint
+```
+
+### Pushing Software to the User's Connected Phone (Moto G Stylus 5G - 2024)
+
+When the user connects their **Moto G Stylus 5G (2024)** via USB and asks to push/install the app:
+
+```powershell
+# 1. Verify the phone is connected and authorized
+adb devices
+cd supply-closet
+flutter devices
+
+# 2. Build and install the debug APK directly to the connected phone (stays installed when unplugged)
+flutter build apk --debug
+flutter install -d <device-id>
+
+# Or launch a live session on the phone:
+flutter run -d <device-id>
 ```
 
 ---

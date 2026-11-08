@@ -2,9 +2,9 @@
 
 Flutter app for AR-assisted clinical supply finding and tagging.
 
-## Android Phone Testing
+## Android Phone Testing (Moto G Stylus 5G - 2024)
 
-This repo is set up for Android dev builds from Windows.
+This repo is set up for Android dev builds from Windows targeting the **Moto G Stylus 5G (2024)** (see [`../USER.md`](../USER.md) for simple step-by-step phone instructions).
 
 1. Enable Developer options on the Android phone.
 2. Enable USB debugging.
