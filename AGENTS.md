@@ -31,7 +31,7 @@ Before modifying code, backend rules, or project docs, read the relevant agent-a
 
 ## 3. Workspace Layout & Scratch Directory
 
-- **`supply-closet/`** — Flutter mobile app (`lib/`, `test/`, `assets/data/`) and Firebase backend (`firebase/firestore.rules`, `firebase/functions/`). **The Firebase project is shared with other apps: `firebase/firestore.rules` is NOT the file that gets deployed. See guardrail 6.**
+- **`supply-closet/`** — Flutter mobile app (`lib/`, `test/`, `assets/data/`) and Firebase backend (`firebase/firestore.rules`, `firebase/functions/`). SupplyCloset owns Firestore rules on `gen-lang-client-0675309660`; see guardrail 6 for Auth-sharing notes.
 - **`skills/`** — Shared AI-agent-agnostic skill instructions.
 - **`reviews/`** — Deep-dive research and architecture reviews (e.g., [`reviews/2026-10-21-spatial-product-research.md`](reviews/2026-10-21-spatial-product-research.md)).
 - **`.tmp/`** — Git-ignored scratch directory at the repository root. **Always place temporary files, scratch scripts, or test outputs inside `.tmp/`** rather than cluttering the root or app folders.
@@ -87,10 +87,7 @@ flutter build apk --debug
    - When updating [`ROADMAP.md`](ROADMAP.md) or status tables, use **simple, easy-to-read terms** inside Markdown tables with `🟢` (Done) and `🔴` (To Do) circle emojis.
 5. **Secrets Protection:**
    - Never commit `.env`, `google-services.json`, `GoogleService-Info.plist`, or service account keys.
-6. **Shared Firebase Project — Never Deploy Firestore Rules From This Repo:**
-   - Firebase project `gen-lang-client-0675309660` is shared with the 3DPrintPosters / 3DPrintYou web app (`E:\PROJECTS\3DPrintPosters`) and the Texas AI Consulting website admin sign-in (`E:\PROJECTS\TexasAI Landing Page`). They share ONE Firestore database `(default)`, so ONE rules file, and one pool of Firebase Auth users.
-   - A Firestore rules deploy replaces the whole file for every app. On 2026-11-09 a rules deploy from this repo locked 3DPrintYou customers out of their orders; on 2026-11-23 a 3DPrintPosters-only deploy locked SupplyCloset out. Both were fixed by merging the rules into one shared file.
-   - The single source of truth is `E:\PROJECTS\3DPrintPosters\infra\firebase\firestore.rules`. It has a labeled SupplyCloset section. To change SupplyCloset rules, edit that section there, then deploy from `E:\PROJECTS\3DPrintPosters` with `npm run firebase:deploy:firestore-rules:dev`. Mirror the change in `supply-closet/firebase/firestore.rules`, which is now a SupplyCloset-only reference copy.
-   - `supply-closet/firebase/firebase.json` deliberately has no `"rules"` entry, so even `firebase deploy` from that folder cannot replace the shared rules. Do not add it back.
-   - From this repo, always deploy with `--only functions` (or another explicit `--only` target). Never run a bare `firebase deploy`, `--only firestore`, or `--only firestore:rules`. Deploy indexes only with `--only firestore:indexes` and never with `--force`, which deletes other apps' indexes.
-   - Keep this repo's Functions codebase name `default`; 3DPrintPosters uses `api`. Deleting or disabling Firebase Auth users affects every app.
+6. **Firebase Project Ownership (`gen-lang-client-0675309660`):**
+   - On 2026-11-23, 3DPrintPosters / 3DPrintYou migrated to its own dedicated Firebase project (`app-3dprintyou`), so SupplyCloset again owns `supply-closet/firebase/firestore.rules` and deploys Firestore rules directly from `supply-closet/firebase/` (`firebase deploy --only firestore:rules --project gen-lang-client-0675309660`).
+   - `gen-lang-client-0675309660` still shares Firebase Auth with the Texas AI Consulting website admin sign-in (`E:\PROJECTS\TexasAI Landing Page`, Auth only), so deleting or disabling Firebase Auth users can affect that app.
+   - Always deploy with explicit `--only` targets (`--only firestore:rules`, `--only firestore:indexes`, `--only functions`) and never pass `--force` on indexes. Keep this repo's Functions codebase name `default`.

@@ -7,15 +7,16 @@ description: Guidelines for editing Firestore security rules (firestore.rules), 
 
 Use this skill whenever modifying files under `supply-closet/firebase/` or changing how the Flutter client reads/writes Firestore documents.
 
-## 0. Read First: The Firestore Rules File Is Shared
+## 0. Firebase Project Scope (`gen-lang-client-0675309660`)
 
-Firebase project `gen-lang-client-0675309660` hosts SupplyCloset AND the 3DPrintPosters / 3DPrintYou web app in ONE Firestore database `(default)`. A database has only one rules file, and every rules deploy replaces it for both apps. A rules deploy from this repo on 2026-11-09 locked 3DPrintYou customers out of their orders.
+As of 2026-11-23, 3DPrintPosters / 3DPrintYou migrated to its own dedicated Firebase project (`app-3dprintyou`), so SupplyCloset owns Firestore rules on `gen-lang-client-0675309660` again (`DEC-015` update):
 
-- **Deployed file:** `E:\PROJECTS\3DPrintPosters\infra\firebase\firestore.rules`. It has a labeled SupplyCloset section and a labeled 3DPrintPosters section, plus the shared `users/{userId}` block, which uses SupplyCloset's rule.
-- **To change SupplyCloset rules:** edit the SupplyCloset section (or the shared `users` block) in that file, leave the 3DPrintPosters section unchanged, then run `npm run firebase:deploy:firestore-rules:dry-run` and `npm run firebase:deploy:firestore-rules:dev` from `E:\PROJECTS\3DPrintPosters`. Mirror the change into `supply-closet/firebase/firestore.rules`, which is a SupplyCloset-only reference copy and is never deployed.
-- **Blocked on purpose:** `supply-closet/firebase/firebase.json` has no `"rules"` entry, so a deploy from that folder skips rules entirely. Do not add it back; the Firestore emulator is not used here (only the Functions emulator).
-- **Never** run `firebase deploy`, `firebase deploy --only firestore`, or `--only firestore:rules` from `supply-closet/firebase/`. Use `--only functions` for Cloud Functions, and `--only firestore:indexes` (never with `--force`) for indexes.
-- The invariants below still apply to the SupplyCloset section of the shared file.
+- **Deployed file:** `supply-closet/firebase/firestore.rules`, configured in `supply-closet/firebase/firebase.json`.
+- **Deploy commands (run from `supply-closet/firebase/`):**
+  - Rules: `npx -y firebase-tools@latest deploy --only firestore:rules --project gen-lang-client-0675309660`
+  - Indexes: `npx -y firebase-tools@latest deploy --only firestore:indexes --project gen-lang-client-0675309660` (never use `--force`)
+  - Functions: `npx -y firebase-tools@latest deploy --only functions --project gen-lang-client-0675309660`
+- **Shared Auth note:** `gen-lang-client-0675309660` still shares Firebase Auth with the Texas AI Consulting website admin sign-in (`E:\PROJECTS\TexasAI Landing Page`, Auth only). Do not delete/disable non-SupplyCloset Auth users.
 
 ## 1. Security Invariants (21/21 Audit Remediation)
 
