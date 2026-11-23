@@ -6,6 +6,9 @@ class AppConstants {
   static const int pointsCompleteProcedure = 15;
   static const int pointsReportNotFound = 5;
   static const int pointsFirstTagOnUnit = 25;
+  static const int pointsInitiateRoom = 250;
+  static const int pointsRoomCaptain = 150;
+  static const int pointsClaimBounty = 50;
   static const int pointsStreakBonus = 50;
   static const int streakThreshold = 5; // consecutive shifts
 
@@ -32,6 +35,7 @@ class AppConstants {
   static const String unitsCollection = 'units';
   static const String supplyRoomsCollection = 'supplyRooms';
   static const String suppliesCollection = 'supplies';
+  static const String bountiesCollection = 'bounties';
   static const String usersCollection = 'users';
   static const String proceduresCollection = 'procedures';
   static const String tagsCollection = 'tags';
@@ -41,6 +45,25 @@ class AppConstants {
 /// Badge definitions
 class BadgeDefinitions {
   static const Map<String, BadgeInfo> badges = {
+    'room_pioneer': BadgeInfo(
+      id: 'room_pioneer',
+      name: 'Room Pioneer',
+      description: 'Initiated a 3D Supply Room with shelf & splat mapping',
+      icon: 'room_pioneer',
+    ),
+    'room_captain': BadgeInfo(
+      id: 'room_captain',
+      name: 'Room Captain',
+      description:
+          'Tagged the most supplies in a supply room — unlocks spatial Captain Hints',
+      icon: 'room_captain',
+    ),
+    'bounty_hunter': BadgeInfo(
+      id: 'bounty_hunter',
+      name: 'Bounty Hunter',
+      description: 'Hunted and tagged a high-priority Supply Bounty',
+      icon: 'bounty_hunter',
+    ),
     'trailblazer': BadgeInfo(
       id: 'trailblazer',
       name: 'Trailblazer',

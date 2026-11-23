@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../config/theme.dart';
 import '../../config/constants.dart';
+import '../../models/supply_room.dart';
 import '../../models/user_profile.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/room_provider.dart';
+import '../../services/firestore_service.dart';
 import '../../services/gamification_service.dart';
+import '../../widgets/room_switcher_sheet.dart';
+import '../../widgets/user_avatar.dart';
 import '../../widgets/xp_bar.dart';
 import '../../widgets/streak_card.dart';
 
@@ -29,16 +34,21 @@ class ProfileScreen extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 220,
+            expandedHeight: 245,
             pinned: true,
             backgroundColor: SupplyClosetColors.teal,
             flexibleSpace: FlexibleSpaceBar(
-              background: _buildHeader(profile, level, title),
+              background: _buildHeader(context, profile, level, title),
             ),
             actions: [
               IconButton(
+                icon: const Icon(Icons.edit_outlined, color: Colors.white),
+                tooltip: 'Edit Display Name & Avatar',
+                onPressed: () => ProfileIdentitySheet.show(context),
+              ),
+              IconButton(
                 icon: const Icon(Icons.settings, color: Colors.white),
-                onPressed: () => _openSettings(context),
+                onPressed: () => _openSettings(context, profile),
               ),
             ],
           ),
@@ -51,6 +61,8 @@ class ProfileScreen extends StatelessWidget {
                 StreakCard(streakDays: profile.streakDays),
                 const SizedBox(height: 16),
                 _StatsGrid(profile: profile),
+                const SizedBox(height: 24),
+                _FloorRoomsSection(profile: profile),
                 const SizedBox(height: 24),
                 _BadgesSection(badges: profile.badges),
                 const SizedBox(height: 24),
@@ -69,7 +81,8 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(UserProfile profile, int level, String title) {
+  Widget _buildHeader(
+      BuildContext context, UserProfile profile, int level, String title) {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -81,24 +94,19 @@ class ProfileScreen extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
       ),
-      padding: const EdgeInsets.fromLTRB(20, 60, 20, 16),
+      padding: const EdgeInsets.fromLTRB(20, 52, 20, 14),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          CircleAvatar(
-            radius: 36,
-            backgroundColor: Colors.white,
-            backgroundImage: profile.photoUrl != null
-                ? NetworkImage(profile.photoUrl!)
-                : null,
-            child: profile.photoUrl == null
-                ? Text(profile.displayName.substring(0, 1).toUpperCase(),
-                    style: TextStyle(
-                        color: SupplyClosetColors.teal,
-                        fontSize: 28,
-                        fontWeight: FontWeight.w700))
-                : null,
+          GestureDetector(
+            onTap: () => ProfileIdentitySheet.show(context),
+            child: UserAvatar(
+              displayName: profile.displayName,
+              photoUrl: profile.photoUrl,
+              radius: 36,
+              isCaptain: profile.badges.contains('room_captain'),
+            ),
           ),
           const SizedBox(height: 8),
           Text(profile.displayName,
@@ -106,25 +114,65 @@ class ProfileScreen extends StatelessWidget {
                   color: Colors.white,
                   fontSize: 20,
                   fontWeight: FontWeight.w700)),
-          const SizedBox(height: 2),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            decoration: BoxDecoration(
-              color: Colors.white24,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text('Lv $level · $title',
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13)),
+          const SizedBox(height: 4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text('Lv $level · $title',
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13)),
+              ),
+              const SizedBox(width: 8),
+              InkWell(
+                onTap: () => ProfileIdentitySheet.show(context),
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.black26,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.white38),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.face_retouching_natural,
+                          color: Colors.white, size: 14),
+                      SizedBox(width: 4),
+                      Text(
+                        'Edit Avatar & Name',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  void _openSettings(BuildContext context) {
+  void _openSettings(BuildContext context, UserProfile profile) {
+    final facilityId = profile.facilityId ?? 'txai_pilot_lab';
+    final unitId = profile.unitId ?? 'med_3a';
+    final unitName = profile.unitName ?? 'Med 3A';
+
     showModalBottomSheet(
       context: context,
       builder: (_) => Padding(
@@ -133,28 +181,44 @@ class ProfileScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
+              leading: const Icon(Icons.face_retouching_natural,
+                  color: SupplyClosetColors.teal),
+              title: const Text('Customize display name & avatar'),
+              subtitle: const Text(
+                  'Choose a pre-generated avatar, upload photo, or edit name'),
+              onTap: () {
+                Navigator.pop(context);
+                ProfileIdentitySheet.show(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.meeting_room_rounded,
+                  color: SupplyClosetColors.teal),
+              title: Text('Manage Supply Rooms ($unitName)'),
+              subtitle: const Text(
+                  'Switch active supply room, scan door sign, or add a closet'),
+              onTap: () {
+                Navigator.pop(context);
+                RoomSwitcherSheet.show(
+                  context,
+                  facilityId: facilityId,
+                  unitId: unitId,
+                  unitName: unitName,
+                );
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.local_hospital),
-              title: const Text('Change facility / unit'),
+              title: const Text('Change hospital / floor wing (e.g. Med 3A)'),
               onTap: () {
                 Navigator.pop(context);
                 _changeFacility(context);
               },
             ),
             ListTile(
-              leading: const Icon(Icons.notifications_outlined),
-              title: const Text('Notifications'),
-              subtitle: const Text('Daily challenge reminders, badges'),
-              onTap: () {},
-            ),
-            ListTile(
               leading: const Icon(Icons.privacy_tip_outlined),
               title: const Text('Privacy & data'),
               subtitle: const Text('We collect zero PHI'),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.help_outline),
-              title: const Text('Help & support'),
               onTap: () {},
             ),
           ],
@@ -282,6 +346,165 @@ class _StatCard extends StatelessWidget {
               style: TextStyle(color: Colors.grey.shade600, fontSize: 11)),
         ],
       ),
+    );
+  }
+}
+
+// ─── Supply Rooms on Floor (Multi-Room Management & Room Captains) ──
+
+class _FloorRoomsSection extends StatelessWidget {
+  final UserProfile profile;
+  const _FloorRoomsSection({required this.profile});
+
+  @override
+  Widget build(BuildContext context) {
+    final firestore = FirestoreService();
+    final roomProv = context.watch<RoomProvider>();
+    final facilityId = profile.facilityId ?? 'txai_pilot_lab';
+    final unitId = profile.unitId ?? 'med_3a';
+    final unitName = profile.unitName ?? 'Med 3A';
+
+    return StreamBuilder<List<SupplyRoom>>(
+      stream: firestore.roomsInUnit(facilityId, unitId),
+      builder: (context, snapshot) {
+        final rooms = snapshot.data ??
+            [
+              SupplyRoom.uninitiated(
+                AppConstants.defaultRoomId,
+                name: '$unitName · North Supply Rm',
+                doorCode: 'RM 3A-102',
+              ),
+            ];
+
+        return Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: const Color(0xFF0F172A),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: SupplyClosetColors.tealLight.withValues(alpha: 0.5),
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  const Icon(
+                    Icons.meeting_room_rounded,
+                    color: SupplyClosetColors.tealLight,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Supply Rooms on $unitName (${rooms.length})',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                  TextButton.icon(
+                    onPressed: () => RoomSwitcherSheet.show(
+                      context,
+                      facilityId: facilityId,
+                      unitId: unitId,
+                      unitName: unitName,
+                      openAddRoomInitially: true,
+                    ),
+                    style: TextButton.styleFrom(
+                      backgroundColor: SupplyClosetColors.teal,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(0, 32),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 4),
+                    ),
+                    icon: const Icon(Icons.add_rounded, size: 16),
+                    label: const Text(
+                      'Add Room',
+                      style:
+                          TextStyle(fontWeight: FontWeight.w800, fontSize: 11),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              for (final room in rooms) ...[
+                InkWell(
+                  onTap: () => roomProv.selectRoom(room.id),
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: room.id == roomProv.selectedRoomId
+                          ? SupplyClosetColors.teal.withValues(alpha: 0.25)
+                          : const Color(0xFF020617),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: room.id == roomProv.selectedRoomId
+                            ? SupplyClosetColors.success
+                            : Colors.white24,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          room.id == roomProv.selectedRoomId
+                              ? Icons.radio_button_checked_rounded
+                              : Icons.radio_button_off_rounded,
+                          color: room.id == roomProv.selectedRoomId
+                              ? SupplyClosetColors.success
+                              : Colors.white54,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${room.name}${room.doorCode != null ? " (${room.doorCode})" : ""}',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 13,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                room.hasCaptain
+                                    ? '👑 Room Captain: ${room.captainName} (${room.captainTagCount} tags)'
+                                    : 'No Captain yet — tag supplies here for +150 XP!',
+                                style: TextStyle(
+                                  color: room.hasCaptain
+                                      ? SupplyClosetColors.warning
+                                      : Colors.white60,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (room.hasCaptain)
+                          UserAvatar(
+                            displayName: room.captainName ?? 'C',
+                            photoUrl: room.captainAvatar,
+                            radius: 14,
+                            isCaptain: true,
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        );
+      },
     );
   }
 }

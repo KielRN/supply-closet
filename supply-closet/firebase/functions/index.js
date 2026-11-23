@@ -27,6 +27,9 @@ const POINTS = {
   completeProcedure: 15,
   reportNotFound: 5,
   firstTagOnUnit: 25,
+  initiateRoom: 250,
+  becomeRoomCaptain: 150,
+  claimBounty: 50,
   streakBonus: 50,
 };
 
@@ -193,8 +196,8 @@ exports.awardXp = onCall({region: "us-central1"}, async (request) => {
     // Keep only timestamps within the window + the new one
     recentTimestamps.push(now);
 
-    // ── Verify tag actions actually occurred ───────────────────────
-    if (action === "tagNew" || action === "confirmExisting") {
+    // ── Verify tag, room initiation, or bounty actions occurred ─────
+    if (action === "tagNew" || action === "confirmExisting" || action === "claimBounty") {
       if (!facilityId || !unitId) {
         throw new HttpsError(
             "invalid-argument",
@@ -213,6 +216,42 @@ exports.awardXp = onCall({region: "us-central1"}, async (request) => {
         throw new HttpsError(
             "failed-precondition",
             "No recent tag found. Tag a supply first.",
+        );
+      }
+    } else if (action === "initiateRoom") {
+      if (!facilityId || !unitId) {
+        throw new HttpsError(
+            "invalid-argument",
+            "facilityId and unitId required for initiateRoom.",
+        );
+      }
+      const roomDoc = await db
+          .collection("facilities").doc(facilityId)
+          .collection("units").doc(unitId)
+          .collection("supplyRooms").doc(roomId || "main")
+          .get();
+      if (!roomDoc.exists || !roomDoc.data().isInitiated) {
+        throw new HttpsError(
+            "failed-precondition",
+            "Room initiation document not found.",
+        );
+      }
+    } else if (action === "becomeRoomCaptain") {
+      if (!facilityId || !unitId) {
+        throw new HttpsError(
+            "invalid-argument",
+            "facilityId and unitId required for becomeRoomCaptain.",
+        );
+      }
+      const roomDoc = await db
+          .collection("facilities").doc(facilityId)
+          .collection("units").doc(unitId)
+          .collection("supplyRooms").doc(roomId || "main")
+          .get();
+      if (!roomDoc.exists || roomDoc.data().captainUid !== uid) {
+        throw new HttpsError(
+            "failed-precondition",
+            "User is not the Room Captain of this supply room.",
         );
       }
     }
@@ -316,6 +355,9 @@ function streakMultiplier(streak) {
 function computeBadges(profile, action, streakDays, newPoints) {
   const earned = [];
   const has = (id) => (profile.badges || []).includes(id);
+  if (action === "initiateRoom" && !has("room_pioneer")) earned.push("room_pioneer");
+  if (action === "becomeRoomCaptain" && !has("room_captain")) earned.push("room_captain");
+  if (action === "claimBounty" && !has("bounty_hunter")) earned.push("bounty_hunter");
   if (newPoints >= 100 && !has("century_club")) earned.push("century_club");
   if (newPoints >= 5000 && !has("supply_sensei")) earned.push("supply_sensei");
   if (streakDays >= 5 && !has("streak_5")) earned.push("streak_5");

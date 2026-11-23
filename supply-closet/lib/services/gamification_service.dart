@@ -336,6 +336,30 @@ class GamificationService {
 
     // ── EPIC (top ~5% of users) ──
     GameBadge(
+      id: 'room_pioneer',
+      name: 'Room Pioneer',
+      description: 'Initiated a 3D Supply Room with shelf & splat mapping',
+      rarity: BadgeRarity.epic,
+      icon: 'map',
+      xpReward: 250,
+    ),
+    GameBadge(
+      id: 'room_captain',
+      name: 'Room Captain',
+      description: 'Tagged the most supplies in a supply room — unlocks Captain Hints',
+      rarity: BadgeRarity.epic,
+      icon: 'crown',
+      xpReward: 150,
+    ),
+    GameBadge(
+      id: 'bounty_hunter',
+      name: 'Bounty Hunter',
+      description: 'Hunted and tagged a high-priority Supply Bounty',
+      rarity: BadgeRarity.rare,
+      icon: 'compass',
+      xpReward: 100,
+    ),
+    GameBadge(
       id: 'supply_sensei',
       name: 'Supply Sensei',
       description: '500 lifetime supply tags',
@@ -443,6 +467,9 @@ class GamificationService {
       GameAction.confirmExisting => AppConstants.pointsConfirmExisting,
       GameAction.completeProcedure => AppConstants.pointsCompleteProcedure,
       GameAction.reportNotFound => AppConstants.pointsReportNotFound,
+      GameAction.initiateRoom => AppConstants.pointsInitiateRoom,
+      GameAction.becomeRoomCaptain => AppConstants.pointsRoomCaptain,
+      GameAction.claimBounty => AppConstants.pointsClaimBounty,
       GameAction.completeChallenge => 0, // Challenge has its own XP
       GameAction.earnBadge => 0, // Badge has its own XP
     };
@@ -496,6 +523,7 @@ class GamificationService {
     String? unitId,
     String? roomId,
     String? supplyId,
+    String? bountyId,
   }) async {
     // Map client action enum to server action string
     final actionStr = switch (action) {
@@ -503,6 +531,9 @@ class GamificationService {
       GameAction.confirmExisting => 'confirmExisting',
       GameAction.completeProcedure => 'completeProcedure',
       GameAction.reportNotFound => 'reportNotFound',
+      GameAction.initiateRoom => 'initiateRoom',
+      GameAction.becomeRoomCaptain => 'becomeRoomCaptain',
+      GameAction.claimBounty => 'claimBounty',
       GameAction.completeChallenge ||
       GameAction.earnBadge =>
         throw ArgumentError(
@@ -518,6 +549,7 @@ class GamificationService {
       'unitId': unitId,
       'roomId': roomId,
       'supplyId': supplyId,
+      'bountyId': bountyId,
     });
 
     final data = response.data as Map<String, dynamic>;
@@ -634,6 +666,9 @@ enum GameAction {
   confirmExisting,
   completeProcedure,
   reportNotFound,
+  initiateRoom,
+  becomeRoomCaptain,
+  claimBounty,
   completeChallenge,
   earnBadge,
 }

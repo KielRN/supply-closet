@@ -54,6 +54,7 @@ class GamificationProvider extends ChangeNotifier {
     String? unitId,
     String? roomId,
     String? supplyId,
+    String? bountyId,
   }) async {
     // Update challenge progress locally (UI feedback)
     _updateChallengeProgress(action);
@@ -70,6 +71,7 @@ class GamificationProvider extends ChangeNotifier {
       unitId: unitId ?? profile.unitId,
       roomId: roomId,
       supplyId: supplyId,
+      bountyId: bountyId,
     );
 
     // Use server-returned XP for celebrations
@@ -99,13 +101,18 @@ class GamificationProvider extends ChangeNotifier {
     for (final challenge in _dailyChallenges) {
       final shouldIncrement = switch (challenge.type) {
         ChallengeType.tagCount =>
-          action == GameAction.tagNew || action == GameAction.confirmExisting,
+          action == GameAction.tagNew ||
+              action == GameAction.confirmExisting ||
+              action == GameAction.claimBounty,
         ChallengeType.confirmCount => action == GameAction.confirmExisting,
-        ChallengeType.newTagCount => action == GameAction.tagNew,
+        ChallengeType.newTagCount =>
+          action == GameAction.tagNew || action == GameAction.claimBounty,
         ChallengeType.procedureComplete =>
           action == GameAction.completeProcedure,
         ChallengeType.speedTag =>
-          action == GameAction.tagNew || action == GameAction.confirmExisting,
+          action == GameAction.tagNew ||
+              action == GameAction.confirmExisting ||
+              action == GameAction.claimBounty,
         ChallengeType.barcodeScan => action == GameAction.tagNew,
         ChallengeType.metaChallenge => false,
       };

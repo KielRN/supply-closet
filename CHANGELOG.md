@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Android room setup and Finder can measure the fixed doorframe with ARCore, save bin positions locally and recover them after reopening. Exact Moto G Stylus 5G (2024) support and physical placement accuracy are pending device testing.
+- Room-aware sticky feature-point scanner (`supply-closet/lib/services/spatial_room_scanner.dart`) and native Android 3D orientation sensor channel (`supply-closet/android/app/src/main/kotlin/app/supplycloset/MainActivity.kt`) so feature dots progressively appear on real shelf/bin edges and stick to 3D locations in the room (`DEC-014`).
+- 3D holographic wireframe bin boxes (`SHELF A · BIN 1`, `BIN 2`, `BIN 3`) with `[AR]` corner lock reticles, `(x, y, z)` coordinate badges, and live camera Finger/Hand-in-Bin ROI detection + direct screen tap support in `RoomInitiationScreen` and `ArFinderScreen` (`DEC-014`).
 - Master project roadmap with status tables ([`ROADMAP.md`](ROADMAP.md)).
 - Authoritative architectural, product, GTM, and funding decisions log ([`DECISIONS.md`](DECISIONS.md)).
 - Root project overview ([`README.md`](README.md)), AI coding instructions ([`AGENT.md`, now `AGENTS.md`](AGENTS.md)), shared agent-agnostic [`skills/`](skills/README.md), and git-ignored `.tmp/` scratch folder.

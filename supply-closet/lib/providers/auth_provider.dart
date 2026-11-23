@@ -68,6 +68,21 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> updateProfileIdentity({
+    required String displayName,
+    String? photoUrl,
+  }) async {
+    await _authService.updateProfileIdentity(
+      displayName: displayName,
+      photoUrl: photoUrl,
+    );
+    _profile = _profile?.copyWith(
+      displayName: displayName.trim(),
+      photoUrl: photoUrl,
+    );
+    notifyListeners();
+  }
+
   Future<void> refreshProfile() async {
     _profile = await _authService.getCurrentProfile();
     notifyListeners();

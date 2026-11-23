@@ -11,8 +11,12 @@
 
 | Status | Priority Item | Track | What Needs to Happen |
 | :---: | :--- | :--- | :--- |
+| 🟢 | **Multi-Room Switcher (`Med 3A`) & Add Supply Room Flow** | Core / UX | Let nurses add supply rooms from `Tag` & `Settings`, and switch active rooms right inside the Finder HUD (`DEC-013`) |
+| 🟢 | **Custom Display Name & Avatar / Photo Picker** | Core / Social | Let users set a custom display name, pick a pre-generated avatar, or upload a profile photo (`DEC-013`) |
+| 🟢 | **Room Captain (+150 XP Trophy) & Spatial Captain Hints** | Gaming / Spatial | Top tagger in a room becomes **Room Captain** and can drop 3D **Captain Hints** (showing Captain's avatar & name) visible to all users (`DEC-013`) |
+| 🟢 | **Build "God's Eye View" 3D Room Viewer & Gaming AR HUD** | Spatial / 3D | Interactive 3D Gaussian Splat room view + Gaming AR HUD with compass, radar, and off-screen turn chevrons |
+| 🟢 | **Room Initiation (+250 XP) & Supply Bounties (+50 XP)** | Core / Spatial | Doorway room scan to pin 3D shelf racks + user-initiated Supply Bounties for untagged items |
 | 🔴 | **Map One Real Room (30–50 Items)** | Spatial / 3D | Pick one test room, enter 30–50 common supplies, and allow one item to live in multiple bins |
-| 🔴 | **Build "God's Eye View" 3D Room Viewer** | Spatial / 3D | Interactive 3D room view where searching an item flies the camera to the glowing bin (with Gaussian Splat toggle) |
 | 🔴 | **Test Security Rules in Emulator** | Launch Prep | Verify new tags, confirmations, "not found" reports, and XP protections work end-to-end |
 | 🔴 | **Submit NSF SBIR Project Pitch** | Funding | Complete SBA / Research.gov registrations and submit the pitch before the March 4, 2027 window |
 
@@ -33,7 +37,10 @@
 | 🟢 | **Confidence Decay** | Old locations slowly lose confidence until a nurse confirms them again | Runs daily via Cloud Functions |
 | 🟢 | **FDA Recall Checks** | Daily background check against FDA recall data | Runs daily via Cloud Functions |
 | 🔴 | **Multiple Bins per Item** | Allow the same supply SKU to be saved in more than one bin | Currently overwrites single entry |
-| 🔴 | **Room Picker** | Let nurses switch between different supply rooms on a floor | Currently defaults to `main` room |
+| 🟢 | **Multi-Room Picker & Add Room (`Med 3A`)** | Let nurses switch between multiple supply rooms on a floor (`Med 3A` Room 1, Room 2) in the HUD and add rooms from `Tag` or `Settings` | Implemented in `RoomProvider` & `RoomSwitcherSheet` (`DEC-013`) |
+| 🟢 | **Custom Display Name & Avatar Picker** | Let nurses set a custom display name, pick pre-generated avatars, or upload a photo | Implemented in `ProfileIdentitySheet` & `UserAvatar` (`DEC-013`) |
+| 🟢 | **Room Captain (+150 XP) & Spatial Hints** | Most tags in a room earns **Room Captain Trophy**; Captain can drop spatial hints in the room with their avatar & name | Implemented in `CaptainHintSheet` & `ArFinderScreen` (`DEC-013`) |
+| 🔴 | **Room Door Sign OCR Scanner (Future)** | Scan the hospital room door plaque (e.g. `Med 3A · Clean Supply`) to auto-select the room | Future CV enhancement (`DEC-013`) |
 | 🔴 | **On-Device Bin Label OCR** | Read printed shelf/bin labels with the camera during room setup | Stronger fit than crinkled package barcodes (`nsf-project-pitch-draft.md`) |
 
 ---
@@ -59,12 +66,13 @@ We use a **3-Layer Hybrid Spatial Model** from a single 5-minute room scan (see 
 
 | Status | Milestone | Simple Description | Notes |
 | :---: | :--- | :--- | :--- |
-| 🟢 | **Doorway "Set Start" Flow** | Nurses stand at the doorway and tap `Set Start` or `Recenter` to align the room | No QR codes or beacons needed |
-| 🟢 | **Basic AR Camera Session** | Live ARCore / ARKit camera view inside the finder screen | Runs on-device; no video leaves the phone |
+| 🟢 | **Doorway "Set Start" & Room Initiation (+250 XP)** | Nurses scan an unmapped room from the doorway, pin Shelf A/B/C in 3D space, and earn +250 XP | `RoomInitiationScreen` (`DEC-012`) |
+| 🟢 | **Gaming AR HUD & 360° Nav Indicators** | Compass tape, mini-map radar, off-screen turn chevrons (`◄◄ TURN LEFT`), floor path chevrons, and target lock diamond | Runs on-device in `ArFinderScreen` |
 | 🟢 | **"God's Eye View" & 3DGS Research** | Evaluated `bilawalsidhu/gods-eye-view`, Three.js, Gaussian Splats, Point Clouds, and Cloud Anchors | Documented in `reviews/2026-10-21-spatial-product-research.md` |
-| 🔴 | **Layer 1: Point Cloud & Anchors** | Capture a room point cloud / anchor map so any nurse's phone knows where it is standing | Benchmark Cloud Anchors vs. MultiSet VPS + doorway start |
-| 🔴 | **Layer 2: Clickable 3D Bin Boxes ("God's Eye View")** | Interactive 3D room view (Three.js) where searching a supply or procedure flies the camera to the glowing bin | Works remotely at the nurses' station or on the phone |
-| 🔴 | **Layer 3: Gaussian Splat Visual Layer** | Photorealistic 3D Gaussian Splat scan layered over the clickable 3D shelf boxes | Lets users toggle between clean schematic boxes and real 3D visuals |
+| 🟢 | **Layer 2: Clickable 3D Bin Boxes ("God's Eye View")** | Interactive 3D room view where selecting a supply flies the camera to the glowing bin | Built in `ArFinderScreen` (`_GodsEyeSplatPainter`) |
+| 🟢 | **Layer 3: Gaussian Splat Visual Layer** | 3D Gaussian Splat layer rendered over the clickable 3D shelf boxes with instant ON/OFF toggle | Built in `ArFinderScreen` & `RoomInitiationScreen` |
+| 🟢 | **User-Initiated Supply Bounties (+50 XP)** | Nurses post bounties for untagged/missing supplies; Bounty Hunters earn +50 Bonus XP when tagging them | Built in `BountyBoardSheet` (`DEC-012`) |
+| 🔴 | **Verify doorway tracking on the Moto** | Scan from inside the room and find a measured bin after reopening the app | Android pilot stores positions on one phone. Verify ARCore compatibility, sidestepping, and five fresh starts. |
 | 🔴 | **Two-Phone Alignment Test** | Test whether Nurse B's phone highlights the exact same physical bin that Nurse A mapped | Measure target accuracy across shifts and lighting |
 | 🔴 | **One-Room Nurse Pilot** | Test 1 supply room, 30–50 supplies, and 5–10 nurses; measure time saved | Target: ≥90% right-bin accuracy |
 

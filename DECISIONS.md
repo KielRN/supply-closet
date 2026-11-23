@@ -24,7 +24,10 @@ This document is the single source of truth for major product, technical, commer
 | 🟢 | **DEC-009** | 2026-11-07 | **NSF SBIR Phase I for Spatial R&D** | Apply for ~$305K non-dilutive NSF SBIR funding to pay for hard AR/CV research; Elliott becomes full-time PI upon award |
 | 🟢 | **DEC-010** | 2026-11-07 | **Drop Graphify & Standardize Repo** | Removed `graphify-out`; standardized on `ROADMAP.md`, `DECISIONS.md`, `AGENT.md` (renamed `AGENTS.md` 2026-11-23), git-ignored `.tmp/`, and `skills/` |
 | 🟢 | **DEC-011** | 2026-11-07 | **Quick Search + Bin OCR Over Package Barcodes** | Default tagging to instant search / 1-tap chips instead of package barcode scanning; reserve camera for Bin Label OCR and 3D room capture |
-| 🟢 | **DEC-015** | 2026-11-23 | **Shared Firebase Project: One Firestore Rules File** | `gen-lang-client-0675309660` is shared with the 3DPrintPosters / 3DPrintYou web app; Firestore rules live and deploy only from `E:\PROJECTS\3DPrintPosters\infra\firebase\firestore.rules`, never from this repo |
+| 🟢 | **DEC-012** | 2026-11-08 | **Room Initiation Scan, Gaming HUD & Supply Bounties** | Unmapped rooms start with a +250 XP doorway scan (Gaussian Splat + 3D Shelf Racks); Finder uses a Gaming AR HUD + 3D Splat toggle; nurses can post +50 XP Supply Bounties for untagged items |
+| 🟢 | **DEC-013** | 2026-11-09 | **Multi-Room Unit Hierarchy, Avatars & Room Captain Hints** | Units (`Med 3A`, `Med 3B`) support multiple supply rooms (`Add Room` in Tag & Settings, switch rooms in HUD, future Door Sign OCR); users customize Display Name + Avatar/Photo; top room tagger becomes **Room Captain (+150 XP Trophy)** and can pin spatial **Captain Hints** in the room |
+| 🟢 | **DEC-014** | 2026-11-16 | **Room-Aware Sticky Feature Dots & Finger-in-Bin Detection** | Replaced static 2D scan overlay with on-device corner/edge feature extraction (`CameraImage` YUV420 stream), native Android 3D orientation sensors (`Sensor.TYPE_GAME_ROTATION_VECTOR`), triangulation mesh, and 3D Bin Box finger/hand-in-bin + touch read |
+| 🟢 | **DEC-015** | 2026-11-23 | **Firebase Rules Ownership Restored (3DPrintYou Migrated)** | 3DPrintPosters / 3DPrintYou migrated off `gen-lang-client-0675309660` to dedicated `app-3dprintyou` on 2026-11-23; SupplyCloset again owns and deploys `supply-closet/firebase/firestore.rules` directly |
 | 🔴 | **OPEN-001** | 2026-11-07 | **Phase I Pilot Site & Advisors** | Select nursing simulation lab / unit partner and CV + nursing advisors for the NSF pitch and proposal |
 
 ---
@@ -119,14 +122,47 @@ This document is the single source of truth for major product, technical, commer
 - **Context:** Individual medical supply peel-pouches have tiny, crinkled barcodes that glare under fluorescent lighting, and hospital bin barcodes are typically internal ERP codes rather than FDA GUDID barcodes. Opening the camera first on Step 1 of tagging slowed nurses down and violated the 30-second / 3-tap design rule.
 - **Decision:** Default `TagSupplyScreen` (`supply-closet/lib/screens/tag/tag_supply_screen.dart`) directly to **Quick Search + 1-Tap Common Supply buttons**. Keep camera scanning optional and focus future camera computer-vision work on **on-device printed bin-label OCR** and **3D room capture**, aligning directly with [nsf-project-pitch-draft.md](nsf-project-pitch-draft.md).
 
-### DEC-015: Shared Firebase Project — One Firestore Rules File, Deployed Only From 3DPrintPosters
-- **Date:** November 23, 2026
+### DEC-012: Room Initiation Scan (+250 XP), Gaming Navigation HUD & User-Initiated Supply Bounties
+- **Date:** November 8, 2026
 - **Status:** 🟢 Active
-- **Context:** Firebase project `gen-lang-client-0675309660` (see DEC-001) also hosts the 3DPrintPosters / 3DPrintYou web app and the Texas AI Consulting website admin sign-in. They share one Firestore database `(default)`, which can have only ONE rules file, and one pool of Firebase Auth users. On 2026-11-09 a rules deploy from this repo replaced the 3DPrintPosters rules and locked 3DPrintYou customers out of their orders. On 2026-11-23 a 3DPrintPosters-only redeploy locked SupplyCloset out.
+- **Context:** Initial phone testing on the Moto G Stylus 5G (2024) showed that tagging a single supply with `(0,0,0)` coordinates into an unmapped room made the Finder screen unhelpful. Nurses need spatial room context, clear gaming-style directional indicators, and a way to request untagged supplies.
 - **Decision:**
-  1. The single deployed rules file is `E:\PROJECTS\3DPrintPosters\infra\firebase\firestore.rules`. It contains the SupplyCloset rules unchanged in a labeled section, plus the shared `users/{userId}` block, which uses SupplyCloset's rule (DEC-006 invariants still apply).
-  2. Firestore rules are deployed only from `E:\PROJECTS\3DPrintPosters` (`npm run firebase:deploy:firestore-rules:dev`). Never run a bare `firebase deploy`, `--only firestore`, or `--only firestore:rules` from `supply-closet/firebase/`. Use `--only functions` for Cloud Functions and `--only firestore:indexes` (never `--force`) for indexes.
-  3. `supply-closet/firebase/firebase.json` has no `"rules"` entry (removed 2026-11-23), so a deploy from this repo skips rules. Dry runs of `--only firestore:rules` and `--only firestore` from that folder read only indexes. `supply-closet/firebase/firestore.rules` is a SupplyCloset-only reference copy. Change SupplyCloset rules in the shared file first, then mirror the change here.
-  4. Keep this repo's Functions codebase `default` (3DPrintPosters uses `api`). Deleting or disabling Firebase Auth users affects every app.
-- **Verified:** The merged rules were tested with the Firebase Rules test API (44 scenarios). SupplyCloset results match its own rules exactly, 3DPrintYou results match its rules, and cross-app access is blocked. Deployed as ruleset `6d014542-50c0-44d2-b498-5420695c189b` (3DPrintPosters commit `c3cbe79`).
-- **Docs Reconciled:** [AGENTS.md](AGENTS.md) (guardrail 6), [skills/firebase-backend-rules/SKILL.md](skills/firebase-backend-rules/SKILL.md) (section 0).
+  1. **Room Initiation (+250 XP):** If a supply room is not yet initiated in Firestore, prompt a 3-step doorway scan (`RoomInitiationScreen`) that captures the Gaussian Splat / point cloud preview, pins 3D Shelf Racks (`Shelf A`, `Shelf B`, `Shelf C`), and awards **+250 XP** (`initiateRoom`) + the `room_pioneer` badge.
+  2. **Gaming Spatial Finder (`ArFinderScreen`):** Combine an interactive **3D Gaussian Splat "God's Eye View"** (click-to-fly camera + layer toggles) with a **First-Person Gaming AR HUD** (Compass Ribbon, Top-Right Mini-Radar, 360° Off-Screen Edge Turn Chevrons, 3D Floor Path Chevrons, and Target Lock Diamond).
+  3. **User-Initiated Supply Bounties (+50 Bonus XP):** When a nurse needs an important supply that hasn't been tagged yet (or is missing from its bin), she can post a **Supply Bounty** (`BountyBoardSheet`). Another nurse ("Bounty Hunter") who locates and tags that supply earns **+50 Bonus XP** (`claimBounty`) + the `bounty_hunter` badge.
+
+### DEC-013: Multi-Room Floor Hierarchy (`Med 3A`), Custom Avatars & Room Captain Spatial Hints
+- **Date:** November 9, 2026
+- **Status:** 🟢 Active
+- **Context:** Nurses and nursing assistants work on hospital floors/wings (e.g., `Med 3A`, `Med 3B`) that typically have **multiple supply rooms** (clean utility rooms, north/south alcoves, overflow closets). Hardcoding a single `main` room prevents switching or adding rooms on a floor. Additionally, social identity (Display Name + Avatar/Photo) powers a new **Room Captain** mechanic.
+- **Decision:**
+  1. **Multi-Room Unit Model (`Facility -> Unit [e.g. Med 3A] -> Supply Rooms [Room 1, Room 2...]`):**
+     - Nurses can **add new Supply Rooms** directly from the **Tag** screen header and from **Profile / Settings** (which lists all rooms on their unit).
+     - Nurses can **switch the active Supply Room** directly inside the **Finder HUD** (`ArFinderScreen`) and **Tag** screen (`RoomProvider`).
+     - **Future Feature (Roadmap):** Add **Door Sign OCR Scanner** so pointing the camera at a hospital room door plaque (e.g., `3A-102 CLEAN SUPPLY`) auto-selects or creates that supply room.
+  2. **Custom Display Name, Pre-Generated Avatars & Photo Upload:**
+     - Allow users to edit their public **Display Name**, choose from **pre-generated clinical/gaming avatars**, or upload a custom profile photo in `ProfileScreen` (and persist manual edits so `AuthService` does not overwrite them on login).
+  3. **Room Captain (+150 XP Trophy) & Spatial Captain Hints:**
+     - The user who has tagged the most supplies in a specific Supply Room automatically becomes that room's **Room Captain** (`captainUid`, `captainName`, `captainAvatar`, `captainTagCount`), earning the **Room Captain Trophy/Medal (`room_captain`, +150 XP)**.
+     - The **Room Captain** can place **Spatial Captain Hints** (`hints` subcollection or array on `SupplyRoom`) anchored to a point/shelf in the room.
+     - All users viewing that room in the **3D Gaussian Splat** or **Gaming AR HUD** see the **Captain Hint** beacon displaying the **Captain's Avatar, Display Name, and Tip**.
+
+
+### DEC-014: Room-Aware Sticky Feature Point Cloud & Finger-in-Bin Camera Read
+- **Date:** November 16, 2026
+- **Status:** 🟢 Active
+- **Context:** During on-device phone testing (`Moto G Stylus 5G - 2024`), the initial room scanner felt unaware of the physical room because feature points were drawn at static screen coordinates and the 3D bin boxes did not respond when the user placed their finger in the bin area in front of the camera.
+- **Decision:**
+  1. **Native 3D Orientation Sensor Stream (`MainActivity.kt`):** Stream hardware `TYPE_GAME_ROTATION_VECTOR` / `TYPE_ROTATION_VECTOR` / `TYPE_GYROSCOPE` orientation (`yawDeg`, `pitchDeg`, `angularSpeed`) over `app.supplycloset/spatial_sensors` so turning or tilting the phone moves the 3D AR room frame in real time.
+  2. **Progressive Sticky Feature Points (`SpatialRoomScannerEngine`):** Start scans at 0 points and analyze live on-device `CameraImage` luminance frames (`startImageStream`) for real high-contrast corners/edges (shelf posts, wire racks, plastic bin edges). Anchor discovered points to 3D world `(worldYawDeg, worldPitchDeg, depthMeters)` coordinates so yellow discovery dots pop in along the scan wave and turn into locked cyan/green sticky dots with triangulation mesh lines that stay stuck to the room as the phone pans.
+  3. **3D Holographic Bin Cubes with Finger-in-Bin & Screen-Tap Read:** Render 3D wireframe bin cubes (`SHELF A · BIN 1`, `BIN 2`, `BIN 3`...) with `[AR]` lock reticles and `(x, y, z)` coordinates, and monitor each visible bin box's camera region of interest (ROI) so reaching a finger/hand into the bin spot in front of the camera (or tapping the bin box on screen) reads and locks that bin.
+
+### DEC-015: Shared Firebase Rules Interim Fix & Ownership Restoration
+- **Date:** November 23, 2026
+- **Status:** 🟢 Active (Resolved via dedicated 3DPrintYou migration)
+- **Context:** Firebase project `gen-lang-client-0675309660` (see DEC-001) previously hosted both SupplyCloset and the 3DPrintPosters / 3DPrintYou web app in one Firestore database `(default)`. Earlier on 2026-11-23 the rules were temporarily merged in `3DPrintPosters` to prevent cross-app overwrites. Later on 2026-11-23, 3DPrintPosters / 3DPrintYou migrated to its own dedicated Firebase project (`app-3dprintyou`).
+- **Decision:**
+  1. SupplyCloset once again owns Firestore rules on `gen-lang-client-0675309660`. `"rules": "firestore.rules"` has been re-enabled in `supply-closet/firebase/firebase.json`, and `supply-closet/firebase/firestore.rules` is deployed directly from `supply-closet/firebase/`.
+  2. `gen-lang-client-0675309660` still shares Firebase Auth with the Texas AI Consulting website admin sign-in (`E:\PROJECTS\TexasAI Landing Page`, Auth only). Do not delete or disable non-SupplyCloset Auth users.
+  3. Always deploy with explicit `--only` targets (`--only firestore:rules`, `--only firestore:indexes`, `--only functions`) and never use `--force` on indexes. Keep this repo's Functions codebase `default`.
+- **Docs Reconciled:** [AGENTS.md](AGENTS.md) (guardrail 6), [skills/firebase-backend-rules/SKILL.md](skills/firebase-backend-rules/SKILL.md) (section 0), [supply-closet/SETUP.md](supply-closet/SETUP.md) (step 5), [HANDOFF.md](HANDOFF.md).

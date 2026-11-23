@@ -10,6 +10,7 @@ import 'firebase_options.dart';
 import 'providers/auth_provider.dart';
 import 'providers/procedure_provider.dart';
 import 'providers/gamification_provider.dart';
+import 'providers/room_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +36,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => ProcedureProvider()),
         ChangeNotifierProvider(create: (_) => GamificationProvider()),
+        ChangeNotifierProvider(create: (_) => RoomProvider()),
       ],
       child: const SupplyClosetApp(),
     ),

@@ -5,6 +5,7 @@ import '../../models/user_profile.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/firestore_service.dart';
 import '../../services/gamification_service.dart';
+import '../../widgets/user_avatar.dart';
 
 /// Leaderboard tabs: My Unit | My Hospital | All Time
 class LeaderboardScreen extends StatefulWidget {
@@ -343,15 +344,12 @@ class _PodiumColumn extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        CircleAvatar(
+        UserAvatar(
+          displayName: user.displayName,
+          photoUrl: user.photoUrl,
           radius: 28,
-          backgroundColor: _medalColor(),
-          backgroundImage:
-              user.photoUrl != null ? NetworkImage(user.photoUrl!) : null,
-          child: user.photoUrl == null
-              ? Text(user.displayName.substring(0, 1).toUpperCase(),
-                  style: const TextStyle(color: Colors.white, fontSize: 22))
-              : null,
+          isCaptain: user.badges.contains('room_captain'),
+          borderColor: _medalColor(),
         ),
         const SizedBox(height: 6),
         Text(
@@ -434,15 +432,11 @@ class _LeaderboardRow extends StatelessWidget {
                         : Colors.grey.shade700)),
           ),
           const SizedBox(width: 8),
-          CircleAvatar(
+          UserAvatar(
+            displayName: user.displayName,
+            photoUrl: user.photoUrl,
             radius: 20,
-            backgroundColor: SupplyClosetColors.tealLight,
-            backgroundImage:
-                user.photoUrl != null ? NetworkImage(user.photoUrl!) : null,
-            child: user.photoUrl == null
-                ? Text(user.displayName.substring(0, 1).toUpperCase(),
-                    style: const TextStyle(color: Colors.white))
-                : null,
+            isCaptain: user.badges.contains('room_captain'),
           ),
           const SizedBox(width: 12),
           Expanded(

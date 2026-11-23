@@ -50,6 +50,13 @@ Once your phone is plugged in and unlocked:
 
 ## Step 4: How to Test & Map a Room on Your Phone
 
+### Test the Android doorway scanner
+
+1. Select your facility, unit, and room. From **Finder → Find in AR → Room setup** (or **Map this bin**), enter a shelf label and bin number. Tap **Measure bin with AR**. If Google Play offers to install or update Google Play Services for AR, complete that prompt. An unsupported-device message means the ARCore path cannot run on this handset.
+2. Stand **inside** the room facing the doorway. Hold the phone upright, include both upper inside corners of the fixed frame, and step sideways about 10–20 cm. You can tap a corner to correct it. Confirm when both markers line up. Use the same opening and side every time.
+3. Turn to two adjacent bins and tap the center of the intended bin face. Move sideways slightly so the scanner can verify the surface. Once **Save bin** appears, approach and sidestep to check the marker, then save. The measurement is stored on this phone under the current account and room.
+4. Fully close and reopen SupplyCloset. Use **Find in AR → Find from doorway** for the mapped bin and align the doorway again. Repeat five times, including with the door open and closed. Record how often the marker lands inside the correct bin. Also cover the camera to check that the marker disappears during tracking loss. Shelf and bin text remains available.
+
 ### Part A — Tag Supplies in SupplyCloset (5–10 minutes)
 
 1. **Sign In:** Open **SupplyCloset** on your phone and tap **Sign in with Google**.

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/auth_provider.dart';
 import '../screens/auth/login_screen.dart';
@@ -47,7 +48,12 @@ class AppRouter {
             ),
             GoRoute(
               path: '/tag',
-              builder: (context, state) => const TagSupplyScreen(),
+              builder: (context, state) => TagSupplyScreen(
+                key: ValueKey(
+                    '${state.uri.queryParameters['supply']}_${state.uri.queryParameters['bountyId']}'),
+                initialSupplyName: state.uri.queryParameters['supply'],
+                initialBountyId: state.uri.queryParameters['bountyId'],
+              ),
             ),
             GoRoute(
               path: '/leaderboard',

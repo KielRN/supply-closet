@@ -75,28 +75,55 @@ class AuthService {
         : (preferredName ?? 'Eliud Lamboy');
 
     if (doc.exists) {
-      // Update last active timestamp
+      final existing = UserProfile.fromFirestore(doc);
+      // Preserve user's custom displayName and photoUrl/avatar if already set
+      final keptName = existing.displayName.trim().isNotEmpty
+          ? existing.displayName
+          : resolvedName;
+      final keptPhoto = existing.photoUrl ?? user.photoURL ?? 'avatar:trauma_captain';
       await docRef.update({
         'lastActive': Timestamp.now(),
-        'displayName': resolvedName,
-        'photoUrl': user.photoURL,
+        'displayName': keptName,
+        'photoUrl': keptPhoto,
       });
-      return UserProfile.fromFirestore(doc);
+      return existing.copyWith(
+        displayName: keptName,
+        photoUrl: keptPhoto,
+      );
     }
 
-    // New user — create profile with default pilot room so tagging works immediately
+    // New user — create profile with default Med 3A floor wing so tagging works immediately
     final profile = UserProfile(
       uid: user.uid,
       displayName: resolvedName,
-      photoUrl: user.photoURL,
+      photoUrl: user.photoURL ?? 'avatar:trauma_captain',
       facilityId: 'txai_pilot_lab',
       facilityName: 'TxAI Pilot Simulation Lab',
-      unitId: 'supply_room_1',
-      unitName: 'Supply Room 1',
+      unitId: 'med_3a',
+      unitName: 'Med 3A',
     );
 
     await docRef.set(profile.toFirestore());
     return profile;
+  }
+
+  /// Update user's public display name and avatar / profile picture
+  Future<void> updateProfileIdentity({
+    required String displayName,
+    String? photoUrl,
+  }) async {
+    final user = currentUser;
+    if (user == null) throw Exception('Not authenticated');
+
+    await _db.collection(AppConstants.usersCollection).doc(user.uid).update({
+      'displayName': displayName.trim(),
+      'photoUrl': photoUrl,
+      'lastActive': Timestamp.now(),
+    });
+
+    try {
+      await user.updateDisplayName(displayName.trim());
+    } catch (_) {}
   }
 
   /// Get the current user's profile from Firestore
