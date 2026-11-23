@@ -3,7 +3,7 @@
 **Date:** November 8, 2026  
 **Connected Test Device:** Moto G Stylus 5G - 2024 (`ZY22KP4X7C` via USB)  
 **Firebase Project:** `gen-lang-client-0675309660`  
-**Related Trackers:** [ROADMAP.md](ROADMAP.md) · [DECISIONS.md](DECISIONS.md) · [USER.md](USER.md) · [AGENT.md](AGENT.md)
+**Related Trackers:** [ROADMAP.md](ROADMAP.md) · [DECISIONS.md](DECISIONS.md) · [USER.md](USER.md) · [AGENTS.md](AGENTS.md)
 
 ---
 

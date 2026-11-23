@@ -1,7 +1,7 @@
 # SupplyCloset — Decisions Log
 
-**Last Updated:** November 7, 2026  
-**Related Docs:** [ROADMAP.md](ROADMAP.md) · [README.md](README.md) · [AGENT.md](AGENT.md)
+**Last Updated:** November 23, 2026  
+**Related Docs:** [ROADMAP.md](ROADMAP.md) · [README.md](README.md) · [AGENTS.md](AGENTS.md)
 
 This document is the single source of truth for major product, technical, commercial, and funding decisions. When earlier documents (such as the original April 2026 [PRD](prd.md) or [Technical Architecture](tech-architecture.md)) differ from newer strategy docs, the decisions recorded here govern.
 
@@ -22,8 +22,9 @@ This document is the single source of truth for major product, technical, commer
 | 🟢 | **DEC-007** | 2026-04-24 | **Hardware-Free Doorway AR Origin** | No QR codes, beacons, or RFID tags required; AR initializes from the supply room doorway (`Set Start`) |
 | 🟢 | **DEC-008** | 2026-10-21 | **3-Layer "God's Eye View" Digital Twin** | Combine Point Clouds (phone localization), Clickable 3D Bin Boxes (search/fly-to), and Gaussian Splats (visual layer) in one room first |
 | 🟢 | **DEC-009** | 2026-11-07 | **NSF SBIR Phase I for Spatial R&D** | Apply for ~$305K non-dilutive NSF SBIR funding to pay for hard AR/CV research; Elliott becomes full-time PI upon award |
-| 🟢 | **DEC-010** | 2026-11-07 | **Drop Graphify & Standardize Repo** | Removed `graphify-out`; standardized on `ROADMAP.md`, `DECISIONS.md`, `AGENT.md`, git-ignored `.tmp/`, and `skills/` |
+| 🟢 | **DEC-010** | 2026-11-07 | **Drop Graphify & Standardize Repo** | Removed `graphify-out`; standardized on `ROADMAP.md`, `DECISIONS.md`, `AGENT.md` (renamed `AGENTS.md` 2026-11-23), git-ignored `.tmp/`, and `skills/` |
 | 🟢 | **DEC-011** | 2026-11-07 | **Quick Search + Bin OCR Over Package Barcodes** | Default tagging to instant search / 1-tap chips instead of package barcode scanning; reserve camera for Bin Label OCR and 3D room capture |
+| 🟢 | **DEC-015** | 2026-11-23 | **Shared Firebase Project: One Firestore Rules File** | `gen-lang-client-0675309660` is shared with the 3DPrintPosters / 3DPrintYou web app; Firestore rules live and deploy only from `E:\PROJECTS\3DPrintPosters\infra\firebase\firestore.rules`, never from this repo |
 | 🔴 | **OPEN-001** | 2026-11-07 | **Phase I Pilot Site & Advisors** | Select nursing simulation lab / unit partner and CV + nursing advisors for the NSF pitch and proposal |
 
 ---
@@ -110,9 +111,22 @@ This document is the single source of truth for major product, technical, commer
 - **Status:** 🟢 Active
 - **Context:** `graphify-out/` added large generated cache files that were not needed for this project, and the repo lacked root-level orientation docs (`README.md`, `ROADMAP.md`, `DECISIONS.md`, `AGENT.md`) and shared agent skills.
 - **Decision:** Delete `graphify-out/`, git-ignore `.tmp/` for scratch work, maintain a shared AI-agent-agnostic `skills/` folder at the repository root, and keep `ROADMAP.md` and `DECISIONS.md` updated as the primary project trackers.
+- **Update (2026-11-23):** `AGENT.md` was renamed to the standard `AGENTS.md`, the file name AI coding agents load automatically. There is only one agent instructions file; do not recreate `AGENT.md`.
 
 ### DEC-011: Default to Quick Search & 1-Tap Tagging (Move Package Barcodes Off Critical Path)
 - **Date:** November 7, 2026
 - **Status:** 🟢 Active
 - **Context:** Individual medical supply peel-pouches have tiny, crinkled barcodes that glare under fluorescent lighting, and hospital bin barcodes are typically internal ERP codes rather than FDA GUDID barcodes. Opening the camera first on Step 1 of tagging slowed nurses down and violated the 30-second / 3-tap design rule.
 - **Decision:** Default `TagSupplyScreen` (`supply-closet/lib/screens/tag/tag_supply_screen.dart`) directly to **Quick Search + 1-Tap Common Supply buttons**. Keep camera scanning optional and focus future camera computer-vision work on **on-device printed bin-label OCR** and **3D room capture**, aligning directly with [nsf-project-pitch-draft.md](nsf-project-pitch-draft.md).
+
+### DEC-015: Shared Firebase Project — One Firestore Rules File, Deployed Only From 3DPrintPosters
+- **Date:** November 23, 2026
+- **Status:** 🟢 Active
+- **Context:** Firebase project `gen-lang-client-0675309660` (see DEC-001) also hosts the 3DPrintPosters / 3DPrintYou web app and the Texas AI Consulting website admin sign-in. They share one Firestore database `(default)`, which can have only ONE rules file, and one pool of Firebase Auth users. On 2026-11-09 a rules deploy from this repo replaced the 3DPrintPosters rules and locked 3DPrintYou customers out of their orders. On 2026-11-23 a 3DPrintPosters-only redeploy locked SupplyCloset out.
+- **Decision:**
+  1. The single deployed rules file is `E:\PROJECTS\3DPrintPosters\infra\firebase\firestore.rules`. It contains the SupplyCloset rules unchanged in a labeled section, plus the shared `users/{userId}` block, which uses SupplyCloset's rule (DEC-006 invariants still apply).
+  2. Firestore rules are deployed only from `E:\PROJECTS\3DPrintPosters` (`npm run firebase:deploy:firestore-rules:dev`). Never run a bare `firebase deploy`, `--only firestore`, or `--only firestore:rules` from `supply-closet/firebase/`. Use `--only functions` for Cloud Functions and `--only firestore:indexes` (never `--force`) for indexes.
+  3. `supply-closet/firebase/firebase.json` has no `"rules"` entry (removed 2026-11-23), so a deploy from this repo skips rules. Dry runs of `--only firestore:rules` and `--only firestore` from that folder read only indexes. `supply-closet/firebase/firestore.rules` is a SupplyCloset-only reference copy. Change SupplyCloset rules in the shared file first, then mirror the change here.
+  4. Keep this repo's Functions codebase `default` (3DPrintPosters uses `api`). Deleting or disabling Firebase Auth users affects every app.
+- **Verified:** The merged rules were tested with the Firebase Rules test API (44 scenarios). SupplyCloset results match its own rules exactly, 3DPrintYou results match its rules, and cross-app access is blocked. Deployed as ruleset `6d014542-50c0-44d2-b498-5420695c189b` (3DPrintPosters commit `c3cbe79`).
+- **Docs Reconciled:** [AGENTS.md](AGENTS.md) (guardrail 6), [skills/firebase-backend-rules/SKILL.md](skills/firebase-backend-rules/SKILL.md) (section 0).

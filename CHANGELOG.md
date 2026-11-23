@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Master project roadmap with status tables ([`ROADMAP.md`](ROADMAP.md)).
 - Authoritative architectural, product, GTM, and funding decisions log ([`DECISIONS.md`](DECISIONS.md)).
-- Root project overview ([`README.md`](README.md)), AI coding instructions ([`AGENT.md`](AGENT.md)), shared agent-agnostic [`skills/`](skills/README.md), and git-ignored `.tmp/` scratch folder.
+- Root project overview ([`README.md`](README.md)), AI coding instructions ([`AGENT.md`, now `AGENTS.md`](AGENTS.md)), shared agent-agnostic [`skills/`](skills/README.md), and git-ignored `.tmp/` scratch folder.
 - SBIR/STTR funding strategy ([`funding-strategy.md`](funding-strategy.md)).
 - NSF SBIR Project Pitch draft ([`nsf-project-pitch-draft.md`](nsf-project-pitch-draft.md)).
 - Spatial product research for one-room digital twin ("God's Eye View") and shared AR anchors ([`reviews/2026-10-21-spatial-product-research.md`](reviews/2026-10-21-spatial-product-research.md)).
@@ -43,12 +43,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Existing supply confirmations now award `confirmExisting` XP instead of
   always being treated as new tags.
 - Replaced deprecated Flutter color opacity calls with `withValues`.
+- Renamed `AGENT.md` to the standard [`AGENTS.md`](AGENTS.md), the file name AI coding agents load automatically, and updated all links. This is the only agent instructions file (`DEC-010` update).
 
 ### Fixed
 - `reportNotFound()` now increments supply `version` in a transaction so it
   satisfies the optimistic concurrency Firestore rule.
 
 ### Security
+- Firestore rules now deploy only from the shared file `E:\PROJECTS\3DPrintPosters\infra\firebase\firestore.rules`. Firebase project `gen-lang-client-0675309660` is shared with the 3DPrintPosters / 3DPrintYou web app, so a rules deploy from this repo on 2026-11-09 had replaced that app's rules. The merged file keeps the SupplyCloset rules unchanged and was verified with 44 Rules test API scenarios. Removed the `"rules"` entry from `supply-closet/firebase/firebase.json` so deploys from this repo can no longer replace the shared rules, and changed the rules-deploy steps in `HANDOFF.md` and `supply-closet/SETUP.md` to point to 3DPrintPosters. Agent guardrails added to [`AGENTS.md`](AGENTS.md) and [`skills/firebase-backend-rules/SKILL.md`](skills/firebase-backend-rules/SKILL.md) (`DEC-015`).
 - Remediated all 21/21 findings from the April 2026 adversarial security review (locked user role creation, added server-side XP action verification, rate-limited callable Cloud Functions, enforced optimistic concurrency version checks, and secured `healthCheck`). See [`DECISIONS.md`](DECISIONS.md) (`DEC-006`).
 
 ## [0.1.0] - 2026-04-16

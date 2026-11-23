@@ -73,12 +73,14 @@ When prompted, select both **iOS** and **Android** platforms.
 
 For release builds you'll repeat this with your release keystore SHA-1.
 
-## Step 5 — Deploy Firestore rules and indexes
+## Step 5 — Deploy Firestore indexes (rules deploy from 3DPrintPosters)
+
+Firebase project `gen-lang-client-0675309660` is shared with the 3DPrintPosters / 3DPrintYou web app, so it has ONE Firestore rules file for both apps (see `DECISIONS.md` `DEC-015`). Rules are deployed only from `E:\PROJECTS\3DPrintPosters` (`npm run firebase:deploy:firestore-rules:dev`), from `infra/firebase/firestore.rules`. That file has a SupplyCloset section. `firebase/firebase.json` here deliberately does not list a rules file, so a deploy from this folder cannot replace the shared rules.
 
 ```bash
 cd firebase
 firebase use gen-lang-client-0675309660
-firebase deploy --only firestore:rules,firestore:indexes
+firebase deploy --only firestore:indexes   # never add --force: it deletes other apps' indexes
 ```
 
 ## Step 6 — Deploy Cloud Functions

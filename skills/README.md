@@ -21,4 +21,4 @@ This directory contains **AI-agent-agnostic skills** for the SupplyCloset reposi
    ---
    ```
 3. Keep instructions concise, tool-agnostic, and grounded in concrete repository paths and commands.
-4. Register the new skill in this `skills/README.md` and in [`../AGENT.md`](../AGENT.md).
+4. Register the new skill in this `skills/README.md` and in [`../AGENTS.md`](../AGENTS.md).
